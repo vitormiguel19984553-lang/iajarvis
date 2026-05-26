@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Mic, Paperclip, ArrowUp, Square } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface Props {
   input: string;
@@ -8,6 +9,7 @@ interface Props {
   onSubmit: () => void;
   isBusy: boolean;
   onStop: () => void;
+  onAttachClick: () => void;
 }
 
 function Orb({ listening }: { listening: boolean }) {
@@ -51,12 +53,18 @@ function Orb({ listening }: { listening: boolean }) {
   );
 }
 
-export function JarvisVoiceBar({ input, setInput, onSubmit, isBusy, onStop }: Props) {
+export function JarvisVoiceBar({
+  input,
+  setInput,
+  onSubmit,
+  isBusy,
+  onStop,
+  onAttachClick,
+}: Props) {
   const [listening, setListening] = useState(false);
   const waveRef = useRef<HTMLDivElement>(null);
   const taRef = useRef<HTMLTextAreaElement>(null);
 
-  // Auto-grow textarea
   useEffect(() => {
     const ta = taRef.current;
     if (!ta) return;
@@ -64,7 +72,6 @@ export function JarvisVoiceBar({ input, setInput, onSubmit, isBusy, onStop }: Pr
     ta.style.height = Math.min(ta.scrollHeight, 120) + "px";
   }, [input]);
 
-  // Demo waveform animation
   useEffect(() => {
     let frame: number;
     if (listening && waveRef.current) {
@@ -84,16 +91,43 @@ export function JarvisVoiceBar({ input, setInput, onSubmit, isBusy, onStop }: Pr
     return () => cancelAnimationFrame(frame);
   }, [listening]);
 
-  // Auto-stop after 4s (demo)
-  useEffect(() => {
-    if (!listening) return;
-    const t = setTimeout(() => setListening(false), 4000);
-    return () => clearTimeout(t);
-  }, [listening]);
+  const toggleMic = async () => {
+    if (listening) {
+      setListening(false);
+      return;
+    }
+    // Try Web Speech API
+    const SR =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (SR) {
+      try {
+        const rec = new SR();
+        rec.lang = "en-US";
+        rec.interimResults = true;
+        rec.continuous = false;
+        rec.onresult = (e: any) => {
+          const transcript = Array.from(e.results)
+            .map((r: any) => r[0].transcript)
+            .join("");
+          setInput(transcript);
+        };
+        rec.onend = () => setListening(false);
+        rec.onerror = () => setListening(false);
+        rec.start();
+        setListening(true);
+      } catch {
+        setListening(true);
+        setTimeout(() => setListening(false), 4000);
+      }
+    } else {
+      toast("Voice input not supported in this browser");
+      setListening(true);
+      setTimeout(() => setListening(false), 4000);
+    }
+  };
 
   return (
     <div className="border-t border-border bg-sidebar px-5 py-3.5 flex flex-col gap-3 shrink-0">
-      {/* Voice orb + waveform */}
       <div className="bg-background border border-border rounded-xl px-4 py-2.5 flex items-center gap-3.5">
         <Orb listening={listening} />
         <div className="flex-1 min-w-0">
@@ -117,7 +151,7 @@ export function JarvisVoiceBar({ input, setInput, onSubmit, isBusy, onStop }: Pr
           </div>
         </div>
         <button
-          onClick={() => setListening((v) => !v)}
+          onClick={toggleMic}
           className={cn(
             "w-10 h-10 rounded-[10px] border flex items-center justify-center transition-all",
             listening
@@ -129,7 +163,6 @@ export function JarvisVoiceBar({ input, setInput, onSubmit, isBusy, onStop }: Pr
         </button>
       </div>
 
-      {/* Text row */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -139,7 +172,9 @@ export function JarvisVoiceBar({ input, setInput, onSubmit, isBusy, onStop }: Pr
       >
         <button
           type="button"
-          className="w-9 h-9 rounded-lg border border-border bg-transparent flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors shrink-0"
+          onClick={onAttachClick}
+          title="Attach files"
+          className="w-9 h-9 rounded-lg border border-border bg-transparent flex items-center justify-center text-muted-foreground hover:text-[#00d4ff] transition-colors shrink-0"
         >
           <Paperclip className="h-4 w-4" />
         </button>
