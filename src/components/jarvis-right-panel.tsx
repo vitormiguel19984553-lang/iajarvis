@@ -1,4 +1,4 @@
-import { Plus, FileIcon as FileIconLucide, Eye, X } from "lucide-react";
+import { Plus, Eye, X } from "lucide-react";
 import { useRef } from "react";
 import { toast } from "sonner";
 
@@ -7,6 +7,11 @@ export type UploadedFile = {
   size: string;
   type: string;
   status: "analyzed" | "pending" | "analyzing";
+};
+
+export type Activity = {
+  label: string;
+  state: "done" | "active" | "pending";
 };
 
 const fileColors: Record<string, string> = {
@@ -23,21 +28,6 @@ const fileColors: Record<string, string> = {
   json: "#7c3aed",
   default: "#00d4ff",
 };
-
-const activities = [
-  { label: "Parsing schematics_v4.pdf", done: true },
-  { label: "Running structural analysis", done: true },
-  { label: "Querying materials database", done: true },
-  { label: "Generating visual overlay", active: true },
-  { label: "Compiling final report" },
-];
-
-const stats: Array<[string, string]> = [
-  ["Tokens used", "12,480"],
-  ["Response time", "1.2s"],
-  ["Files analyzed", "2 / 3"],
-  ["Memory used", "3 turns"],
-];
 
 function FileTypeIcon({ type }: { type: string }) {
   const color = fileColors[type] || fileColors.default;
@@ -67,9 +57,18 @@ interface Props {
   files: UploadedFile[];
   onAddFiles: (files: UploadedFile[]) => void;
   onRemoveFile: (name: string) => void;
+  activities: Activity[];
+  stats: Array<[string, string]>;
 }
 
-export function JarvisRightPanel({ section, files, onAddFiles, onRemoveFile }: Props) {
+export function JarvisRightPanel({
+  section,
+  files,
+  onAddFiles,
+  onRemoveFile,
+  activities,
+  stats,
+}: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFiles = (list: FileList | null) => {
@@ -99,7 +98,6 @@ export function JarvisRightPanel({ section, files, onAddFiles, onRemoveFile }: P
         }}
       />
 
-      {/* Files */}
       {show("files") && (
         <div className="px-4 pt-4 pb-3 border-b border-border">
           <div className="text-[11px] font-semibold text-muted-foreground tracking-wider uppercase mb-2.5">
@@ -159,7 +157,6 @@ export function JarvisRightPanel({ section, files, onAddFiles, onRemoveFile }: P
         </div>
       )}
 
-      {/* Live activity */}
       {show("activity") && (
         <div className="px-4 py-3.5 flex-1 overflow-y-auto scroll-thin">
           <div className="flex items-center gap-2 mb-2.5">
@@ -169,17 +166,22 @@ export function JarvisRightPanel({ section, files, onAddFiles, onRemoveFile }: P
             </div>
           </div>
           <div className="flex flex-col gap-1.5">
+            {activities.length === 0 && (
+              <div className="text-[12px] text-muted-foreground py-3 text-center">
+                Idle. Activity will appear here.
+              </div>
+            )}
             {activities.map((a, i) => (
               <div
                 key={i}
                 className="flex items-center gap-2 px-2.5 py-1.5 rounded-md"
                 style={{
-                  background: a.active ? "rgba(0,212,255,0.06)" : "transparent",
-                  border: `1px solid ${a.active ? "rgba(0,212,255,0.15)" : "transparent"}`,
+                  background: a.state === "active" ? "rgba(0,212,255,0.06)" : "transparent",
+                  border: `1px solid ${a.state === "active" ? "rgba(0,212,255,0.15)" : "transparent"}`,
                 }}
               >
                 <div className="shrink-0">
-                  {a.done ? (
+                  {a.state === "done" ? (
                     <div
                       className="w-4 h-4 rounded-full flex items-center justify-center text-[9px]"
                       style={{
@@ -190,7 +192,7 @@ export function JarvisRightPanel({ section, files, onAddFiles, onRemoveFile }: P
                     >
                       ✓
                     </div>
-                  ) : a.active ? (
+                  ) : a.state === "active" ? (
                     <div
                       className="w-4 h-4 rounded-full spin-ring"
                       style={{
@@ -205,8 +207,8 @@ export function JarvisRightPanel({ section, files, onAddFiles, onRemoveFile }: P
                 <span
                   className="text-[11px]"
                   style={{
-                    color: a.active ? "#e8eaf0" : "#9ca3af",
-                    fontWeight: a.active ? 500 : 400,
+                    color: a.state === "active" ? "#e8eaf0" : "#9ca3af",
+                    fontWeight: a.state === "active" ? 500 : 400,
                   }}
                 >
                   {a.label}
@@ -219,7 +221,6 @@ export function JarvisRightPanel({ section, files, onAddFiles, onRemoveFile }: P
 
       {!show("activity") && <div className="flex-1" />}
 
-      {/* Session stats */}
       {show("stats") && (
         <div className="px-4 py-3 border-t border-border flex flex-col gap-1.5">
           <div className="text-[11px] font-semibold text-muted-foreground tracking-wider uppercase mb-1">
@@ -236,6 +237,3 @@ export function JarvisRightPanel({ section, files, onAddFiles, onRemoveFile }: P
     </aside>
   );
 }
-
-// re-export to silence unused warning in some bundlers
-export { FileIconLucide };
