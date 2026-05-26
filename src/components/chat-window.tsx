@@ -3,7 +3,11 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { ChatMessage } from "@/components/chat-message";
 import { JarvisVoiceBar } from "@/components/jarvis-voice-bar";
+import { VoiceMode } from "@/components/voice-mode";
 import type { Thread } from "@/lib/use-threads";
+import type { Settings, LearnedSkill } from "@/lib/use-settings";
+import { MODEL_CATALOG } from "@/lib/models";
+import type { Activity, UploadedFile } from "@/components/jarvis-right-panel";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -13,6 +17,11 @@ interface Props {
   activeTab: string;
   setActiveTab: (t: string) => void;
   onAttachClick: () => void;
+  settings: Settings;
+  skills: LearnedSkill[];
+  onLearnSkill: (text: string) => void;
+  files: UploadedFile[];
+  onActivityChange: (activities: Activity[]) => void;
 }
 
 const SUGGESTIONS = [
@@ -29,6 +38,12 @@ function greet() {
   return "Good evening";
 }
 
+function partsToText(m: UIMessage): string {
+  return (m.parts || [])
+    .map((p: { type: string; text?: string }) => (p.type === "text" ? p.text ?? "" : ""))
+    .join("");
+}
+
 export function ChatWindow({
   thread,
   onMessagesChange,
@@ -36,10 +51,34 @@ export function ChatWindow({
   activeTab,
   setActiveTab,
   onAttachClick,
+  settings,
+  skills,
+  onLearnSkill,
+  files,
+  onActivityChange,
 }: Props) {
-  const transport = useMemo(() => new DefaultChatTransport({ api: "/api/chat" }), []);
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: "/api/chat",
+        prepareSendMessagesRequest: ({ messages }) => ({
+          body: {
+            messages,
+            systemPrompt: settings.systemPrompt,
+            model: settings.modelMode === "auto" ? "auto" : settings.manualModel,
+            skills: skills.map((s) => s.text),
+            hasFiles: files.length > 0,
+          },
+        }),
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [settings.systemPrompt, settings.modelMode, settings.manualModel, skills, files.length],
+  );
+
   const [input, setInput] = useState("");
+  const [voiceModeOpen, setVoiceModeOpen] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const lastLearnedIdRef = useRef<string | null>(null);
 
   const { messages, sendMessage, status, stop, error } = useChat({
     id: thread.id,
@@ -57,6 +96,68 @@ export function ChatWindow({
     if (el) el.scrollTop = el.scrollHeight;
   }, [messages, status]);
 
+  // Dynamic activity feed
+  useEffect(() => {
+    if (status === "submitted") {
+      onActivityChange([
+        { label: "Routing to best model", state: "done" },
+        { label: "Building context window", state: "done" },
+        { label: "Thinking…", state: "active" },
+        { label: "Generating response", state: "pending" },
+      ]);
+    } else if (status === "streaming") {
+      onActivityChange([
+        { label: "Routing to best model", state: "done" },
+        { label: "Building context window", state: "done" },
+        { label: "Reasoning complete", state: "done" },
+        { label: "Streaming response", state: "active" },
+      ]);
+    } else if (status === "ready" && messages.length > 0) {
+      onActivityChange([
+        { label: `Last response (${messages.length} turns)`, state: "done" },
+        { label: "Distilling learned skill", state: "active" },
+        { label: "Awaiting next request", state: "pending" },
+      ]);
+    } else if (status === "error") {
+      onActivityChange([{ label: "Error occurred", state: "active" }]);
+    } else {
+      onActivityChange([]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, messages.length]);
+
+  // Generative brain: after successful response, distill a skill
+  useEffect(() => {
+    if (status !== "ready") return;
+    if (messages.length < 2) return;
+    const last = messages[messages.length - 1];
+    if (last.role !== "assistant") return;
+    if (lastLearnedIdRef.current === last.id) return;
+    lastLearnedIdRef.current = last.id;
+    const prevUser = [...messages].reverse().find((m) => m.role === "user");
+    if (!prevUser) return;
+    const userText = partsToText(prevUser);
+    const assistantText = partsToText(last);
+    if (!userText.trim() || !assistantText.trim()) return;
+    (async () => {
+      try {
+        const res = await fetch("/api/learn", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userMessage: userText,
+            assistantMessage: assistantText,
+          }),
+        });
+        const data = (await res.json()) as { skill: string | null };
+        if (data.skill) onLearnSkill(data.skill);
+      } catch {
+        /* silent */
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, messages.length]);
+
   const isBusy = status === "submitted" || status === "streaming";
 
   const submit = async () => {
@@ -66,6 +167,47 @@ export function ChatWindow({
     setInput("");
     await sendMessage({ text });
   };
+
+  const handleVoiceModeSpeech = async (text: string): Promise<string | null> => {
+    if (messages.length === 0) onFirstUserMessage(text);
+    try {
+      await sendMessage({ text });
+    } catch {
+      return null;
+    }
+    // Wait for streaming to finish, then return the last assistant text.
+    // We poll for up to 30s.
+    return new Promise((resolve) => {
+      const started = Date.now();
+      const tick = () => {
+        const reply = lastAssistantTextRef.current;
+        if (reply && statusRef.current === "ready") {
+          resolve(reply);
+        } else if (Date.now() - started > 30000) {
+          resolve(reply || null);
+        } else {
+          setTimeout(tick, 200);
+        }
+      };
+      setTimeout(tick, 400);
+    });
+  };
+
+  // Refs that mirror messages/status for the voice-mode polling.
+  const lastAssistantTextRef = useRef<string | null>(null);
+  const statusRef = useRef<string>("ready");
+  useEffect(() => {
+    statusRef.current = status;
+    const last = messages[messages.length - 1];
+    if (last && last.role === "assistant") {
+      lastAssistantTextRef.current = partsToText(last);
+    }
+  }, [messages, status]);
+
+  const modelLabel =
+    settings.modelMode === "auto"
+      ? "Auto router"
+      : MODEL_CATALOG.find((m) => m.id === settings.manualModel)?.label ?? "Gemini 3 Flash";
 
   return (
     <div className="flex flex-col h-full min-w-0 flex-1 bg-background">
@@ -112,7 +254,7 @@ export function ChatWindow({
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-[12px] text-muted-foreground">Model: Gemini 3 Flash</span>
+          <span className="text-[12px] text-muted-foreground">Model: {modelLabel}</span>
           <div
             className="text-[11px] rounded-md px-2 py-0.5 font-semibold tracking-wider"
             style={{
@@ -121,7 +263,7 @@ export function ChatWindow({
               border: "1px solid rgba(0,212,255,0.12)",
             }}
           >
-            PRO
+            {settings.modelMode === "auto" ? "AUTO" : "PRO"}
           </div>
         </div>
       </header>
@@ -158,8 +300,8 @@ export function ChatWindow({
             <div className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[12px] text-muted-foreground">
               <span>🎙 Voice conversation</span>
               <span>📁 File analysis</span>
-              <span>🧠 Persistent memory</span>
-              <span>⚡ Real-time thinking</span>
+              <span>🧠 {skills.length} learned skills</span>
+              <span>⚡ Auto-routed models</span>
             </div>
           </div>
         ) : (
@@ -187,6 +329,13 @@ export function ChatWindow({
         isBusy={isBusy}
         onStop={stop}
         onAttachClick={onAttachClick}
+        onOpenVoiceMode={() => setVoiceModeOpen(true)}
+      />
+
+      <VoiceMode
+        open={voiceModeOpen}
+        onClose={() => setVoiceModeOpen(false)}
+        onUserSpeech={handleVoiceModeSpeech}
       />
     </div>
   );

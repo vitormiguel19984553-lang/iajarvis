@@ -2,10 +2,16 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import type { UIMessage } from "ai";
 import { JarvisSidebar } from "@/components/jarvis-sidebar";
-import { JarvisRightPanel, type UploadedFile } from "@/components/jarvis-right-panel";
+import {
+  JarvisRightPanel,
+  type UploadedFile,
+  type Activity,
+} from "@/components/jarvis-right-panel";
 import { ChatWindow } from "@/components/chat-window";
 import { SettingsDialog } from "@/components/settings-dialog";
+import { ThreadListPanel } from "@/components/thread-list";
 import { useThreads } from "@/lib/use-threads";
+import { useSettings } from "@/lib/use-settings";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 
@@ -30,16 +36,25 @@ function bytes(n: number) {
 }
 
 function Index() {
-  const { threads, activeId, createThread, updateThread, renameThread, hydrated } =
-    useThreads();
+  const {
+    threads,
+    activeId,
+    setActiveId,
+    createThread,
+    updateThread,
+    renameThread,
+    deleteThread,
+    hydrated,
+  } = useThreads();
+  const { settings, update: updateSettings, skills, addSkill, removeSkill, clearSkills } =
+    useSettings();
   const [nav, setNav] = useState("chat");
   const [activeTab, setActiveTab] = useState("all");
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [showRightPanel, setShowRightPanel] = useState(true);
-  const [files, setFiles] = useState<UploadedFile[]>([
-    { name: "schematics_v4.pdf", size: "4.2 MB", type: "pdf", status: "analyzed" },
-    { name: "reactor_logs.csv", size: "891 KB", type: "csv", status: "analyzed" },
-  ]);
+  const [historyOpen, setHistoryOpen] = useState(true);
+  const [files, setFiles] = useState<UploadedFile[]>([]);
+  const [activities, setActivities] = useState<Activity[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -85,6 +100,15 @@ function Index() {
           ? "stats"
           : "all";
 
+  const totalMessages = threads.reduce((acc, t) => acc + t.messages.length, 0);
+  const stats: Array<[string, string]> = [
+    ["Conversations", String(threads.length)],
+    ["Total messages", String(totalMessages)],
+    ["Files loaded", String(files.length)],
+    ["Skills learned", String(skills.length)],
+    ["Model mode", settings.modelMode],
+  ];
+
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background text-foreground">
       <input
@@ -105,7 +129,23 @@ function Index() {
           createThread();
           toast.success("New conversation started");
         }}
+        onToggleHistory={() => setHistoryOpen((v) => !v)}
+        historyOpen={historyOpen}
       />
+
+      {historyOpen && (
+        <ThreadListPanel
+          threads={threads}
+          activeId={activeId}
+          onSelect={(id) => setActiveId(id)}
+          onDelete={(id) => {
+            deleteThread(id);
+            toast("Conversation deleted");
+          }}
+          onClose={() => setHistoryOpen(false)}
+        />
+      )}
+
       {active && (
         <ChatWindow
           key={active.id}
@@ -113,6 +153,14 @@ function Index() {
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           onAttachClick={() => fileInputRef.current?.click()}
+          settings={settings}
+          skills={skills}
+          onLearnSkill={(text) => {
+            addSkill(text);
+            toast.success("New skill learned", { description: text });
+          }}
+          files={files}
+          onActivityChange={setActivities}
           onMessagesChange={(messages: UIMessage[]) =>
             updateThread(active.id, { messages })
           }
@@ -128,10 +176,20 @@ function Index() {
           files={files}
           onAddFiles={(arr) => setFiles((prev) => [...prev, ...arr])}
           onRemoveFile={(name) => setFiles((prev) => prev.filter((f) => f.name !== name))}
+          activities={activities}
+          stats={stats}
         />
       )}
 
-      <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
+      <SettingsDialog
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+        settings={settings}
+        updateSettings={updateSettings}
+        skills={skills}
+        removeSkill={removeSkill}
+        clearSkills={clearSkills}
+      />
       <Toaster theme="dark" position="bottom-right" />
     </div>
   );
