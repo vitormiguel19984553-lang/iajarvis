@@ -72,14 +72,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Jarvis IA" },
+      { name: "description", content: "Jarvis IA: IA generativa minimalista e futurista que transforma ideias complexas em realidade com máxima eficiência, estilo ultra-clean e performance avançada." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Jarvis IA" },
+      { property: "og:description", content: "Jarvis IA: IA generativa minimalista e futurista que transforma ideias complexas em realidade com máxima eficiência, estilo ultra-clean e performance avançada." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Jarvis IA" },
+      { name: "twitter:description", content: "Jarvis IA: IA generativa minimalista e futurista que transforma ideias complexas em realidade com máxima eficiência, estilo ultra-clean e performance avançada." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a906ad03-664a-4190-8ef3-de4ae53fcf98/id-preview-05f19811--f2d1d06f-a46e-4ea1-9f85-d4d9ac93601d.lovable.app-1779788678291.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a906ad03-664a-4190-8ef3-de4ae53fcf98/id-preview-05f19811--f2d1d06f-a46e-4ea1-9f85-d4d9ac93601d.lovable.app-1779788678291.png" },
     ],
     links: [
       {
@@ -96,7 +100,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <HeadContent />
       </head>
