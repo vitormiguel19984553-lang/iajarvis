@@ -1,10 +1,12 @@
-import { MessageSquare, FolderOpen, BarChart3, Settings, Plus } from "lucide-react";
+import { MessageSquare, FolderOpen, BarChart3, Settings, Plus, History } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {
   active: string;
   onSelect: (key: string) => void;
   onNewChat: () => void;
+  onToggleHistory: () => void;
+  historyOpen: boolean;
 }
 
 const ITEMS = [
@@ -14,7 +16,13 @@ const ITEMS = [
   { key: "settings", icon: Settings, label: "Settings" },
 ];
 
-export function JarvisSidebar({ active, onSelect, onNewChat }: Props) {
+export function JarvisSidebar({
+  active,
+  onSelect,
+  onNewChat,
+  onToggleHistory,
+  historyOpen,
+}: Props) {
   return (
     <aside className="w-14 shrink-0 h-full bg-sidebar border-r border-sidebar-border flex flex-col items-center pt-4 gap-1">
       <div
@@ -30,6 +38,19 @@ export function JarvisSidebar({ active, onSelect, onNewChat }: Props) {
         className="h-10 w-10 rounded-[10px] flex items-center justify-center text-muted-foreground hover:bg-[rgba(0,212,255,0.06)] hover:text-foreground transition-colors mb-1"
       >
         <Plus className="h-[18px] w-[18px]" />
+      </button>
+
+      <button
+        onClick={onToggleHistory}
+        title="Conversations"
+        className={cn(
+          "h-10 w-10 rounded-[10px] flex items-center justify-center transition-colors mb-1",
+          historyOpen
+            ? "bg-[rgba(0,212,255,0.1)] text-[#00d4ff]"
+            : "text-muted-foreground hover:bg-[rgba(0,212,255,0.06)] hover:text-foreground",
+        )}
+      >
+        <History className="h-[18px] w-[18px]" />
       </button>
 
       {ITEMS.map((it) => {
