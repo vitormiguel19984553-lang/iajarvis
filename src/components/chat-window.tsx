@@ -10,6 +10,9 @@ interface Props {
   thread: Thread;
   onMessagesChange: (messages: UIMessage[]) => void;
   onFirstUserMessage: (text: string) => void;
+  activeTab: string;
+  setActiveTab: (t: string) => void;
+  onAttachClick: () => void;
 }
 
 const SUGGESTIONS = [
@@ -26,10 +29,16 @@ function greet() {
   return "Good evening";
 }
 
-export function ChatWindow({ thread, onMessagesChange, onFirstUserMessage }: Props) {
+export function ChatWindow({
+  thread,
+  onMessagesChange,
+  onFirstUserMessage,
+  activeTab,
+  setActiveTab,
+  onAttachClick,
+}: Props) {
   const transport = useMemo(() => new DefaultChatTransport({ api: "/api/chat" }), []);
   const [input, setInput] = useState("");
-  const [activeTab, setActiveTab] = useState("voice");
   const scrollerRef = useRef<HTMLDivElement>(null);
 
   const { messages, sendMessage, status, stop, error } = useChat({
@@ -60,7 +69,6 @@ export function ChatWindow({ thread, onMessagesChange, onFirstUserMessage }: Pro
 
   return (
     <div className="flex flex-col h-full min-w-0 flex-1 bg-background">
-      {/* Top nav bar */}
       <header className="h-[52px] border-b border-border flex items-center justify-between px-5 shrink-0">
         <div className="flex items-center gap-2.5">
           <div
@@ -83,7 +91,7 @@ export function ChatWindow({ thread, onMessagesChange, onFirstUserMessage }: Pro
         </div>
 
         <div className="flex gap-1.5">
-          {["Voice", "Files", "Activity"].map((tab) => {
+          {["All", "Files", "Activity", "Stats"].map((tab) => {
             const key = tab.toLowerCase();
             const active = activeTab === key;
             return (
@@ -118,7 +126,6 @@ export function ChatWindow({ thread, onMessagesChange, onFirstUserMessage }: Pro
         </div>
       </header>
 
-      {/* Messages */}
       <div ref={scrollerRef} className="flex-1 overflow-y-auto scroll-thin">
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center px-6 max-w-2xl mx-auto">
@@ -179,6 +186,7 @@ export function ChatWindow({ thread, onMessagesChange, onFirstUserMessage }: Pro
         onSubmit={submit}
         isBusy={isBusy}
         onStop={stop}
+        onAttachClick={onAttachClick}
       />
     </div>
   );
