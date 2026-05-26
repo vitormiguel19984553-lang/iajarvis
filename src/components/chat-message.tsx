@@ -1,13 +1,10 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { UIMessage } from "ai";
-import { Sparkles, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 function partsToText(m: UIMessage): string {
-  return m.parts
-    .map((p) => (p.type === "text" ? p.text : ""))
-    .join("");
+  return m.parts.map((p) => (p.type === "text" ? p.text : "")).join("");
 }
 
 export function ChatMessage({ message }: { message: UIMessage }) {
@@ -15,32 +12,41 @@ export function ChatMessage({ message }: { message: UIMessage }) {
   const text = partsToText(message);
 
   return (
-    <div className="flex gap-4 px-6 py-5">
+    <div className={cn("msg-in flex gap-3", isUser && "flex-row-reverse")}>
       <div
-        className={cn(
-          "h-8 w-8 shrink-0 rounded-md inline-flex items-center justify-center text-[12px] font-medium border",
-          isUser
-            ? "bg-elevated text-foreground border-border"
-            : "bg-primary text-primary-foreground border-primary",
-        )}
+        className="w-8 h-8 rounded-full shrink-0 flex items-center justify-center text-[12px] font-semibold"
+        style={{
+          background: isUser
+            ? "rgba(255,255,255,0.06)"
+            : "linear-gradient(135deg, #00d4ff, #7c3aed)",
+          color: isUser ? "#9ca3af" : "#fff",
+          border: isUser ? "1px solid rgba(0,212,255,0.12)" : "none",
+        }}
       >
-        {isUser ? <User className="h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
+        {isUser ? "T" : "J"}
       </div>
-      <div className="flex-1 min-w-0 pt-1">
-        <div className="text-[12px] font-medium text-muted-foreground mb-1">
-          {isUser ? "You" : "Lumen"}
+      <div className={cn("max-w-[72%] flex flex-col gap-1", isUser && "items-end")}>
+        <div
+          className="px-4 py-3 text-[13px] leading-7"
+          style={{
+            background: isUser ? "rgba(0,212,255,0.08)" : "#1a1a24",
+            border: `1px solid ${isUser ? "rgba(0,212,255,0.2)" : "rgba(0,212,255,0.12)"}`,
+            borderRadius: isUser ? "16px 4px 16px 16px" : "4px 16px 16px 16px",
+            color: "#e8eaf0",
+          }}
+        >
+          {text ? (
+            <div className="prose-chat">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
+            </div>
+          ) : (
+            <div>
+              <span className="typing-dot" />
+              <span className="typing-dot" />
+              <span className="typing-dot" />
+            </div>
+          )}
         </div>
-        {text ? (
-          <div className="prose-chat">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
-          </div>
-        ) : (
-          <div className="pt-1">
-            <span className="typing-dot" />
-            <span className="typing-dot" />
-            <span className="typing-dot" />
-          </div>
-        )}
       </div>
     </div>
   );
