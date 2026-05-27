@@ -14,16 +14,190 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      activation_keys: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          duration_days: number
+          id: string
+          is_revoked: boolean
+          key_code: string
+          notes: string | null
+          plan_type: Database["public"]["Enums"]["plan_type"]
+          used_at: string | null
+          used_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          duration_days: number
+          id?: string
+          is_revoked?: boolean
+          key_code: string
+          notes?: string | null
+          plan_type: Database["public"]["Enums"]["plan_type"]
+          used_at?: string | null
+          used_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          duration_days?: number
+          id?: string
+          is_revoked?: boolean
+          key_code?: string
+          notes?: string | null
+          plan_type?: Database["public"]["Enums"]["plan_type"]
+          used_at?: string | null
+          used_by?: string | null
+        }
+        Relationships: []
+      }
+      conversations: {
+        Row: {
+          created_at: string
+          id: string
+          model: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          model?: string
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          model?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          parts: Json | null
+          role: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          parts?: Json | null
+          role: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          parts?: Json | null
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          is_suspended: boolean
+          last_active_at: string
+          messages_reset_at: string
+          messages_today: number
+          plan_expires_at: string | null
+          plan_type: Database["public"]["Enums"]["plan_type"]
+          preferred_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          is_suspended?: boolean
+          last_active_at?: string
+          messages_reset_at?: string
+          messages_today?: number
+          plan_expires_at?: string | null
+          plan_type?: Database["public"]["Enums"]["plan_type"]
+          preferred_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          is_suspended?: boolean
+          last_active_at?: string
+          messages_reset_at?: string
+          messages_today?: number
+          plan_expires_at?: string | null
+          plan_type?: Database["public"]["Enums"]["plan_type"]
+          preferred_name?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      redeem_activation_key: { Args: { _code: string }; Returns: Json }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
+      plan_type: "free" | "pro" | "ultra" | "enterprise"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +324,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+      plan_type: ["free", "pro", "ultra", "enterprise"],
+    },
   },
 } as const
