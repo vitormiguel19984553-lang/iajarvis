@@ -15,6 +15,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiLearnRouteImport } from './routes/api/learn'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
 import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated/chat'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -46,6 +47,11 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedPerfilRoute = AuthenticatedPerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedChatRoute = AuthenticatedChatRouteImport.update({
   id: '/chat',
   path: '/chat',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/chat': typeof AuthenticatedChatRoute
+  '/perfil': typeof AuthenticatedPerfilRoute
   '/api/chat': typeof ApiChatRoute
   '/api/learn': typeof ApiLearnRoute
 }
@@ -65,6 +72,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/chat': typeof AuthenticatedChatRoute
+  '/perfil': typeof AuthenticatedPerfilRoute
   '/api/chat': typeof ApiChatRoute
   '/api/learn': typeof ApiLearnRoute
 }
@@ -75,6 +83,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/chat': typeof AuthenticatedChatRoute
+  '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
   '/api/chat': typeof ApiChatRoute
   '/api/learn': typeof ApiLearnRoute
 }
@@ -85,10 +94,18 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/chat'
+    | '/perfil'
     | '/api/chat'
     | '/api/learn'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/reset-password' | '/chat' | '/api/chat' | '/api/learn'
+  to:
+    | '/'
+    | '/login'
+    | '/reset-password'
+    | '/chat'
+    | '/perfil'
+    | '/api/chat'
+    | '/api/learn'
   id:
     | '__root__'
     | '/'
@@ -96,6 +113,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/_authenticated/chat'
+    | '/_authenticated/perfil'
     | '/api/chat'
     | '/api/learn'
   fileRoutesById: FileRoutesById
@@ -153,6 +171,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/perfil': {
+      id: '/_authenticated/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof AuthenticatedPerfilRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/chat': {
       id: '/_authenticated/chat'
       path: '/chat'
@@ -165,10 +190,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteChildren {
   AuthenticatedChatRoute: typeof AuthenticatedChatRoute
+  AuthenticatedPerfilRoute: typeof AuthenticatedPerfilRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedChatRoute: AuthenticatedChatRoute,
+  AuthenticatedPerfilRoute: AuthenticatedPerfilRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -186,3 +213,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
