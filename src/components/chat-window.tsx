@@ -283,7 +283,7 @@ export function ChatWindow({
               J
             </div>
             <h1 className="text-[26px] font-semibold tracking-tight text-center text-foreground">
-              {greet()}, Tony.
+              {greet()}, {greetingName || "Tony"}.
             </h1>
             <p className="text-[14px] text-muted-foreground text-center mt-1.5 mb-8">
               How can I assist you today?
