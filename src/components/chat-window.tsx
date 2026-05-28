@@ -22,6 +22,7 @@ interface Props {
   onLearnSkill: (text: string) => void;
   files: UploadedFile[];
   onActivityChange: (activities: Activity[]) => void;
+  greetingName?: string | null;
 }
 
 const SUGGESTIONS = [
