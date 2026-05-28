@@ -125,7 +125,7 @@ export function useThreads(userId: string | undefined) {
           content: (m.parts ?? [])
             .map((p) => ((p as { type: string; text?: string }).type === "text" ? (p as { text?: string }).text ?? "" : ""))
             .join(""),
-          parts: m.parts as unknown as object,
+          parts: JSON.parse(JSON.stringify(m.parts ?? [])),
         }));
         supabase.from("messages").insert(rows).then(({ error }) => {
           if (error) console.error("Failed to save messages", error);
