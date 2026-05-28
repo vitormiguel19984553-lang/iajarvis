@@ -57,6 +57,7 @@ export function ChatWindow({
   onLearnSkill,
   files,
   onActivityChange,
+  greetingName,
 }: Props) {
   const transport = useMemo(
     () =>
