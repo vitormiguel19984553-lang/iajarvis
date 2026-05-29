@@ -9,6 +9,7 @@ import type { Settings, LearnedSkill } from "@/lib/use-settings";
 import { MODEL_CATALOG } from "@/lib/models";
 import type { Activity, UploadedFile } from "@/components/jarvis-right-panel";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface Props {
   thread: Thread;
@@ -86,6 +87,20 @@ export function ChatWindow({
     id: thread.id,
     messages: thread.messages,
     transport,
+    onError: (err) => {
+      const msg = err?.message ?? "";
+      if (msg.includes("daily_limit_reached") || msg.includes("429")) {
+        toast.error("Limite diário atingido", {
+          description: "Plano Free: 50 mensagens/dia. Faz upgrade para Pro ou ativa uma chave.",
+        });
+      } else if (msg.includes("402")) {
+        toast.error("Créditos esgotados", {
+          description: "Adiciona créditos no workspace.",
+        });
+      } else {
+        toast.error("Erro na resposta", { description: msg.slice(0, 200) });
+      }
+    },
   });
 
   useEffect(() => {
