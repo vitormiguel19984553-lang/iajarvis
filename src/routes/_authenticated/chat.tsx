@@ -180,6 +180,7 @@ function ChatPage() {
         skills={skills}
         removeSkill={removeSkill}
         clearSkills={clearSkills}
+        plan={(profile?.plan_type as "free" | "pro" | "ultra") ?? "free"}
       />
       <Toaster theme="dark" position="bottom-right" />
     </div>
