@@ -42,7 +42,16 @@ export function SettingsDialog({
   skills,
   removeSkill,
   clearSkills,
+  plan = "free",
 }: Props) {
+  const grouped = MODEL_CATALOG.reduce<Record<string, typeof MODEL_CATALOG>>(
+    (acc, m) => {
+      if (m.id === "auto") return acc;
+      (acc[m.category] ||= []).push(m);
+      return acc;
+    },
+    {},
+  );
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto bg-elevated border-border">
