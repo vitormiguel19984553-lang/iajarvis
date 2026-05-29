@@ -1,12 +1,20 @@
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
-import { autoRouteModel, type ModelId } from "@/lib/models";
+import {
+  autoRouteModel,
+  canUseModel,
+  FREE_DAILY_LIMIT,
+  getModel,
+  resolveGatewayId,
+  type PlanTier,
+} from "@/lib/models";
 import { createFileRoute } from "@tanstack/react-router";
+import { createServerClient } from "@supabase/ssr";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 
 type ChatRequestBody = {
   messages?: unknown;
   systemPrompt?: string;
-  model?: ModelId | "auto";
+  model?: string;
   skills?: string[];
   hasFiles?: boolean;
 };
@@ -27,7 +35,68 @@ export const Route = createFileRoute("/api/chat")({
           return new Response("Missing LOVABLE_API_KEY", { status: 500 });
         }
 
-        // Resolve model — auto-route if requested.
+        // ── Identify user + load plan/limits ────────────────────────────
+        const authHeader = request.headers.get("authorization");
+        const token = authHeader?.replace(/^Bearer\s+/i, "");
+        let plan: PlanTier = "free";
+        let userId: string | null = null;
+        let messagesToday = 0;
+        let resetAt: string | null = null;
+
+        if (token) {
+          try {
+            const supabase = createServerClient(
+              process.env.SUPABASE_URL!,
+              process.env.SUPABASE_PUBLISHABLE_KEY!,
+              {
+                cookies: { getAll: () => [], setAll: () => {} },
+                global: { headers: { Authorization: `Bearer ${token}` } },
+              },
+            );
+            const { data: u } = await supabase.auth.getUser();
+            if (u.user) {
+              userId = u.user.id;
+              const { data: profile } = await supabase
+                .from("profiles")
+                .select("plan_type, plan_expires_at, messages_today, messages_reset_at, is_suspended")
+                .eq("id", userId)
+                .maybeSingle();
+              if (profile) {
+                if (profile.is_suspended) {
+                  return new Response("Account suspended", { status: 403 });
+                }
+                const expired =
+                  profile.plan_expires_at &&
+                  new Date(profile.plan_expires_at).getTime() < Date.now();
+                plan = expired ? "free" : ((profile.plan_type as PlanTier) ?? "free");
+
+                // Daily reset
+                const now = new Date();
+                const reset = new Date(profile.messages_reset_at ?? now);
+                const sameDay =
+                  reset.getUTCFullYear() === now.getUTCFullYear() &&
+                  reset.getUTCMonth() === now.getUTCMonth() &&
+                  reset.getUTCDate() === now.getUTCDate();
+                messagesToday = sameDay ? profile.messages_today ?? 0 : 0;
+                resetAt = sameDay ? profile.messages_reset_at : now.toISOString();
+
+                if (plan === "free" && messagesToday >= FREE_DAILY_LIMIT) {
+                  return new Response(
+                    JSON.stringify({
+                      error: "daily_limit_reached",
+                      message: `Limite diário do plano Free atingido (${FREE_DAILY_LIMIT} mensagens). Faz upgrade para Pro ou ativa uma chave.`,
+                    }),
+                    { status: 429, headers: { "Content-Type": "application/json" } },
+                  );
+                }
+              }
+            }
+          } catch {
+            /* fall through as anon free */
+          }
+        }
+
+        // ── Resolve model with plan gating ──────────────────────────────
         const lastUser = [...(messages as UIMessage[])]
           .reverse()
           .find((m) => m.role === "user");
@@ -38,14 +107,18 @@ export const Route = createFileRoute("/api/chat")({
             )
             .join(" ") ?? "";
 
-        const resolvedModel: ModelId =
-          !model || model === "auto"
-            ? autoRouteModel({
-                lastUserText,
-                hasFiles,
-                totalMessages: messages.length,
-              })
-            : model;
+        let chosenId: string;
+        if (!model || model === "auto") {
+          chosenId = autoRouteModel({ lastUserText, hasFiles, plan });
+        } else if (!canUseModel(plan, model)) {
+          // Locked → silently downgrade to a sensible default for the plan
+          chosenId = autoRouteModel({ lastUserText, hasFiles, plan });
+        } else {
+          chosenId = model;
+        }
+
+        const gatewayId = resolveGatewayId(chosenId);
+        const displayed = getModel(chosenId)?.label ?? chosenId;
 
         const baseSystem =
           systemPrompt?.trim() ||
@@ -58,18 +131,46 @@ export const Route = createFileRoute("/api/chat")({
                 .join("\n")}`
             : "";
 
-        const routedNote = `\n\n[Auto-routed model: ${resolvedModel}]`;
+        const routedNote = `\n\n[Routed: ${displayed} → ${gatewayId}]`;
 
         const gateway = createLovableAiGatewayProvider(key);
         const result = streamText({
-          model: gateway(resolvedModel),
+          model: gateway(gatewayId),
           system: baseSystem + skillsBlock + routedNote,
           messages: await convertToModelMessages(messages as UIMessage[]),
         });
 
+        // ── Increment counter (fire-and-forget) ─────────────────────────
+        if (userId && token) {
+          try {
+            const supabase = createServerClient(
+              process.env.SUPABASE_URL!,
+              process.env.SUPABASE_PUBLISHABLE_KEY!,
+              {
+                cookies: { getAll: () => [], setAll: () => {} },
+                global: { headers: { Authorization: `Bearer ${token}` } },
+              },
+            );
+            void supabase
+              .from("profiles")
+              .update({
+                messages_today: messagesToday + 1,
+                messages_reset_at: resetAt,
+                last_active_at: new Date().toISOString(),
+              })
+              .eq("id", userId);
+          } catch {
+            /* noop */
+          }
+        }
+
         return result.toUIMessageStreamResponse({
           originalMessages: messages as UIMessage[],
-          headers: { "X-Resolved-Model": resolvedModel },
+          headers: {
+            "X-Resolved-Model": gatewayId,
+            "X-Displayed-Model": displayed,
+            "X-User-Plan": plan,
+          },
         });
       },
     },
