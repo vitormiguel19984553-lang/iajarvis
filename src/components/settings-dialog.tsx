@@ -25,7 +25,14 @@ interface Props {
   skills: LearnedSkill[];
   removeSkill: (id: string) => void;
   clearSkills: () => void;
+  plan?: PlanTier;
 }
+
+const PLAN_BADGE: Record<PlanTier, { label: string; cls: string }> = {
+  free: { label: "FREE", cls: "bg-muted text-muted-foreground" },
+  pro: { label: "PRO", cls: "bg-[rgba(0,212,255,0.15)] text-[#00d4ff] border border-[rgba(0,212,255,0.3)]" },
+  ultra: { label: "ULTRA", cls: "bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-amber-300 border border-amber-500/40" },
+};
 
 export function SettingsDialog({
   open,
