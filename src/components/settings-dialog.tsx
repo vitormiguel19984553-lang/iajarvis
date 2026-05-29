@@ -125,24 +125,68 @@ export function SettingsDialog({
               </button>
             </div>
             {settings.modelMode === "manual" && (
-              <select
-                value={settings.manualModel}
-                onChange={(e) =>
-                  updateSettings({ manualModel: e.target.value as ModelId })
-                }
-                className="w-full bg-background border border-border rounded-lg p-2.5 text-[12.5px] text-foreground outline-none focus:border-[rgba(0,212,255,0.4)]"
-              >
-                {MODEL_CATALOG.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.label} — {m.tag}
-                  </option>
+              <div className="max-h-72 overflow-y-auto scroll-thin border border-border rounded-lg divide-y divide-border">
+                {(Object.keys(grouped) as ModelCategory[]).map((cat) => (
+                  <div key={cat}>
+                    <div className="px-3 py-1.5 text-[10px] uppercase tracking-wider text-muted-foreground bg-background/40 font-semibold">
+                      {CATEGORY_LABEL[cat]}
+                    </div>
+                    {grouped[cat].map((m) => {
+                      const allowed = canUseModel(plan, m.id);
+                      const selected = settings.manualModel === m.id;
+                      const badge = PLAN_BADGE[m.minPlan];
+                      return (
+                        <button
+                          key={m.id}
+                          disabled={!allowed}
+                          onClick={() => {
+                            updateSettings({ manualModel: m.id as ModelId });
+                            toast.success(`Modelo: ${m.label}`);
+                          }}
+                          title={m.gatewayId ? `Encaminhado para ${m.gatewayId}` : m.label}
+                          className={`w-full flex items-center justify-between gap-2 px-3 py-2 text-left transition-colors ${
+                            selected
+                              ? "bg-[rgba(0,212,255,0.08)] text-[#00d4ff]"
+                              : allowed
+                                ? "text-foreground hover:bg-background/60"
+                                : "text-muted-foreground/60 cursor-not-allowed"
+                          }`}
+                        >
+                          <div className="flex flex-col min-w-0">
+                            <span className="text-[12.5px] font-medium flex items-center gap-1.5">
+                              {m.label}
+                              {m.isNew && (
+                                <span className="text-[9px] px-1 rounded bg-[#22c55e]/20 text-[#22c55e] font-semibold">
+                                  NEW
+                                </span>
+                              )}
+                              {m.gatewayId && (
+                                <span className="text-[9px] px-1 rounded bg-amber-500/10 text-amber-400/80">
+                                  fallback
+                                </span>
+                              )}
+                            </span>
+                            <span className="text-[10.5px] text-muted-foreground">
+                              {m.provider} · {m.tag}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <span className={`text-[9.5px] font-bold px-1.5 py-0.5 rounded ${badge.cls}`}>
+                              {badge.label}
+                            </span>
+                            {!allowed && <Lock className="h-3 w-3" />}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
                 ))}
-              </select>
+              </div>
             )}
             {settings.modelMode === "auto" && (
               <p className="text-[11px] text-muted-foreground">
-                Router picks from {MODEL_CATALOG.length} models based on the request
-                (code → GPT-5.4, reasoning → GPT-5.5, multimodal → Gemini 2.5 Pro, …).
+                Router escolhe entre {MODEL_CATALOG.length - 1} modelos consoante a tarefa
+                (código → GPT-5.4, raciocínio → GPT-5.5, multimodal → Gemini 2.5 Pro, …).
               </p>
             )}
           </section>
