@@ -5,9 +5,16 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { MODEL_CATALOG, type ModelId } from "@/lib/models";
+import {
+  MODEL_CATALOG,
+  CATEGORY_LABEL,
+  canUseModel,
+  type ModelCategory,
+  type ModelId,
+  type PlanTier,
+} from "@/lib/models";
 import type { LearnedSkill, Settings } from "@/lib/use-settings";
-import { Trash2, X } from "lucide-react";
+import { Lock, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 
 interface Props {
