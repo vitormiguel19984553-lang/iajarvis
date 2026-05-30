@@ -4,12 +4,25 @@ import { useAuth } from "@/lib/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import { ArrowLeft, LogOut } from "lucide-react";
+import { ArrowLeft, LogOut, KeyRound, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/perfil")({
   component: PerfilPage,
   head: () => ({ meta: [{ title: "Perfil — J.A.R.V.I.S" }] }),
 });
+
+function formatExpiry(d?: string | null) {
+  if (!d) return "—";
+  try {
+    return new Date(d).toLocaleDateString("pt-PT", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  } catch {
+    return d;
+  }
+}
 
 function PerfilPage() {
   const { user, profile, loading } = useAuth();
