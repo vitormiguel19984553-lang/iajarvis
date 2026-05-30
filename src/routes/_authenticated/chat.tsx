@@ -71,6 +71,7 @@ function ChatPage() {
     else if (key === "stats") { setActiveTab("stats"); setShowRightPanel(true); }
     else if (key === "chat") { setActiveTab("all"); setShowRightPanel(true); }
     else if (key === "perfil") navigate({ to: "/perfil" });
+    else if (key === "planos") navigate({ to: "/planos" });
     else if (key === "admin") navigate({ to: "/perfil" });
   };
 

@@ -1,4 +1,4 @@
-import { MessageSquare, FolderOpen, BarChart3, Settings, Plus, History, User, Shield, LogOut } from "lucide-react";
+import { MessageSquare, FolderOpen, BarChart3, Settings, Plus, History, User, Shield, LogOut, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -81,6 +81,14 @@ export function JarvisSidebar({
       })}
 
       <div className="flex-1" />
+
+      <button
+        onClick={() => onSelect("planos")}
+        title="Planos"
+        className="h-10 w-10 rounded-[10px] flex items-center justify-center text-muted-foreground hover:bg-[rgba(0,212,255,0.06)] hover:text-[#00d4ff] transition-colors"
+      >
+        <Sparkles className="h-[18px] w-[18px]" />
+      </button>
 
       {isAdmin && (
         <button

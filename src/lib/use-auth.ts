@@ -64,5 +64,11 @@ export function useAuth() {
     };
   }, []);
 
-  return { session, user, profile, isAdmin, loading };
+  const refreshProfile = async () => {
+    if (!user) return;
+    const { data } = await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle();
+    setProfile(data as Profile | null);
+  };
+
+  return { session, user, profile, isAdmin, loading, refreshProfile };
 }
