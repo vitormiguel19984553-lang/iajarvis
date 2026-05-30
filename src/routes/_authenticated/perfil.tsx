@@ -214,7 +214,3 @@ function PerfilPage() {
     </div>
   );
 }
-      <Toaster theme="dark" position="bottom-right" />
-    </div>
-  );
-}
