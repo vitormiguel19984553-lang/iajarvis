@@ -1,4 +1,4 @@
-import { MessageSquare, FolderOpen, BarChart3, Settings, Plus, History, User, Shield, LogOut } from "lucide-react";
+import { MessageSquare, FolderOpen, BarChart3, Settings, Plus, History, User, Shield, LogOut, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {
