@@ -152,7 +152,7 @@ function AdminPage() {
         : new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString();
     const { error } = await supabase
       .from("profiles")
-      .update({ plan_type: newPlan, plan_expires_at: expires })
+      .update({ plan_type: newPlan as "free" | "pro" | "ultra" | "enterprise", plan_expires_at: expires })
       .eq("id", id);
     if (error) return toast.error(error.message);
     toast.success("Plano atualizado");
