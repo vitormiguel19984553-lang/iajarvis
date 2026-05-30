@@ -25,11 +25,13 @@ function formatExpiry(d?: string | null) {
 }
 
 function PerfilPage() {
-  const { user, profile, loading } = useAuth();
+  const { user, profile, loading, refreshProfile } = useAuth();
   const navigate = useNavigate();
   const [fullName, setFullName] = useState("");
   const [preferredName, setPreferredName] = useState("");
   const [busy, setBusy] = useState(false);
+  const [keyCode, setKeyCode] = useState("");
+  const [redeeming, setRedeeming] = useState(false);
 
   useEffect(() => {
     if (profile) {
