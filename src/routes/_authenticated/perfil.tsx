@@ -58,6 +58,31 @@ function PerfilPage() {
     navigate({ to: "/login", replace: true });
   };
 
+  const redeem = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const code = keyCode.trim();
+    if (!code) return;
+    setRedeeming(true);
+    const { data, error } = await supabase.rpc("redeem_activation_key", { _code: code });
+    setRedeeming(false);
+    if (error) return toast.error(error.message);
+    const res = data as { ok: boolean; error?: string; plan_type?: string; expires_at?: string };
+    if (!res?.ok) {
+      const map: Record<string, string> = {
+        invalid_key: "Chave inválida",
+        already_used: "Esta chave já foi utilizada",
+        revoked: "Esta chave foi revogada",
+        not_authenticated: "Sessão expirada",
+      };
+      return toast.error(map[res?.error ?? ""] ?? "Não foi possível ativar");
+    }
+    setKeyCode("");
+    await refreshProfile();
+    toast.success(`Plano ${res.plan_type?.toUpperCase()} ativado!`, {
+      description: `Válido até ${formatExpiry(res.expires_at)}`,
+    });
+  };
+
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center text-muted-foreground">A carregar…</div>;
   }
