@@ -147,15 +147,73 @@ function PerfilPage() {
               {busy ? "..." : "Guardar"}
             </button>
           </form>
+        </div>
 
+        {/* Plano atual + redeem */}
+        <div className="rounded-2xl border border-border bg-elevated p-6 mt-4">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-[#00d4ff]" />
+              <h2 className="text-sm font-semibold uppercase tracking-wider">Plano</h2>
+            </div>
+            <Link
+              to="/planos"
+              className="text-[12px] text-[#00d4ff] hover:underline"
+            >
+              Ver planos →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 mb-5">
+            <div className="rounded-lg bg-background border border-border p-3">
+              <div className="text-[11px] text-muted-foreground uppercase">Plano atual</div>
+              <div className="text-base font-bold text-[#00d4ff] mt-1 uppercase">
+                {profile?.plan_type ?? "free"}
+              </div>
+            </div>
+            <div className="rounded-lg bg-background border border-border p-3">
+              <div className="text-[11px] text-muted-foreground uppercase">Expira em</div>
+              <div className="text-sm font-semibold mt-1">{formatExpiry(profile?.plan_expires_at)}</div>
+            </div>
+          </div>
+
+          <form onSubmit={redeem} className="space-y-2">
+            <label className="text-[12px] text-muted-foreground flex items-center gap-1.5">
+              <KeyRound className="h-3.5 w-3.5" /> Chave de ativação
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={keyCode}
+                onChange={(e) => setKeyCode(e.target.value.toUpperCase())}
+                placeholder="XXXX-XXXX-XXXX"
+                className="flex-1 px-3 py-2.5 rounded-lg bg-background border border-border text-sm font-mono tracking-wider focus:outline-none focus:border-[#00d4ff]"
+              />
+              <button
+                type="submit"
+                disabled={redeeming || !keyCode.trim()}
+                className="px-4 py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-50"
+                style={{ background: "linear-gradient(135deg, #00d4ff, #7c3aed)" }}
+              >
+                {redeeming ? "..." : "Ativar"}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div className="rounded-2xl border border-border bg-elevated p-6 mt-4">
           <button
             onClick={logout}
-            className="mt-4 w-full py-2.5 rounded-lg text-sm font-medium border border-border bg-background hover:bg-accent flex items-center justify-center gap-2"
+            className="w-full py-2.5 rounded-lg text-sm font-medium border border-border bg-background hover:bg-accent flex items-center justify-center gap-2"
           >
             <LogOut className="h-4 w-4" /> Terminar sessão
           </button>
         </div>
       </div>
+      <Toaster theme="dark" position="bottom-right" />
+    </div>
+  );
+}
       <Toaster theme="dark" position="bottom-right" />
     </div>
   );
