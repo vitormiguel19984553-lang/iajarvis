@@ -145,7 +145,7 @@ export const Route = createFileRoute("/api/chat")({
             .from("profiles")
             .update({
               messages_today: messagesToday + 1,
-              messages_reset_at: resetAt,
+              messages_reset_at: resetAt ?? new Date().toISOString(),
               last_active_at: new Date().toISOString(),
             })
             .eq("id", userId);
