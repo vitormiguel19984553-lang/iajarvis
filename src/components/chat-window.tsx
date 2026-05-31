@@ -10,6 +10,7 @@ import { MODEL_CATALOG } from "@/lib/models";
 import type { Activity, UploadedFile } from "@/components/jarvis-right-panel";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   thread: Thread;
@@ -64,15 +65,22 @@ export function ChatWindow({
     () =>
       new DefaultChatTransport({
         api: "/api/chat",
-        prepareSendMessagesRequest: ({ messages }) => ({
-          body: {
-            messages,
-            systemPrompt: settings.systemPrompt,
-            model: settings.modelMode === "auto" ? "auto" : settings.manualModel,
-            skills: skills.map((s) => s.text),
-            hasFiles: files.length > 0,
-          },
-        }),
+        prepareSendMessagesRequest: async ({ messages }) => {
+          const { data } = await supabase.auth.getSession();
+          const token = data.session?.access_token;
+          const headers: Record<string, string> = {};
+          if (token) headers.Authorization = `Bearer ${token}`;
+          return {
+            headers,
+            body: {
+              messages,
+              systemPrompt: settings.systemPrompt,
+              model: settings.modelMode === "auto" ? "auto" : settings.manualModel,
+              skills: skills.map((s) => s.text),
+              hasFiles: files.length > 0,
+            },
+          };
+        },
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [settings.systemPrompt, settings.modelMode, settings.manualModel, skills, files.length],
@@ -158,9 +166,15 @@ export function ChatWindow({
     if (!userText.trim() || !assistantText.trim()) return;
     (async () => {
       try {
+        const { data: sess } = await supabase.auth.getSession();
+        const token = sess.session?.access_token;
+        if (!token) return;
         const res = await fetch("/api/learn", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({
             userMessage: userText,
             assistantMessage: assistantText,
