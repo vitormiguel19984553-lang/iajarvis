@@ -35,64 +35,62 @@ export const Route = createFileRoute("/api/chat")({
           return new Response("Missing LOVABLE_API_KEY", { status: 500 });
         }
 
-        // ── Identify user + load plan/limits ────────────────────────────
+        // ── Require authentication ──────────────────────────────────────
         const authHeader = request.headers.get("authorization");
         const token = authHeader?.replace(/^Bearer\s+/i, "");
+        if (!token) {
+          return new Response("Unauthorized", { status: 401 });
+        }
+
         let plan: PlanTier = "free";
-        let userId: string | null = null;
         let messagesToday = 0;
         let resetAt: string | null = null;
 
-        if (token) {
-          try {
-            const supabase = createServerClient(
-              process.env.SUPABASE_URL!,
-              process.env.SUPABASE_PUBLISHABLE_KEY!,
-              {
-                cookies: { getAll: () => [], setAll: () => {} },
-                global: { headers: { Authorization: `Bearer ${token}` } },
-              },
+        const supabase = createServerClient(
+          process.env.SUPABASE_URL!,
+          process.env.SUPABASE_PUBLISHABLE_KEY!,
+          {
+            cookies: { getAll: () => [], setAll: () => {} },
+            global: { headers: { Authorization: `Bearer ${token}` } },
+          },
+        );
+        const { data: u, error: authErr } = await supabase.auth.getUser();
+        if (authErr || !u.user) {
+          return new Response("Unauthorized", { status: 401 });
+        }
+        const userId = u.user.id;
+
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("plan_type, plan_expires_at, messages_today, messages_reset_at, is_suspended")
+          .eq("id", userId)
+          .maybeSingle();
+        if (profile) {
+          if (profile.is_suspended) {
+            return new Response("Account suspended", { status: 403 });
+          }
+          const expired =
+            profile.plan_expires_at &&
+            new Date(profile.plan_expires_at).getTime() < Date.now();
+          plan = expired ? "free" : ((profile.plan_type as PlanTier) ?? "free");
+
+          const now = new Date();
+          const reset = new Date(profile.messages_reset_at ?? now);
+          const sameDay =
+            reset.getUTCFullYear() === now.getUTCFullYear() &&
+            reset.getUTCMonth() === now.getUTCMonth() &&
+            reset.getUTCDate() === now.getUTCDate();
+          messagesToday = sameDay ? profile.messages_today ?? 0 : 0;
+          resetAt = sameDay ? profile.messages_reset_at : now.toISOString();
+
+          if (plan === "free" && messagesToday >= FREE_DAILY_LIMIT) {
+            return new Response(
+              JSON.stringify({
+                error: "daily_limit_reached",
+                message: `Limite diário do plano Free atingido (${FREE_DAILY_LIMIT} mensagens). Faz upgrade para Pro ou ativa uma chave.`,
+              }),
+              { status: 429, headers: { "Content-Type": "application/json" } },
             );
-            const { data: u } = await supabase.auth.getUser();
-            if (u.user) {
-              userId = u.user.id;
-              const { data: profile } = await supabase
-                .from("profiles")
-                .select("plan_type, plan_expires_at, messages_today, messages_reset_at, is_suspended")
-                .eq("id", userId)
-                .maybeSingle();
-              if (profile) {
-                if (profile.is_suspended) {
-                  return new Response("Account suspended", { status: 403 });
-                }
-                const expired =
-                  profile.plan_expires_at &&
-                  new Date(profile.plan_expires_at).getTime() < Date.now();
-                plan = expired ? "free" : ((profile.plan_type as PlanTier) ?? "free");
-
-                // Daily reset
-                const now = new Date();
-                const reset = new Date(profile.messages_reset_at ?? now);
-                const sameDay =
-                  reset.getUTCFullYear() === now.getUTCFullYear() &&
-                  reset.getUTCMonth() === now.getUTCMonth() &&
-                  reset.getUTCDate() === now.getUTCDate();
-                messagesToday = sameDay ? profile.messages_today ?? 0 : 0;
-                resetAt = sameDay ? profile.messages_reset_at : now.toISOString();
-
-                if (plan === "free" && messagesToday >= FREE_DAILY_LIMIT) {
-                  return new Response(
-                    JSON.stringify({
-                      error: "daily_limit_reached",
-                      message: `Limite diário do plano Free atingido (${FREE_DAILY_LIMIT} mensagens). Faz upgrade para Pro ou ativa uma chave.`,
-                    }),
-                    { status: 429, headers: { "Content-Type": "application/json" } },
-                  );
-                }
-              }
-            }
-          } catch {
-            /* fall through as anon free */
           }
         }
 
