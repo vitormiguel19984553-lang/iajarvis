@@ -10,6 +10,7 @@ import { MODEL_CATALOG } from "@/lib/models";
 import type { Activity, UploadedFile } from "@/components/jarvis-right-panel";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   thread: Thread;
