@@ -138,28 +138,19 @@ export const Route = createFileRoute("/api/chat")({
           messages: await convertToModelMessages(messages as UIMessage[]),
         });
 
-        // ── Increment counter (fire-and-forget) ─────────────────────────
-        if (userId && token) {
-          try {
-            const supabase = createServerClient(
-              process.env.SUPABASE_URL!,
-              process.env.SUPABASE_PUBLISHABLE_KEY!,
-              {
-                cookies: { getAll: () => [], setAll: () => {} },
-                global: { headers: { Authorization: `Bearer ${token}` } },
-              },
-            );
-            void supabase
-              .from("profiles")
-              .update({
-                messages_today: messagesToday + 1,
-                messages_reset_at: resetAt,
-                last_active_at: new Date().toISOString(),
-              })
-              .eq("id", userId);
-          } catch {
-            /* noop */
-          }
+        // ── Increment counter (fire-and-forget, service role) ───────────
+        try {
+          const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+          void supabaseAdmin
+            .from("profiles")
+            .update({
+              messages_today: messagesToday + 1,
+              messages_reset_at: resetAt,
+              last_active_at: new Date().toISOString(),
+            })
+            .eq("id", userId);
+        } catch {
+          /* noop */
         }
 
         return result.toUIMessageStreamResponse({
