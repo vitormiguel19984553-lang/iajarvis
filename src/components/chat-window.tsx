@@ -64,15 +64,20 @@ export function ChatWindow({
     () =>
       new DefaultChatTransport({
         api: "/api/chat",
-        prepareSendMessagesRequest: ({ messages }) => ({
-          body: {
-            messages,
-            systemPrompt: settings.systemPrompt,
-            model: settings.modelMode === "auto" ? "auto" : settings.manualModel,
-            skills: skills.map((s) => s.text),
-            hasFiles: files.length > 0,
-          },
-        }),
+        prepareSendMessagesRequest: async ({ messages }) => {
+          const { data } = await supabase.auth.getSession();
+          const token = data.session?.access_token;
+          return {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+            body: {
+              messages,
+              systemPrompt: settings.systemPrompt,
+              model: settings.modelMode === "auto" ? "auto" : settings.manualModel,
+              skills: skills.map((s) => s.text),
+              hasFiles: files.length > 0,
+            },
+          };
+        },
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [settings.systemPrompt, settings.modelMode, settings.manualModel, skills, files.length],
