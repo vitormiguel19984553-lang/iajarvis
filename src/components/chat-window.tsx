@@ -291,11 +291,19 @@ export function ChatWindow({
         <div className="flex items-center gap-2">
           <span className="text-[12px] text-muted-foreground">Model: {modelLabel}</span>
           <div
-            className="text-[11px] rounded-md px-2 py-0.5 font-semibold tracking-wider"
+            className="text-[10px] rounded-md px-2 py-0.5 font-bold tracking-[0.18em]"
             style={{
-              color: "#00d4ff",
-              background: "rgba(0,212,255,0.08)",
-              border: "1px solid rgba(0,212,255,0.12)",
+              fontFamily: "var(--font-display)",
+              color: settings.modelMode === "auto" ? "var(--accent-cyan)" : "var(--premium)",
+              background:
+                settings.modelMode === "auto"
+                  ? "color-mix(in oklab, var(--accent-cyan) 10%, transparent)"
+                  : "color-mix(in oklab, var(--premium) 14%, transparent)",
+              border: `1px solid ${
+                settings.modelMode === "auto"
+                  ? "color-mix(in oklab, var(--accent-cyan) 25%, transparent)"
+                  : "color-mix(in oklab, var(--premium) 35%, transparent)"
+              }`,
             }}
           >
             {settings.modelMode === "auto" ? "AUTO" : "PRO"}
