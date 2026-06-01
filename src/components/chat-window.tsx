@@ -246,17 +246,21 @@ export function ChatWindow({
         <div className="flex items-center gap-2.5">
           <div
             className="w-2 h-2 rounded-full pulse-dot"
-            style={{ background: "#22c55e", boxShadow: "0 0 6px #22c55e" }}
+            style={{ background: "var(--success)", boxShadow: "0 0 8px var(--success)" }}
           />
-          <span className="text-[13px] font-medium text-foreground tracking-wide">
+          <span
+            className="text-[13px] font-semibold tracking-[0.18em] text-foreground"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
             J.A.R.V.I.S
           </span>
           <span
-            className="text-[11px] rounded-full px-2 py-0.5"
+            className="text-[10px] uppercase tracking-[0.15em] rounded-full px-2 py-0.5 font-semibold"
             style={{
-              color: "#22c55e",
-              background: "rgba(34,197,94,0.1)",
-              border: "1px solid rgba(34,197,94,0.2)",
+              color: "var(--success)",
+              background: "color-mix(in oklab, var(--success) 12%, transparent)",
+              border: "1px solid color-mix(in oklab, var(--success) 30%, transparent)",
+              fontFamily: "var(--font-display)",
             }}
           >
             online
