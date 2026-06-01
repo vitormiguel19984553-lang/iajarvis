@@ -28,10 +28,28 @@ interface Props {
   plan?: PlanTier;
 }
 
-const PLAN_BADGE: Record<PlanTier, { label: string; cls: string }> = {
+const PLAN_BADGE: Record<PlanTier, { label: string; cls: string; style?: React.CSSProperties }> = {
   free: { label: "FREE", cls: "bg-muted text-muted-foreground" },
-  pro: { label: "PRO", cls: "bg-[rgba(0,212,255,0.15)] text-[#00d4ff] border border-[rgba(0,212,255,0.3)]" },
-  ultra: { label: "ULTRA", cls: "bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-amber-300 border border-amber-500/40" },
+  pro: {
+    label: "PRO",
+    cls: "border",
+    style: {
+      color: "var(--accent-cyan)",
+      background: "color-mix(in oklab, var(--accent-cyan) 12%, transparent)",
+      borderColor: "color-mix(in oklab, var(--accent-cyan) 30%, transparent)",
+      fontFamily: "var(--font-display)",
+    },
+  },
+  ultra: {
+    label: "ULTRA",
+    cls: "border",
+    style: {
+      color: "var(--premium)",
+      background: "color-mix(in oklab, var(--premium) 14%, transparent)",
+      borderColor: "color-mix(in oklab, var(--premium) 35%, transparent)",
+      fontFamily: "var(--font-display)",
+    },
+  },
 };
 
 export function SettingsDialog({
@@ -156,12 +174,25 @@ export function SettingsDialog({
                             <span className="text-[12.5px] font-medium flex items-center gap-1.5">
                               {m.label}
                               {m.isNew && (
-                                <span className="text-[9px] px-1 rounded bg-[#22c55e]/20 text-[#22c55e] font-semibold">
+                                <span
+                                  className="text-[9px] px-1.5 rounded font-bold tracking-wider"
+                                  style={{
+                                    color: "var(--badge-new)",
+                                    background: "color-mix(in oklab, var(--badge-new) 14%, transparent)",
+                                    fontFamily: "var(--font-display)",
+                                  }}
+                                >
                                   NEW
                                 </span>
                               )}
                               {m.gatewayId && (
-                                <span className="text-[9px] px-1 rounded bg-amber-500/10 text-amber-400/80">
+                                <span
+                                  className="text-[9px] px-1.5 rounded font-semibold"
+                                  style={{
+                                    color: "var(--warning)",
+                                    background: "color-mix(in oklab, var(--warning) 10%, transparent)",
+                                  }}
+                                >
                                   fallback
                                 </span>
                               )}
@@ -171,7 +202,10 @@ export function SettingsDialog({
                             </span>
                           </div>
                           <div className="flex items-center gap-1.5 shrink-0">
-                            <span className={`text-[9.5px] font-bold px-1.5 py-0.5 rounded ${badge.cls}`}>
+                            <span
+                              className={`text-[9.5px] font-bold px-1.5 py-0.5 rounded ${badge.cls}`}
+                              style={badge.style}
+                            >
                               {badge.label}
                             </span>
                             {!allowed && <Lock className="h-3 w-3" />}
