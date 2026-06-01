@@ -315,18 +315,25 @@ export function ChatWindow({
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center px-6 max-w-2xl mx-auto">
             <div
-              className="h-20 w-20 rounded-full mb-6 flex items-center justify-center text-white text-[28px] font-bold"
+              className="h-24 w-24 rounded-full mb-7 flex items-center justify-center text-white text-[32px] font-bold relative"
               style={{
-                background: "radial-gradient(circle at 35% 35%, #22eeff, #0a7aff, #7c3aed)",
-                boxShadow: "0 0 40px rgba(0, 212, 255, 0.4)",
+                fontFamily: "var(--font-display)",
+                background:
+                  "radial-gradient(circle at 35% 30%, #4ff4ff, #00a8ff 45%, #7c3aed 90%)",
+                boxShadow:
+                  "0 0 60px color-mix(in oklab, var(--accent-cyan) 45%, transparent), inset 0 0 24px rgba(255,255,255,0.15)",
+                animation: "orbPulse 3s ease-in-out infinite",
               }}
             >
               J
             </div>
-            <h1 className="text-[26px] font-semibold tracking-tight text-center text-foreground">
+            <h1
+              className="text-[28px] tracking-[0.04em] text-center text-foreground"
+              style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}
+            >
               {greet()}, {greetingName || "Tony"}.
             </h1>
-            <p className="text-[14px] text-muted-foreground text-center mt-1.5 mb-8">
+            <p className="text-[14px] text-muted-foreground text-center mt-2 mb-8">
               How can I assist you today?
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full max-w-xl">
