@@ -14,13 +14,17 @@ export function ChatMessage({ message }: { message: UIMessage }) {
   return (
     <div className={cn("msg-in flex gap-3", isUser && "flex-row-reverse")}>
       <div
-        className="w-8 h-8 rounded-full shrink-0 flex items-center justify-center text-[12px] font-semibold"
+        className="w-8 h-8 rounded-full shrink-0 flex items-center justify-center text-[12px] font-bold"
         style={{
+          fontFamily: "var(--font-display)",
           background: isUser
-            ? "rgba(255,255,255,0.06)"
-            : "linear-gradient(135deg, #00d4ff, #7c3aed)",
-          color: isUser ? "#9ca3af" : "#fff",
-          border: isUser ? "1px solid rgba(0,212,255,0.12)" : "none",
+            ? "rgba(255,255,255,0.04)"
+            : "radial-gradient(circle at 35% 30%, #4ff4ff, var(--accent-cyan) 55%, var(--accent-violet))",
+          color: isUser ? "var(--muted-foreground)" : "#fff",
+          border: isUser ? "1px solid var(--border)" : "none",
+          boxShadow: isUser
+            ? "none"
+            : "0 0 14px color-mix(in oklab, var(--accent-cyan) 45%, transparent)",
         }}
       >
         {isUser ? "T" : "J"}
@@ -29,10 +33,16 @@ export function ChatMessage({ message }: { message: UIMessage }) {
         <div
           className="px-4 py-3 text-[13px] leading-7"
           style={{
-            background: isUser ? "rgba(0,212,255,0.08)" : "#1a1a24",
-            border: `1px solid ${isUser ? "rgba(0,212,255,0.2)" : "rgba(0,212,255,0.12)"}`,
+            background: isUser
+              ? "color-mix(in oklab, var(--accent-cyan) 10%, transparent)"
+              : "var(--elevated)",
+            border: `1px solid ${
+              isUser
+                ? "color-mix(in oklab, var(--accent-cyan) 28%, transparent)"
+                : "var(--border)"
+            }`,
             borderRadius: isUser ? "16px 4px 16px 16px" : "4px 16px 16px 16px",
-            color: "#e8eaf0",
+            color: "var(--foreground)",
           }}
         >
           {text ? (
