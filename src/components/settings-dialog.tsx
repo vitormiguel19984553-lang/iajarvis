@@ -174,12 +174,25 @@ export function SettingsDialog({
                             <span className="text-[12.5px] font-medium flex items-center gap-1.5">
                               {m.label}
                               {m.isNew && (
-                                <span className="text-[9px] px-1 rounded bg-[#22c55e]/20 text-[#22c55e] font-semibold">
+                                <span
+                                  className="text-[9px] px-1.5 rounded font-bold tracking-wider"
+                                  style={{
+                                    color: "var(--badge-new)",
+                                    background: "color-mix(in oklab, var(--badge-new) 14%, transparent)",
+                                    fontFamily: "var(--font-display)",
+                                  }}
+                                >
                                   NEW
                                 </span>
                               )}
                               {m.gatewayId && (
-                                <span className="text-[9px] px-1 rounded bg-amber-500/10 text-amber-400/80">
+                                <span
+                                  className="text-[9px] px-1.5 rounded font-semibold"
+                                  style={{
+                                    color: "var(--warning)",
+                                    background: "color-mix(in oklab, var(--warning) 10%, transparent)",
+                                  }}
+                                >
                                   fallback
                                 </span>
                               )}
@@ -189,7 +202,10 @@ export function SettingsDialog({
                             </span>
                           </div>
                           <div className="flex items-center gap-1.5 shrink-0">
-                            <span className={`text-[9.5px] font-bold px-1.5 py-0.5 rounded ${badge.cls}`}>
+                            <span
+                              className={`text-[9.5px] font-bold px-1.5 py-0.5 rounded ${badge.cls}`}
+                              style={badge.style}
+                            >
                               {badge.label}
                             </span>
                             {!allowed && <Lock className="h-3 w-3" />}
