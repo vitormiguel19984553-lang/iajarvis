@@ -28,10 +28,28 @@ interface Props {
   plan?: PlanTier;
 }
 
-const PLAN_BADGE: Record<PlanTier, { label: string; cls: string }> = {
+const PLAN_BADGE: Record<PlanTier, { label: string; cls: string; style?: React.CSSProperties }> = {
   free: { label: "FREE", cls: "bg-muted text-muted-foreground" },
-  pro: { label: "PRO", cls: "bg-[rgba(0,212,255,0.15)] text-[#00d4ff] border border-[rgba(0,212,255,0.3)]" },
-  ultra: { label: "ULTRA", cls: "bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-amber-300 border border-amber-500/40" },
+  pro: {
+    label: "PRO",
+    cls: "border",
+    style: {
+      color: "var(--accent-cyan)",
+      background: "color-mix(in oklab, var(--accent-cyan) 12%, transparent)",
+      borderColor: "color-mix(in oklab, var(--accent-cyan) 30%, transparent)",
+      fontFamily: "var(--font-display)",
+    },
+  },
+  ultra: {
+    label: "ULTRA",
+    cls: "border",
+    style: {
+      color: "var(--premium)",
+      background: "color-mix(in oklab, var(--premium) 14%, transparent)",
+      borderColor: "color-mix(in oklab, var(--premium) 35%, transparent)",
+      fontFamily: "var(--font-display)",
+    },
+  },
 };
 
 export function SettingsDialog({
