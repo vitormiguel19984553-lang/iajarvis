@@ -71,16 +71,65 @@ export function JarvisRightPanel({
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const MAX_SIZE = 20 * 1024 * 1024; // 20MB
+  const MAX_FILES = 10;
+  const ALLOWED = new Set([
+    "pdf","txt","md","csv","json","xml","yaml","yml","log",
+    "png","jpg","jpeg","webp","gif","svg",
+    "js","ts","tsx","jsx","py","go","rs","java","c","cpp","html","css",
+    "docx","xlsx","pptx",
+  ]);
+
   const handleFiles = (list: FileList | null) => {
     if (!list) return;
-    const arr: UploadedFile[] = Array.from(list).map((f) => ({
-      name: f.name,
-      size: bytes(f.size),
-      type: f.name.split(".").pop()?.toLowerCase() || "file",
-      status: "pending" as const,
-    }));
-    onAddFiles(arr);
-    toast.success(`${arr.length} file${arr.length > 1 ? "s" : ""} added`);
+    const incoming = Array.from(list);
+
+    const remaining = MAX_FILES - files.length;
+    if (remaining <= 0) {
+      toast.error("Limite de ficheiros atingido", {
+        description: `Máximo ${MAX_FILES} ficheiros por conversa. Remove alguns antes de adicionar mais.`,
+      });
+      return;
+    }
+
+    const accepted: UploadedFile[] = [];
+    const rejected: string[] = [];
+
+    for (const f of incoming) {
+      if (accepted.length >= remaining) {
+        rejected.push(`${f.name} — excede limite de ${MAX_FILES} ficheiros`);
+        continue;
+      }
+      const ext = f.name.split(".").pop()?.toLowerCase() || "file";
+      if (f.size > MAX_SIZE) {
+        rejected.push(`${f.name} — ${bytes(f.size)} (máx 20MB)`);
+        continue;
+      }
+      if (!ALLOWED.has(ext)) {
+        rejected.push(`${f.name} — tipo .${ext} não suportado`);
+        continue;
+      }
+      if (files.some((existing) => existing.name === f.name)) {
+        rejected.push(`${f.name} — já adicionado`);
+        continue;
+      }
+      accepted.push({
+        name: f.name,
+        size: bytes(f.size),
+        type: ext,
+        status: "pending" as const,
+      });
+    }
+
+    if (accepted.length > 0) {
+      onAddFiles(accepted);
+      toast.success(`${accepted.length} ficheiro${accepted.length > 1 ? "s" : ""} adicionado${accepted.length > 1 ? "s" : ""}`);
+    }
+    if (rejected.length > 0) {
+      toast.error(`${rejected.length} ficheiro${rejected.length > 1 ? "s" : ""} rejeitado${rejected.length > 1 ? "s" : ""}`, {
+        description: rejected.slice(0, 4).join("\n") + (rejected.length > 4 ? `\n+${rejected.length - 4} mais` : ""),
+      });
+    }
   };
 
   const show = (s: Props["section"]) => section === "all" || section === s;
@@ -91,6 +140,7 @@ export function JarvisRightPanel({
         ref={inputRef}
         type="file"
         multiple
+        accept=".pdf,.txt,.md,.csv,.json,.xml,.yaml,.yml,.log,.png,.jpg,.jpeg,.webp,.gif,.svg,.js,.ts,.tsx,.jsx,.py,.go,.rs,.java,.c,.cpp,.html,.css,.docx,.xlsx,.pptx"
         className="hidden"
         onChange={(e) => {
           handleFiles(e.target.files);
