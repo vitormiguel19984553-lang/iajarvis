@@ -192,14 +192,53 @@ export function ChatWindow({
   }, [status, messages.length]);
 
   const isBusy = status === "submitted" || status === "streaming";
+  const isOnline = useOnlineStatus();
+  const queueRef = useRef<string[]>([]);
+  const [queueLen, setQueueLen] = useState(0);
+  const wasOfflineRef = useRef(false);
+
+  const enqueue = (text: string) => {
+    queueRef.current.push(text);
+    setQueueLen(queueRef.current.length);
+  };
 
   const submit = async () => {
     const text = input.trim();
     if (!text || isBusy) return;
-    if (messages.length === 0) onFirstUserMessage(text);
     setInput("");
+    if (!isOnline) {
+      enqueue(text);
+      toast.warning("Sem ligação", {
+        description: "Mensagem em fila. Será enviada quando voltares a ficar online.",
+      });
+      return;
+    }
+    if (messages.length === 0) onFirstUserMessage(text);
     await sendMessage({ text });
   };
+
+  // Auto-flush queue when connection is restored
+  useEffect(() => {
+    if (!isOnline) {
+      wasOfflineRef.current = true;
+      return;
+    }
+    if (wasOfflineRef.current) {
+      wasOfflineRef.current = false;
+      toast.success("Ligação restabelecida");
+    }
+    if (isBusy) return;
+    if (queueRef.current.length === 0) return;
+    const next = queueRef.current.shift()!;
+    setQueueLen(queueRef.current.length);
+    if (messages.length === 0) onFirstUserMessage(next);
+    sendMessage({ text: next }).catch(() => {
+      // re-enqueue at front on failure
+      queueRef.current.unshift(next);
+      setQueueLen(queueRef.current.length);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOnline, isBusy]);
 
   const handleVoiceModeSpeech = async (text: string): Promise<string | null> => {
     if (messages.length === 0) onFirstUserMessage(text);
