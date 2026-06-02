@@ -140,6 +140,7 @@ export function JarvisRightPanel({
         ref={inputRef}
         type="file"
         multiple
+        accept=".pdf,.txt,.md,.csv,.json,.xml,.yaml,.yml,.log,.png,.jpg,.jpeg,.webp,.gif,.svg,.js,.ts,.tsx,.jsx,.py,.go,.rs,.java,.c,.cpp,.html,.css,.docx,.xlsx,.pptx"
         className="hidden"
         onChange={(e) => {
           handleFiles(e.target.files);
