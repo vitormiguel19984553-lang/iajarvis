@@ -413,6 +413,27 @@ export function ChatWindow({
         </div>
       )}
 
+      {!isOnline && (
+        <div
+          className="px-5 py-2 text-[12px] border-t flex items-center gap-2"
+          style={{
+            color: "var(--warning)",
+            borderColor: "color-mix(in oklab, var(--warning) 30%, transparent)",
+            background: "color-mix(in oklab, var(--warning) 10%, transparent)",
+            fontFamily: "var(--font-display)",
+            letterSpacing: "0.04em",
+          }}
+        >
+          <WifiOff className="h-3.5 w-3.5" />
+          <span className="font-semibold uppercase tracking-[0.15em]">Offline</span>
+          <span className="opacity-80 normal-case tracking-normal" style={{ fontFamily: "inherit" }}>
+            {queueLen > 0
+              ? `${queueLen} mensagem${queueLen === 1 ? "" : "s"} em fila — envio automático ao reconectar.`
+              : "Sem ligação. As mensagens ficam em fila."}
+          </span>
+        </div>
+      )}
+
       <JarvisVoiceBar
         input={input}
         setInput={setInput}
