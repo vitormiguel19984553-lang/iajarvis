@@ -11,6 +11,8 @@ import type { Activity, UploadedFile } from "@/components/jarvis-right-panel";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useOnlineStatus } from "@/lib/use-online-status";
+import { WifiOff } from "lucide-react";
 
 interface Props {
   thread: Thread;
@@ -190,14 +192,53 @@ export function ChatWindow({
   }, [status, messages.length]);
 
   const isBusy = status === "submitted" || status === "streaming";
+  const isOnline = useOnlineStatus();
+  const queueRef = useRef<string[]>([]);
+  const [queueLen, setQueueLen] = useState(0);
+  const wasOfflineRef = useRef(false);
+
+  const enqueue = (text: string) => {
+    queueRef.current.push(text);
+    setQueueLen(queueRef.current.length);
+  };
 
   const submit = async () => {
     const text = input.trim();
     if (!text || isBusy) return;
-    if (messages.length === 0) onFirstUserMessage(text);
     setInput("");
+    if (!isOnline) {
+      enqueue(text);
+      toast.warning("Sem ligação", {
+        description: "Mensagem em fila. Será enviada quando voltares a ficar online.",
+      });
+      return;
+    }
+    if (messages.length === 0) onFirstUserMessage(text);
     await sendMessage({ text });
   };
+
+  // Auto-flush queue when connection is restored
+  useEffect(() => {
+    if (!isOnline) {
+      wasOfflineRef.current = true;
+      return;
+    }
+    if (wasOfflineRef.current) {
+      wasOfflineRef.current = false;
+      toast.success("Ligação restabelecida");
+    }
+    if (isBusy) return;
+    if (queueRef.current.length === 0) return;
+    const next = queueRef.current.shift()!;
+    setQueueLen(queueRef.current.length);
+    if (messages.length === 0) onFirstUserMessage(next);
+    sendMessage({ text: next }).catch(() => {
+      // re-enqueue at front on failure
+      queueRef.current.unshift(next);
+      setQueueLen(queueRef.current.length);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOnline, isBusy]);
 
   const handleVoiceModeSpeech = async (text: string): Promise<string | null> => {
     if (messages.length === 0) onFirstUserMessage(text);
@@ -369,6 +410,27 @@ export function ChatWindow({
       {error && (
         <div className="px-5 py-2 text-[12px] text-destructive border-t border-border">
           Connection lost. Please try again.
+        </div>
+      )}
+
+      {!isOnline && (
+        <div
+          className="px-5 py-2 text-[12px] border-t flex items-center gap-2"
+          style={{
+            color: "var(--warning)",
+            borderColor: "color-mix(in oklab, var(--warning) 30%, transparent)",
+            background: "color-mix(in oklab, var(--warning) 10%, transparent)",
+            fontFamily: "var(--font-display)",
+            letterSpacing: "0.04em",
+          }}
+        >
+          <WifiOff className="h-3.5 w-3.5" />
+          <span className="font-semibold uppercase tracking-[0.15em]">Offline</span>
+          <span className="opacity-80 normal-case tracking-normal" style={{ fontFamily: "inherit" }}>
+            {queueLen > 0
+              ? `${queueLen} mensagem${queueLen === 1 ? "" : "s"} em fila — envio automático ao reconectar.`
+              : "Sem ligação. As mensagens ficam em fila."}
+          </span>
         </div>
       )}
 
