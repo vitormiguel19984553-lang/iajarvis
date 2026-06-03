@@ -473,7 +473,7 @@ ${c}${truncated}`;
         ) : (
           <div className="max-w-3xl mx-auto px-6 py-5 flex flex-col gap-5">
             {messages.map((m) => (
-              <ChatMessage key={m.id} message={m} />
+              <ChatMessage key={m.id} message={m} generatedFiles={generatedFiles[m.id]} />
             ))}
             {status === "submitted" && (
               <div className="text-[11px] text-muted-foreground pl-11">Thinking…</div>
