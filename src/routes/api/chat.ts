@@ -10,6 +10,10 @@ import {
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerClient } from "@supabase/ssr";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
+import { rateLimit, sweep } from "@/lib/rate-limit.server";
+
+const MAX_MESSAGES = 80;
+const MAX_TEXT_PER_MSG = 16_000;
 
 type ChatRequestBody = {
   messages?: unknown;
@@ -28,6 +32,17 @@ export const Route = createFileRoute("/api/chat")({
 
         if (!Array.isArray(messages)) {
           return new Response("Messages are required", { status: 400 });
+        }
+        if (messages.length > MAX_MESSAGES) {
+          return new Response("Too many messages", { status: 413 });
+        }
+        for (const m of messages as UIMessage[]) {
+          const parts = (m as { parts?: Array<{ type: string; text?: string }> }).parts ?? [];
+          for (const p of parts) {
+            if (p.type === "text" && (p.text?.length ?? 0) > MAX_TEXT_PER_MSG) {
+              return new Response("Message too long", { status: 413 });
+            }
+          }
         }
 
         const key = process.env.LOVABLE_API_KEY;
@@ -59,6 +74,25 @@ export const Route = createFileRoute("/api/chat")({
           return new Response("Unauthorized", { status: 401 });
         }
         const userId = u.user.id;
+
+        // ── Per-user rate limit (soft, per-instance) ────────────────────
+        sweep();
+        const rl = rateLimit(`chat:${userId}`, 20, 60_000);
+        if (!rl.ok) {
+          return new Response(
+            JSON.stringify({
+              error: "rate_limited",
+              message: "Demasiados pedidos. Aguarda alguns segundos.",
+            }),
+            {
+              status: 429,
+              headers: {
+                "Content-Type": "application/json",
+                "Retry-After": String(Math.ceil(rl.resetIn / 1000)),
+              },
+            },
+          );
+        }
 
         const { data: profile } = await supabase
           .from("profiles")

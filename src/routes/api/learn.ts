@@ -2,6 +2,7 @@ import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerClient } from "@supabase/ssr";
 import { generateText } from "ai";
+import { rateLimit, sweep } from "@/lib/rate-limit.server";
 
 type LearnBody = { userMessage?: string; assistantMessage?: string };
 
@@ -26,6 +27,12 @@ export const Route = createFileRoute("/api/learn")({
         const { data: u, error: authErr } = await supabase.auth.getUser();
         if (authErr || !u.user) {
           return new Response("Unauthorized", { status: 401 });
+        }
+
+        sweep();
+        const rl = rateLimit(`learn:${u.user.id}`, 30, 60_000);
+        if (!rl.ok) {
+          return Response.json({ skill: null }, { status: 429 });
         }
 
         const { userMessage, assistantMessage } = (await request.json()) as LearnBody;
