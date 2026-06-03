@@ -69,6 +69,35 @@ export function ChatWindow({
   onActivityChange,
   greetingName,
 }: Props) {
+  // Live ref so transport always sees the latest files at send time.
+  const filesRef = useRef<UploadedFile[]>(files);
+  useEffect(() => {
+    filesRef.current = files;
+  }, [files]);
+
+  const buildFileContext = (list: UploadedFile[]): string => {
+    const textFiles = list.filter(
+      (f) => f.status === "analyzed" && f.content && f.kind !== "image",
+    );
+    if (textFiles.length === 0) return "";
+    return textFiles
+      .map((f) => {
+        const c = (f.content ?? "").slice(0, 15000);
+        const truncated = (f.content?.length ?? 0) > 15000 ? "\n…[truncado a 15k chars]" : "";
+        return `═══════════════════════════════════
+FICHEIRO ANEXADO: ${f.name}
+TIPO: ${(f.kind ?? f.type).toUpperCase()} · ${f.size}${f.wordCount ? ` · ~${f.wordCount} palavras` : ""}${f.pageCount ? ` · ${f.pageCount} pág.` : ""}
+═══════════════════════════════════
+${c}${truncated}`;
+      })
+      .join("\n\n");
+  };
+
+  const buildImages = (list: UploadedFile[]) =>
+    list
+      .filter((f) => f.kind === "image" && f.base64 && f.status === "analyzed")
+      .map((f) => ({ mimeType: f.mimeType, base64: f.base64! }));
+
   const transport = useMemo(
     () =>
       new DefaultChatTransport({
@@ -78,6 +107,7 @@ export function ChatWindow({
           const token = data.session?.access_token;
           const headers: Record<string, string> = {};
           if (token) headers.Authorization = `Bearer ${token}`;
+          const list = filesRef.current;
           return {
             headers,
             body: {
@@ -85,14 +115,17 @@ export function ChatWindow({
               systemPrompt: settings.systemPrompt,
               model: settings.modelMode === "auto" ? "auto" : settings.manualModel,
               skills: skills.map((s) => s.text),
-              hasFiles: files.length > 0,
+              hasFiles: list.length > 0,
+              fileContext: buildFileContext(list),
+              images: buildImages(list),
             },
           };
         },
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [settings.systemPrompt, settings.modelMode, settings.manualModel, skills, files.length],
+    [settings.systemPrompt, settings.modelMode, settings.manualModel, skills],
   );
+
 
   const [input, setInput] = useState("");
   const [voiceModeOpen, setVoiceModeOpen] = useState(false);
