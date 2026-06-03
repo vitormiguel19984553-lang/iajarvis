@@ -131,6 +131,9 @@ ${c}${truncated}`;
   const [voiceModeOpen, setVoiceModeOpen] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const lastLearnedIdRef = useRef<string | null>(null);
+  const [generatedFiles, setGeneratedFiles] = useState<Record<string, GeneratedFile[]>>({});
+  const processedFilesRef = useRef<Set<string>>(new Set());
+
 
   const { messages, sendMessage, status, stop, error } = useChat({
     id: thread.id,
