@@ -4,9 +4,7 @@ import mammoth from "mammoth";
 import * as XLSX from "xlsx";
 
 // Use a CDN worker so we don't need to bundle the worker file.
-// Falls back silently if blocked; extraction will still throw a readable error.
 try {
-  // @ts-expect-error - GlobalWorkerOptions is set at runtime
   pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 } catch {
   /* noop */
@@ -127,14 +125,13 @@ function countWords(s: string): number {
 
 async function extractPDF(file: File): Promise<{ text: string; pageCount: number }> {
   const ab = await file.arrayBuffer();
-  // @ts-expect-error - pdfjs types differ across builds
   const pdf = await pdfjsLib.getDocument({ data: ab }).promise;
   let out = "";
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
     const tc = await page.getTextContent();
     const pageText = tc.items
-      .map((it: { str?: string }) => it.str ?? "")
+      .map((it) => ("str" in it ? it.str : ""))
       .join(" ");
     out += `\n--- Página ${i} ---\n${pageText}`;
   }
