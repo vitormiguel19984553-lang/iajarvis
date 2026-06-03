@@ -233,6 +233,39 @@ ${c}${truncated}`;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, messages.length]);
 
+  // File generation: scan assistant messages for [GERAR_ARQUIVO:...] tags.
+  useEffect(() => {
+    if (status !== "ready") return;
+    const last = messages[messages.length - 1];
+    if (!last || last.role !== "assistant") return;
+    if (processedFilesRef.current.has(last.id)) return;
+    const text = partsToText(last);
+    const reqs = detectFileRequests(text);
+    if (reqs.length === 0) {
+      processedFilesRef.current.add(last.id);
+      return;
+    }
+    processedFilesRef.current.add(last.id);
+    (async () => {
+      const made: GeneratedFile[] = [];
+      for (const r of reqs) {
+        try {
+          made.push(await generateFile(r.fileName, r.content));
+        } catch (e) {
+          console.error("file gen failed", r.fileName, e);
+          toast.error(`Falha a gerar ${r.fileName}`);
+        }
+      }
+      if (made.length > 0) {
+        setGeneratedFiles((prev) => ({ ...prev, [last.id]: made }));
+        toast.success(`${made.length} ficheiro(s) gerado(s) — clica em Baixar`);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, messages.length]);
+
+
+
   const isBusy = status === "submitted" || status === "streaming";
   const isOnline = useOnlineStatus();
   const queueRef = useRef<string[]>([]);
