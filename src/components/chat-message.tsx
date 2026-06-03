@@ -2,14 +2,22 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { UIMessage } from "ai";
 import { cn } from "@/lib/utils";
+import { FileDownloadCard } from "@/components/file-download-card";
+import { stripFileTags, type GeneratedFile } from "@/lib/file-generator";
 
 function partsToText(m: UIMessage): string {
   return m.parts.map((p) => (p.type === "text" ? p.text : "")).join("");
 }
 
-export function ChatMessage({ message }: { message: UIMessage }) {
+interface Props {
+  message: UIMessage;
+  generatedFiles?: GeneratedFile[];
+}
+
+export function ChatMessage({ message, generatedFiles }: Props) {
   const isUser = message.role === "user";
-  const text = partsToText(message);
+  const rawText = partsToText(message);
+  const text = isUser ? rawText : stripFileTags(rawText);
 
   return (
     <div className={cn("msg-in flex gap-3", isUser && "flex-row-reverse")}>
@@ -49,11 +57,18 @@ export function ChatMessage({ message }: { message: UIMessage }) {
             <div className="prose-chat">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
             </div>
-          ) : (
+          ) : generatedFiles && generatedFiles.length > 0 ? null : (
             <div>
               <span className="typing-dot" />
               <span className="typing-dot" />
               <span className="typing-dot" />
+            </div>
+          )}
+          {!isUser && generatedFiles && generatedFiles.length > 0 && (
+            <div className="mt-2 flex flex-col gap-1.5">
+              {generatedFiles.map((f) => (
+                <FileDownloadCard key={f.id} file={f} />
+              ))}
             </div>
           )}
         </div>
