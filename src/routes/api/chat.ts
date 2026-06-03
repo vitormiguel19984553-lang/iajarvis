@@ -173,14 +173,64 @@ export const Route = createFileRoute("/api/chat")({
                 .join("\n")}`
             : "";
 
+        const trimmedContext =
+          fileContext && fileContext.length > 0
+            ? fileContext.length > MAX_FILE_CONTEXT
+              ? fileContext.slice(0, MAX_FILE_CONTEXT) + "\n…[contexto de ficheiros truncado]"
+              : fileContext
+            : "";
+
+        const filesBlock = trimmedContext
+          ? `\n\n## Ficheiros anexados pelo utilizador (lê e usa este conteúdo real)\n${trimmedContext}\n\nQuando responderes sobre estes ficheiros, cita partes específicas e confirma quais leste.`
+          : "";
+
+        const fileGenBlock = `\n\n## Geração de ficheiros para download
+Quando o utilizador pedir um ficheiro (PDF, DOCX, XLSX, CSV, JSON, TXT, código), responde SEMPRE com o conteúdo completo dentro de tags:
+
+[GERAR_ARQUIVO:nome_do_ficheiro.ext]
+<conteúdo completo aqui — sem comentários extra>
+[/GERAR_ARQUIVO]
+
+Regras:
+- Usa a extensão correta no nome (.pdf, .docx, .xlsx, .csv, .json, .txt, .py, .js, .ts, .html, .css, .md, etc.).
+- Para CSV/XLSX, escreve linhas separadas por vírgulas.
+- Para código, coloca apenas o código dentro do bloco (sem markdown extra).
+- Podes incluir várias tags [GERAR_ARQUIVO:...] na mesma resposta se forem pedidos vários ficheiros.
+- NUNCA digas "não consigo gerar ficheiros" — gera sempre dentro das tags. O sistema cria o download automaticamente.
+- Antes ou depois da tag, escreve uma frase curta a explicar o que está no ficheiro.`;
+
         const routedNote = `\n\n[Routed: ${displayed} → ${gatewayId}]`;
+
+        const modelMessages = (await convertToModelMessages(messages as UIMessage[])) as ModelMessage[];
+
+        // Attach images to the last user message as multimodal parts.
+        const safeImages = (images ?? []).slice(0, MAX_IMAGES);
+        if (safeImages.length > 0) {
+          for (let i = modelMessages.length - 1; i >= 0; i--) {
+            const m = modelMessages[i];
+            if (m.role !== "user") continue;
+            const existing = Array.isArray(m.content)
+              ? m.content
+              : [{ type: "text" as const, text: String(m.content ?? "") }];
+            const imageParts = safeImages.map((img) => ({
+              type: "image" as const,
+              image: `data:${img.mimeType};base64,${img.base64}`,
+            }));
+            modelMessages[i] = {
+              ...m,
+              content: [...existing, ...imageParts],
+            } as ModelMessage;
+            break;
+          }
+        }
 
         const gateway = createLovableAiGatewayProvider(key);
         const result = streamText({
           model: gateway(gatewayId),
-          system: baseSystem + skillsBlock + routedNote,
-          messages: await convertToModelMessages(messages as UIMessage[]),
+          system: baseSystem + skillsBlock + filesBlock + fileGenBlock + routedNote,
+          messages: modelMessages,
         });
+
 
         // ── Increment counter (fire-and-forget, service role) ───────────
         try {
