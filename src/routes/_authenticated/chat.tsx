@@ -75,17 +75,79 @@ function ChatPage() {
     else if (key === "admin") navigate({ to: "/admin" });
   };
 
-  const addFiles = (list: FileList | null) => {
-    if (!list || list.length === 0) return;
-    const arr: UploadedFile[] = Array.from(list).map((f) => ({
+  const MAX_SIZE = 20 * 1024 * 1024;
+  const MAX_FILES = 10;
+
+  const pickFiles = async (incoming: File[]) => {
+    if (incoming.length === 0) return;
+    const remaining = MAX_FILES - files.length;
+    if (remaining <= 0) {
+      toast.error("Limite de ficheiros atingido", {
+        description: `Máximo ${MAX_FILES} ficheiros por conversa.`,
+      });
+      return;
+    }
+    const accepted: File[] = [];
+    const rejected: string[] = [];
+    for (const f of incoming) {
+      if (accepted.length >= remaining) {
+        rejected.push(`${f.name} — limite ${MAX_FILES} ficheiros`);
+        continue;
+      }
+      if (f.size > MAX_SIZE) {
+        rejected.push(`${f.name} — ${bytes(f.size)} (máx 20MB)`);
+        continue;
+      }
+      if (files.some((e) => e.name === f.name)) {
+        rejected.push(`${f.name} — já adicionado`);
+        continue;
+      }
+      accepted.push(f);
+    }
+    if (rejected.length) {
+      toast.error(`${rejected.length} rejeitado(s)`, {
+        description: rejected.slice(0, 4).join("\n"),
+      });
+    }
+    if (!accepted.length) return;
+
+    // Insert placeholders in "analyzing" state.
+    const placeholders: UploadedFile[] = accepted.map((f) => ({
       name: f.name,
       size: bytes(f.size),
+      sizeBytes: f.size,
       type: f.name.split(".").pop()?.toLowerCase() || "file",
-      status: "pending" as const,
+      status: "analyzing",
+      mimeType: f.type || "application/octet-stream",
     }));
-    setFiles((prev) => [...prev, ...arr]);
-    toast.success(`${arr.length} ficheiro${arr.length > 1 ? "s" : ""} adicionado${arr.length > 1 ? "s" : ""}`);
+    setFiles((prev) => [...prev, ...placeholders]);
+    toast.success(`${accepted.length} ficheiro(s) — a ler conteúdo…`);
+
+    const { extractFileContent } = await import("@/lib/file-extractor");
+    await Promise.all(
+      accepted.map(async (f) => {
+        const r = await extractFileContent(f);
+        setFiles((prev) =>
+          prev.map((e) =>
+            e.name === f.name
+              ? {
+                  ...e,
+                  status: r.error ? "error" : "analyzed",
+                  kind: r.kind,
+                  mimeType: r.mimeType,
+                  content: r.content,
+                  base64: r.base64,
+                  wordCount: r.wordCount,
+                  pageCount: r.pageCount,
+                  errorMsg: r.error,
+                }
+              : e,
+          ),
+        );
+      }),
+    );
   };
+
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -113,8 +175,12 @@ function ChatPage() {
         type="file"
         multiple
         className="hidden"
-        onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }}
+        onChange={(e) => {
+          if (e.target.files) pickFiles(Array.from(e.target.files));
+          e.target.value = "";
+        }}
       />
+
 
       <JarvisSidebar
         active={nav}
@@ -166,11 +232,12 @@ function ChatPage() {
         <JarvisRightPanel
           section={section}
           files={files}
-          onAddFiles={(arr) => setFiles((prev) => [...prev, ...arr])}
+          onPickFiles={pickFiles}
           onRemoveFile={(name) => setFiles((prev) => prev.filter((f) => f.name !== name))}
           activities={activities}
           stats={stats}
         />
+
       )}
 
       <SettingsDialog

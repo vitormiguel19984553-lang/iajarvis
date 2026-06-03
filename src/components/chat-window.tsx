@@ -13,6 +13,12 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useOnlineStatus } from "@/lib/use-online-status";
 import { WifiOff } from "lucide-react";
+import {
+  detectFileRequests,
+  generateFile,
+  type GeneratedFile,
+} from "@/lib/file-generator";
+
 
 interface Props {
   thread: Thread;
@@ -63,6 +69,35 @@ export function ChatWindow({
   onActivityChange,
   greetingName,
 }: Props) {
+  // Live ref so transport always sees the latest files at send time.
+  const filesRef = useRef<UploadedFile[]>(files);
+  useEffect(() => {
+    filesRef.current = files;
+  }, [files]);
+
+  const buildFileContext = (list: UploadedFile[]): string => {
+    const textFiles = list.filter(
+      (f) => f.status === "analyzed" && f.content && f.kind !== "image",
+    );
+    if (textFiles.length === 0) return "";
+    return textFiles
+      .map((f) => {
+        const c = (f.content ?? "").slice(0, 15000);
+        const truncated = (f.content?.length ?? 0) > 15000 ? "\n…[truncado a 15k chars]" : "";
+        return `═══════════════════════════════════
+FICHEIRO ANEXADO: ${f.name}
+TIPO: ${(f.kind ?? f.type).toUpperCase()} · ${f.size}${f.wordCount ? ` · ~${f.wordCount} palavras` : ""}${f.pageCount ? ` · ${f.pageCount} pág.` : ""}
+═══════════════════════════════════
+${c}${truncated}`;
+      })
+      .join("\n\n");
+  };
+
+  const buildImages = (list: UploadedFile[]) =>
+    list
+      .filter((f) => f.kind === "image" && f.base64 && f.status === "analyzed")
+      .map((f) => ({ mimeType: f.mimeType, base64: f.base64! }));
+
   const transport = useMemo(
     () =>
       new DefaultChatTransport({
@@ -72,6 +107,7 @@ export function ChatWindow({
           const token = data.session?.access_token;
           const headers: Record<string, string> = {};
           if (token) headers.Authorization = `Bearer ${token}`;
+          const list = filesRef.current;
           return {
             headers,
             body: {
@@ -79,19 +115,25 @@ export function ChatWindow({
               systemPrompt: settings.systemPrompt,
               model: settings.modelMode === "auto" ? "auto" : settings.manualModel,
               skills: skills.map((s) => s.text),
-              hasFiles: files.length > 0,
+              hasFiles: list.length > 0,
+              fileContext: buildFileContext(list),
+              images: buildImages(list),
             },
           };
         },
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [settings.systemPrompt, settings.modelMode, settings.manualModel, skills, files.length],
+    [settings.systemPrompt, settings.modelMode, settings.manualModel, skills],
   );
+
 
   const [input, setInput] = useState("");
   const [voiceModeOpen, setVoiceModeOpen] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const lastLearnedIdRef = useRef<string | null>(null);
+  const [generatedFiles, setGeneratedFiles] = useState<Record<string, GeneratedFile[]>>({});
+  const processedFilesRef = useRef<Set<string>>(new Set());
+
 
   const { messages, sendMessage, status, stop, error } = useChat({
     id: thread.id,
@@ -190,6 +232,39 @@ export function ChatWindow({
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, messages.length]);
+
+  // File generation: scan assistant messages for [GERAR_ARQUIVO:...] tags.
+  useEffect(() => {
+    if (status !== "ready") return;
+    const last = messages[messages.length - 1];
+    if (!last || last.role !== "assistant") return;
+    if (processedFilesRef.current.has(last.id)) return;
+    const text = partsToText(last);
+    const reqs = detectFileRequests(text);
+    if (reqs.length === 0) {
+      processedFilesRef.current.add(last.id);
+      return;
+    }
+    processedFilesRef.current.add(last.id);
+    (async () => {
+      const made: GeneratedFile[] = [];
+      for (const r of reqs) {
+        try {
+          made.push(await generateFile(r.fileName, r.content));
+        } catch (e) {
+          console.error("file gen failed", r.fileName, e);
+          toast.error(`Falha a gerar ${r.fileName}`);
+        }
+      }
+      if (made.length > 0) {
+        setGeneratedFiles((prev) => ({ ...prev, [last.id]: made }));
+        toast.success(`${made.length} ficheiro(s) gerado(s) — clica em Baixar`);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, messages.length]);
+
+
 
   const isBusy = status === "submitted" || status === "streaming";
   const isOnline = useOnlineStatus();
@@ -398,7 +473,7 @@ export function ChatWindow({
         ) : (
           <div className="max-w-3xl mx-auto px-6 py-5 flex flex-col gap-5">
             {messages.map((m) => (
-              <ChatMessage key={m.id} message={m} />
+              <ChatMessage key={m.id} message={m} generatedFiles={generatedFiles[m.id]} />
             ))}
             {status === "submitted" && (
               <div className="text-[11px] text-muted-foreground pl-11">Thinking…</div>
