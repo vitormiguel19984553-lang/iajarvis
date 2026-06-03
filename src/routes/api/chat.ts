@@ -9,11 +9,18 @@ import {
 } from "@/lib/models";
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerClient } from "@supabase/ssr";
-import { convertToModelMessages, streamText, type UIMessage } from "ai";
+import {
+  convertToModelMessages,
+  streamText,
+  type ModelMessage,
+  type UIMessage,
+} from "ai";
 import { rateLimit, sweep } from "@/lib/rate-limit.server";
 
 const MAX_MESSAGES = 80;
 const MAX_TEXT_PER_MSG = 16_000;
+const MAX_FILE_CONTEXT = 60_000;
+const MAX_IMAGES = 6;
 
 type ChatRequestBody = {
   messages?: unknown;
@@ -21,6 +28,8 @@ type ChatRequestBody = {
   model?: string;
   skills?: string[];
   hasFiles?: boolean;
+  fileContext?: string;
+  images?: Array<{ mimeType: string; base64: string }>;
 };
 
 export const Route = createFileRoute("/api/chat")({
@@ -28,7 +37,8 @@ export const Route = createFileRoute("/api/chat")({
     handlers: {
       POST: async ({ request }) => {
         const body = (await request.json()) as ChatRequestBody;
-        const { messages, systemPrompt, model, skills, hasFiles } = body;
+        const { messages, systemPrompt, model, skills, hasFiles, fileContext, images } = body;
+
 
         if (!Array.isArray(messages)) {
           return new Response("Messages are required", { status: 400 });
