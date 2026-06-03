@@ -12,7 +12,13 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useOnlineStatus } from "@/lib/use-online-status";
-import { WifiOff } from "lucide-react";
+import { WifiOff, FileText, X } from "lucide-react";
+import {
+  detectFileRequests,
+  generateFile,
+  type GeneratedFile,
+} from "@/lib/file-generator";
+
 
 interface Props {
   thread: Thread;
