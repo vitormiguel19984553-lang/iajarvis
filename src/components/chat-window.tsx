@@ -98,6 +98,11 @@ ${c}${truncated}`;
       .filter((f) => f.kind === "image" && f.base64 && f.status === "analyzed")
       .map((f) => ({ mimeType: f.mimeType, base64: f.base64! }));
 
+  const buildAudios = (list: UploadedFile[]) =>
+    list
+      .filter((f) => f.kind === "audio" && f.base64 && f.status === "analyzed")
+      .map((f) => ({ mimeType: f.mimeType, base64: f.base64!, name: f.name }));
+
   const transport = useMemo(
     () =>
       new DefaultChatTransport({
@@ -118,6 +123,7 @@ ${c}${truncated}`;
               hasFiles: list.length > 0,
               fileContext: buildFileContext(list),
               images: buildImages(list),
+              audios: buildAudios(list),
             },
           };
         },
