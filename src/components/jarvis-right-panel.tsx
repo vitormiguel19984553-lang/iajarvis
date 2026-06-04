@@ -8,7 +8,7 @@ export type UploadedFile = {
   type: string; // extension
   status: "analyzed" | "pending" | "analyzing" | "error";
   mimeType: string;
-  kind?: "pdf" | "docx" | "xlsx" | "text" | "image" | "audio" | "unknown";
+  kind?: "pdf" | "docx" | "xlsx" | "pptx" | "text" | "image" | "audio" | "unknown";
   content?: string;
   base64?: string;
   wordCount?: number;
