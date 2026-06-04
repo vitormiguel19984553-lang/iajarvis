@@ -2,6 +2,7 @@
 import * as pdfjsLib from "pdfjs-dist";
 import mammoth from "mammoth";
 import * as XLSX from "xlsx";
+import JSZip from "jszip";
 
 // Use a CDN worker so we don't need to bundle the worker file.
 try {
@@ -14,6 +15,7 @@ export type ExtractedKind =
   | "pdf"
   | "docx"
   | "xlsx"
+  | "pptx"
   | "text"
   | "image"
   | "audio"
@@ -55,6 +57,11 @@ export function detectKind(file: File): ExtractedKind {
     ext === "csv"
   )
     return "xlsx";
+  if (
+    mt === "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||
+    ext === "pptx"
+  )
+    return "pptx";
   if (mt.startsWith("image/")) return "image";
   if (mt.startsWith("audio/")) return "audio";
   if (mt.startsWith("text/") || TEXT_EXTS.has(ext)) return "text";
