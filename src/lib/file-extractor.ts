@@ -2,6 +2,7 @@
 import * as pdfjsLib from "pdfjs-dist";
 import mammoth from "mammoth";
 import * as XLSX from "xlsx";
+import JSZip from "jszip";
 
 // Use a CDN worker so we don't need to bundle the worker file.
 try {
@@ -14,6 +15,7 @@ export type ExtractedKind =
   | "pdf"
   | "docx"
   | "xlsx"
+  | "pptx"
   | "text"
   | "image"
   | "audio"
@@ -55,6 +57,11 @@ export function detectKind(file: File): ExtractedKind {
     ext === "csv"
   )
     return "xlsx";
+  if (
+    mt === "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||
+    ext === "pptx"
+  )
+    return "pptx";
   if (mt.startsWith("image/")) return "image";
   if (mt.startsWith("audio/")) return "audio";
   if (mt.startsWith("text/") || TEXT_EXTS.has(ext)) return "text";
@@ -84,6 +91,10 @@ export async function extractFileContent(file: File): Promise<ExtractedFile> {
     if (kind === "xlsx") {
       const text = await extractXLSX(file);
       return { ...base, content: text };
+    }
+    if (kind === "pptx") {
+      const { text, slideCount } = await extractPPTX(file);
+      return { ...base, content: text, pageCount: slideCount, wordCount: countWords(text) };
     }
     if (kind === "text") {
       const text = await readText(file);
@@ -153,6 +164,36 @@ async function extractXLSX(file: File): Promise<string> {
     out += `\n=== Folha: ${name} ===\n${csv}`;
   }
   return out.trim();
+}
+
+async function extractPPTX(file: File): Promise<{ text: string; slideCount: number }> {
+  const ab = await file.arrayBuffer();
+  const zip = await JSZip.loadAsync(ab);
+  const slideFiles = Object.keys(zip.files)
+    .filter((p) => /^ppt\/slides\/slide\d+\.xml$/.test(p))
+    .sort((a, b) => {
+      const na = parseInt(a.match(/slide(\d+)\.xml/)?.[1] ?? "0", 10);
+      const nb = parseInt(b.match(/slide(\d+)\.xml/)?.[1] ?? "0", 10);
+      return na - nb;
+    });
+  let out = "";
+  for (let i = 0; i < slideFiles.length; i++) {
+    const xml = await zip.files[slideFiles[i]].async("string");
+    const texts: string[] = [];
+    const re = /<a:t[^>]*>([\s\S]*?)<\/a:t>/g;
+    let m: RegExpExecArray | null;
+    while ((m = re.exec(xml)) !== null) {
+      const t = m[1]
+        .replace(/&amp;/g, "&")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">")
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'");
+      if (t.trim()) texts.push(t);
+    }
+    out += `\n--- Slide ${i + 1} ---\n${texts.join("\n")}`;
+  }
+  return { text: out.trim(), slideCount: slideFiles.length };
 }
 
 function readText(file: File): Promise<string> {

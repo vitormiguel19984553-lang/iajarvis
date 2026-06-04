@@ -8,7 +8,7 @@ export type UploadedFile = {
   type: string; // extension
   status: "analyzed" | "pending" | "analyzing" | "error";
   mimeType: string;
-  kind?: "pdf" | "docx" | "xlsx" | "text" | "image" | "audio" | "unknown";
+  kind?: "pdf" | "docx" | "xlsx" | "pptx" | "text" | "image" | "audio" | "unknown";
   content?: string;
   base64?: string;
   wordCount?: number;
@@ -84,7 +84,7 @@ export function JarvisRightPanel({
         ref={inputRef}
         type="file"
         multiple
-        accept=".pdf,.txt,.md,.csv,.json,.xml,.yaml,.yml,.log,.png,.jpg,.jpeg,.webp,.gif,.svg,.js,.ts,.tsx,.jsx,.py,.go,.rs,.java,.c,.cpp,.html,.css,.docx,.xlsx,.pptx,.mp3,.wav,.m4a"
+        accept=".pdf,.txt,.md,.csv,.json,.xml,.yaml,.yml,.log,.png,.jpg,.jpeg,.webp,.gif,.svg,.js,.ts,.tsx,.jsx,.py,.go,.rs,.java,.c,.cpp,.html,.css,.docx,.xlsx,.pptx,.mp3,.wav,.m4a,.ogg,.aac,.flac"
         className="hidden"
         onChange={(e) => {
           if (e.target.files) onPickFiles(Array.from(e.target.files));

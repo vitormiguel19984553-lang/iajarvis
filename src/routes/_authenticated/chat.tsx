@@ -217,6 +217,8 @@ function ChatPage() {
             toast.success("Nova habilidade", { description: text });
           }}
           files={files}
+          onPickFiles={pickFiles}
+          onRemoveFile={(name) => setFiles((prev) => prev.filter((f) => f.name !== name))}
           onActivityChange={setActivities}
           onMessagesChange={(messages: UIMessage[]) =>
             updateThread(active.id, { messages })

@@ -3,6 +3,7 @@
 import jsPDF from "jspdf";
 import { Document, Packer, Paragraph, TextRun } from "docx";
 import * as XLSX from "xlsx";
+import pptxgen from "pptxgenjs";
 import { saveAs } from "file-saver";
 
 export interface GeneratedFile {
@@ -49,6 +50,9 @@ export async function generateFile(fileName: string, content: string): Promise<G
     case "xlsx":
     case "xls":
       blob = makeXLSX(content);
+      break;
+    case "pptx":
+      blob = await makePPTX(content);
       break;
     case "csv":
       blob = new Blob([content], { type: "text/csv;charset=utf-8;" });
@@ -180,4 +184,57 @@ function makeXLSX(content: string): Blob {
   return new Blob([buf], {
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   });
+}
+
+async function makePPTX(content: string): Promise<Blob> {
+  const pres = new pptxgen();
+  pres.layout = "LAYOUT_WIDE";
+  pres.defineSlideMaster({
+    title: "JARVIS_DARK",
+    background: { color: "0A0A0F" },
+    objects: [
+      {
+        text: {
+          text: "J.A.R.V.I.S",
+          options: {
+            x: 0.4, y: 0.2, w: 4, h: 0.3,
+            fontSize: 10, color: "00D4FF", bold: true, fontFace: "Arial",
+          },
+        },
+      },
+    ],
+  });
+
+  // Split content into slides via lines starting with "# " or blank-line groups.
+  const blocks = content
+    .split(/\n\s*\n/)
+    .map((b) => b.trim())
+    .filter(Boolean);
+  const slides = blocks.length > 0 ? blocks : [content || "Slide"];
+
+  for (let i = 0; i < slides.length; i++) {
+    const block = slides[i];
+    const lines = block.split("\n").map((l) => l.trim()).filter(Boolean);
+    const titleLine = (lines[0] ?? `Slide ${i + 1}`).replace(/^#+\s*/, "");
+    const body = lines.slice(1).map((l) => l.replace(/^[-*]\s+/, "• "));
+    const slide = pres.addSlide({ masterName: "JARVIS_DARK" });
+    slide.addText(titleLine, {
+      x: 0.5, y: 0.5, w: 12.3, h: 1,
+      fontSize: 32, bold: true, color: "FFFFFF", fontFace: "Arial",
+    });
+    if (body.length > 0) {
+      slide.addText(body.join("\n"), {
+        x: 0.6, y: 1.7, w: 12.1, h: 5.3,
+        fontSize: 18, color: "E0F0FF", fontFace: "Arial",
+        valign: "top",
+      });
+    }
+    slide.addText(`${i + 1} / ${slides.length}`, {
+      x: 12, y: 7.1, w: 1, h: 0.3,
+      fontSize: 9, color: "00D4FF", align: "right",
+    });
+  }
+
+  const data = (await pres.write({ outputType: "blob" })) as Blob;
+  return data;
 }

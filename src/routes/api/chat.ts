@@ -30,6 +30,7 @@ type ChatRequestBody = {
   hasFiles?: boolean;
   fileContext?: string;
   images?: Array<{ mimeType: string; base64: string }>;
+  audios?: Array<{ mimeType: string; base64: string; name?: string }>;
 };
 
 export const Route = createFileRoute("/api/chat")({
@@ -37,7 +38,7 @@ export const Route = createFileRoute("/api/chat")({
     handlers: {
       POST: async ({ request }) => {
         const body = (await request.json()) as ChatRequestBody;
-        const { messages, systemPrompt, model, skills, hasFiles, fileContext, images } = body;
+        const { messages, systemPrompt, model, skills, hasFiles, fileContext, images, audios } = body;
 
 
         if (!Array.isArray(messages)) {
@@ -203,9 +204,10 @@ Regras:
 
         const modelMessages = (await convertToModelMessages(messages as UIMessage[])) as ModelMessage[];
 
-        // Attach images to the last user message as multimodal parts.
+        // Attach images + audios to the last user message as multimodal parts.
         const safeImages = (images ?? []).slice(0, MAX_IMAGES);
-        if (safeImages.length > 0) {
+        const safeAudios = (audios ?? []).slice(0, 3);
+        if (safeImages.length > 0 || safeAudios.length > 0) {
           for (let i = modelMessages.length - 1; i >= 0; i--) {
             const m = modelMessages[i];
             if (m.role !== "user") continue;
@@ -216,9 +218,14 @@ Regras:
               type: "image" as const,
               image: `data:${img.mimeType};base64,${img.base64}`,
             }));
+            const audioParts = safeAudios.map((a) => ({
+              type: "file" as const,
+              data: a.base64,
+              mediaType: a.mimeType || "audio/mpeg",
+            }));
             modelMessages[i] = {
               ...m,
-              content: [...existing, ...imageParts],
+              content: [...existing, ...imageParts, ...audioParts],
             } as ModelMessage;
             break;
           }
