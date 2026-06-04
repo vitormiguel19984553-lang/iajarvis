@@ -139,6 +139,8 @@ ${c}${truncated}`;
 
   const [input, setInput] = useState("");
   const [voiceModeOpen, setVoiceModeOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragCounterRef = useRef(0);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const lastLearnedIdRef = useRef<string | null>(null);
   const [generatedFiles, setGeneratedFiles] = useState<Record<string, GeneratedFile[]>>({});
@@ -367,7 +369,35 @@ ${c}${truncated}`;
       : MODEL_CATALOG.find((m) => m.id === settings.manualModel)?.label ?? "Gemini 3 Flash";
 
   return (
-    <div className="flex flex-col h-full min-w-0 flex-1 bg-background">
+    <div
+      className="flex flex-col h-full min-w-0 flex-1 bg-background relative"
+      onDragEnter={(e) => {
+        if (!onPickFiles) return;
+        if (!e.dataTransfer?.types?.includes("Files")) return;
+        e.preventDefault();
+        dragCounterRef.current += 1;
+        setIsDragging(true);
+      }}
+      onDragOver={(e) => {
+        if (!onPickFiles) return;
+        if (!e.dataTransfer?.types?.includes("Files")) return;
+        e.preventDefault();
+      }}
+      onDragLeave={(e) => {
+        if (!onPickFiles) return;
+        e.preventDefault();
+        dragCounterRef.current = Math.max(0, dragCounterRef.current - 1);
+        if (dragCounterRef.current === 0) setIsDragging(false);
+      }}
+      onDrop={(e) => {
+        if (!onPickFiles) return;
+        e.preventDefault();
+        dragCounterRef.current = 0;
+        setIsDragging(false);
+        const dropped = Array.from(e.dataTransfer?.files ?? []);
+        if (dropped.length > 0) onPickFiles(dropped);
+      }}
+    >
       <header className="h-[52px] border-b border-border flex items-center justify-between px-5 shrink-0">
         <div className="flex items-center gap-2.5">
           <div
