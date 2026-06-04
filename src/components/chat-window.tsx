@@ -31,6 +31,8 @@ interface Props {
   skills: LearnedSkill[];
   onLearnSkill: (text: string) => void;
   files: UploadedFile[];
+  onPickFiles?: (files: File[]) => void;
+  onRemoveFile?: (name: string) => void;
   onActivityChange: (activities: Activity[]) => void;
   greetingName?: string | null;
 }
@@ -66,6 +68,8 @@ export function ChatWindow({
   skills,
   onLearnSkill,
   files,
+  onPickFiles,
+  onRemoveFile,
   onActivityChange,
   greetingName,
 }: Props) {
