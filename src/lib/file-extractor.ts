@@ -162,6 +162,8 @@ async function extractXLSX(file: File): Promise<string> {
   for (const name of wb.SheetNames) {
     const csv = XLSX.utils.sheet_to_csv(wb.Sheets[name]);
     out += `\n=== Folha: ${name} ===\n${csv}`;
+  }
+  return out.trim();
 }
 
 async function extractPPTX(file: File): Promise<{ text: string; slideCount: number }> {
@@ -177,7 +179,6 @@ async function extractPPTX(file: File): Promise<{ text: string; slideCount: numb
   let out = "";
   for (let i = 0; i < slideFiles.length; i++) {
     const xml = await zip.files[slideFiles[i]].async("string");
-    // Extract <a:t>...</a:t> text runs.
     const texts: string[] = [];
     const re = /<a:t[^>]*>([\s\S]*?)<\/a:t>/g;
     let m: RegExpExecArray | null;
@@ -193,8 +194,6 @@ async function extractPPTX(file: File): Promise<{ text: string; slideCount: numb
     out += `\n--- Slide ${i + 1} ---\n${texts.join("\n")}`;
   }
   return { text: out.trim(), slideCount: slideFiles.length };
-}
-  return out.trim();
 }
 
 function readText(file: File): Promise<string> {
