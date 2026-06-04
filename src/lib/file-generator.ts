@@ -51,6 +51,9 @@ export async function generateFile(fileName: string, content: string): Promise<G
     case "xls":
       blob = makeXLSX(content);
       break;
+    case "pptx":
+      blob = await makePPTX(content);
+      break;
     case "csv":
       blob = new Blob([content], { type: "text/csv;charset=utf-8;" });
       break;
