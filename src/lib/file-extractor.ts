@@ -162,7 +162,38 @@ async function extractXLSX(file: File): Promise<string> {
   for (const name of wb.SheetNames) {
     const csv = XLSX.utils.sheet_to_csv(wb.Sheets[name]);
     out += `\n=== Folha: ${name} ===\n${csv}`;
+}
+
+async function extractPPTX(file: File): Promise<{ text: string; slideCount: number }> {
+  const ab = await file.arrayBuffer();
+  const zip = await JSZip.loadAsync(ab);
+  const slideFiles = Object.keys(zip.files)
+    .filter((p) => /^ppt\/slides\/slide\d+\.xml$/.test(p))
+    .sort((a, b) => {
+      const na = parseInt(a.match(/slide(\d+)\.xml/)?.[1] ?? "0", 10);
+      const nb = parseInt(b.match(/slide(\d+)\.xml/)?.[1] ?? "0", 10);
+      return na - nb;
+    });
+  let out = "";
+  for (let i = 0; i < slideFiles.length; i++) {
+    const xml = await zip.files[slideFiles[i]].async("string");
+    // Extract <a:t>...</a:t> text runs.
+    const texts: string[] = [];
+    const re = /<a:t[^>]*>([\s\S]*?)<\/a:t>/g;
+    let m: RegExpExecArray | null;
+    while ((m = re.exec(xml)) !== null) {
+      const t = m[1]
+        .replace(/&amp;/g, "&")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">")
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'");
+      if (t.trim()) texts.push(t);
+    }
+    out += `\n--- Slide ${i + 1} ---\n${texts.join("\n")}`;
   }
+  return { text: out.trim(), slideCount: slideFiles.length };
+}
   return out.trim();
 }
 
