@@ -549,6 +549,102 @@ ${c}${truncated}`;
         </div>
       )}
 
+      {files.length > 0 && (
+        <div className="px-5 py-2 border-t border-border flex flex-wrap gap-2 max-h-[88px] overflow-y-auto scroll-thin">
+          {files.map((f) => {
+            const isReady = f.status === "analyzed";
+            const isErr = f.status === "error";
+            const tag = (f.kind ?? f.type).toString().toUpperCase().slice(0, 4);
+            return (
+              <div
+                key={f.name}
+                className="group flex items-center gap-2 pl-2 pr-1 py-1 rounded-lg text-[11px]"
+                style={{
+                  background: isErr
+                    ? "color-mix(in oklab, var(--destructive) 10%, transparent)"
+                    : "color-mix(in oklab, var(--accent-cyan) 8%, transparent)",
+                  border: `1px solid ${
+                    isErr
+                      ? "color-mix(in oklab, var(--destructive) 35%, transparent)"
+                      : isReady
+                        ? "color-mix(in oklab, var(--accent-cyan) 28%, transparent)"
+                        : "color-mix(in oklab, var(--warning) 35%, transparent)"
+                  }`,
+                  color: "var(--foreground)",
+                  maxWidth: 280,
+                }}
+                title={
+                  isErr
+                    ? `Erro: ${f.errorMsg ?? "falha"}`
+                    : f.status === "analyzing"
+                      ? "A ler conteúdo…"
+                      : `${f.size}${f.wordCount ? ` · ${f.wordCount}w` : ""}${
+                          f.pageCount ? ` · ${f.pageCount}p` : ""
+                        }`
+                }
+              >
+                <span
+                  className="font-bold tracking-wider"
+                  style={{ color: "var(--accent-cyan)", fontSize: 9 }}
+                >
+                  {tag}
+                </span>
+                <span className="truncate max-w-[160px]">{f.name}</span>
+                <span className="text-muted-foreground shrink-0">
+                  {f.status === "analyzing"
+                    ? "a ler…"
+                    : isErr
+                      ? "erro"
+                      : f.size}
+                </span>
+                {onRemoveFile && (
+                  <button
+                    onClick={() => onRemoveFile(f.name)}
+                    className="opacity-60 hover:opacity-100 ml-0.5 p-0.5 rounded hover:bg-white/5"
+                    title="Remover"
+                    aria-label={`Remover ${f.name}`}
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {isDragging && (
+        <div
+          className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none"
+          style={{
+            background: "color-mix(in oklab, var(--accent-cyan) 10%, rgba(10,10,15,0.85))",
+            backdropFilter: "blur(4px)",
+          }}
+        >
+          <div
+            className="rounded-2xl px-10 py-12 text-center"
+            style={{
+              border: "2px dashed var(--accent-cyan)",
+              background: "color-mix(in oklab, var(--accent-cyan) 6%, transparent)",
+              boxShadow: "0 0 60px color-mix(in oklab, var(--accent-cyan) 35%, transparent)",
+              animation: "orbPulse 1.6s ease-in-out infinite",
+            }}
+          >
+            <div className="text-5xl mb-3">📂</div>
+            <div
+              className="text-[18px] font-semibold tracking-[0.18em] uppercase"
+              style={{ color: "var(--accent-cyan)", fontFamily: "var(--font-display)" }}
+            >
+              Largar ficheiros aqui
+            </div>
+            <div className="text-[12px] text-muted-foreground mt-2">
+              PDF · DOCX · XLSX · PPTX · TXT · MD · Código · Imagens · Áudio
+            </div>
+          </div>
+        </div>
+      )}
+
+
       <JarvisVoiceBar
         input={input}
         setInput={setInput}
