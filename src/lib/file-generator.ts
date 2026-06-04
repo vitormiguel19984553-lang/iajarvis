@@ -3,6 +3,7 @@
 import jsPDF from "jspdf";
 import { Document, Packer, Paragraph, TextRun } from "docx";
 import * as XLSX from "xlsx";
+import pptxgen from "pptxgenjs";
 import { saveAs } from "file-saver";
 
 export interface GeneratedFile {
