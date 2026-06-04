@@ -92,6 +92,10 @@ export async function extractFileContent(file: File): Promise<ExtractedFile> {
       const text = await extractXLSX(file);
       return { ...base, content: text };
     }
+    if (kind === "pptx") {
+      const { text, slideCount } = await extractPPTX(file);
+      return { ...base, content: text, pageCount: slideCount, wordCount: countWords(text) };
+    }
     if (kind === "text") {
       const text = await readText(file);
       return { ...base, content: text, wordCount: countWords(text) };
