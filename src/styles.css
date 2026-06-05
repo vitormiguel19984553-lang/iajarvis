@@ -258,3 +258,16 @@
 }
 .typing-dot:nth-child(2) { animation-delay: 0.2s; }
 .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* Mobile: input visível acima do teclado (iOS Safari + Android Chrome) */
+@supports (height: 100dvh) {
+  .h-screen { height: 100dvh; }
+}
+:root {
+  --kb-inset: env(keyboard-inset-height, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+.kb-safe-bottom {
+  padding-bottom: max(var(--safe-bottom), var(--kb-inset));
+}
+
