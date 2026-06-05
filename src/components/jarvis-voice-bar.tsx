@@ -189,7 +189,7 @@ export function JarvisVoiceBar({
   };
 
   return (
-    <div className="border-t border-border bg-sidebar px-5 py-3.5 flex flex-col gap-3 shrink-0">
+    <div className="border-t border-border bg-sidebar px-5 py-3.5 flex flex-col gap-3 shrink-0 kb-safe-bottom sticky bottom-0 z-10">
       <div className="bg-background border border-border rounded-xl px-4 py-2.5 flex items-center gap-3.5">
         <Orb listening={listening} recording={recording} />
         <div className="flex-1 min-w-0">
