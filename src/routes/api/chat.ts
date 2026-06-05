@@ -33,6 +33,8 @@ type ChatRequestBody = {
   audios?: Array<{ mimeType: string; base64: string; name?: string }>;
 };
 
+const FILE_CONFIRM_RULE = `\n\nQuando o utilizador anexar ficheiros, COMEÇA SEMPRE a resposta com uma linha de confirmação no formato:\n✅ Ficheiro recebido: <nome> — <N> palavras/páginas processadas\n(uma linha por ficheiro). Só depois prossegue com a análise pedida.`;
+
 export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
