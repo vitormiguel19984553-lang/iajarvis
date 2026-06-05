@@ -18,6 +18,7 @@ import {
   generateFile,
   type GeneratedFile,
 } from "@/lib/file-generator";
+import { parseAPIError } from "@/lib/api-error";
 
 
 interface Props {
@@ -152,18 +153,8 @@ ${c}${truncated}`;
     messages: thread.messages,
     transport,
     onError: (err) => {
-      const msg = err?.message ?? "";
-      if (msg.includes("daily_limit_reached") || msg.includes("429")) {
-        toast.error("Limite diário atingido", {
-          description: "Plano Free: 50 mensagens/dia. Faz upgrade para Pro ou ativa uma chave.",
-        });
-      } else if (msg.includes("402")) {
-        toast.error("Créditos esgotados", {
-          description: "Adiciona créditos no workspace.",
-        });
-      } else {
-        toast.error("Erro na resposta", { description: msg.slice(0, 200) });
-      }
+      const { title, description } = parseAPIError(err);
+      toast.error(title, description ? { description } : undefined);
     },
   });
 
