@@ -236,8 +236,9 @@ Regras:
         const gateway = createLovableAiGatewayProvider(key);
         const result = streamText({
           model: gateway(gatewayId),
-          system: baseSystem + skillsBlock + filesBlock + fileGenBlock + routedNote,
+          system: baseSystem + skillsBlock + filesBlock + fileGenBlock + FILE_CONFIRM_RULE + routedNote,
           messages: modelMessages,
+          abortSignal: request.signal,
         });
 
 
