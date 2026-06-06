@@ -29,19 +29,33 @@ export function ThreadListPanel({
   onClose,
 }: Props) {
   return (
-    <aside className="w-[240px] shrink-0 border-r border-border bg-sidebar flex flex-col">
-      <div className="h-[52px] px-4 flex items-center justify-between border-b border-border shrink-0">
-        <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
-          Conversations
-        </span>
-        <button
-          onClick={onClose}
-          className="text-muted-foreground hover:text-foreground transition-colors"
-          title="Hide history"
-        >
-          <X className="h-4 w-4" />
-        </button>
-      </div>
+    <>
+      {/* Mobile backdrop */}
+      <div
+        className="md:hidden fixed inset-0 z-40 bg-black/70 backdrop-blur-sm"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      <aside
+        className="
+          fixed inset-y-0 left-0 z-50 w-[85vw] max-w-[320px] shadow-2xl
+          md:static md:w-[240px] md:max-w-none md:shadow-none md:z-auto
+          shrink-0 border-r border-border bg-sidebar flex flex-col
+        "
+      >
+        <div className="h-[52px] px-4 flex items-center justify-between border-b border-border shrink-0">
+          <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
+            Conversas
+          </span>
+          <button
+            onClick={onClose}
+            className="text-muted-foreground hover:text-foreground transition-colors h-9 w-9 flex items-center justify-center -mr-2"
+            title="Fechar"
+            aria-label="Fechar"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
       <div className="flex-1 overflow-y-auto scroll-thin p-2">
         {threads.length === 0 ? (
           <div className="text-[12px] text-muted-foreground text-center py-6">
@@ -86,5 +100,6 @@ export function ThreadListPanel({
         )}
       </div>
     </aside>
+    </>
   );
 }
