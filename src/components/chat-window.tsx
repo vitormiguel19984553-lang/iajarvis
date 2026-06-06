@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useOnlineStatus } from "@/lib/use-online-status";
-import { WifiOff } from "lucide-react";
+import { WifiOff, Menu } from "lucide-react";
 import {
   detectFileRequests,
   generateFile,
@@ -28,6 +28,7 @@ interface Props {
   activeTab: string;
   setActiveTab: (t: string) => void;
   onAttachClick: () => void;
+  onToggleSidebar?: () => void;
   settings: Settings;
   skills: LearnedSkill[];
   onLearnSkill: (text: string) => void;
@@ -65,6 +66,7 @@ export function ChatWindow({
   activeTab,
   setActiveTab,
   onAttachClick,
+  onToggleSidebar,
   settings,
   skills,
   onLearnSkill,
@@ -389,8 +391,17 @@ ${c}${truncated}`;
         if (dropped.length > 0) onPickFiles(dropped);
       }}
     >
-      <header className="h-[52px] border-b border-border flex items-center justify-between px-5 shrink-0">
-        <div className="flex items-center gap-2.5">
+      <header className="h-[52px] border-b border-border flex items-center justify-between px-3 md:px-5 shrink-0 gap-2">
+        <div className="flex items-center gap-2 md:gap-2.5 min-w-0">
+          {onToggleSidebar && (
+            <button
+              onClick={onToggleSidebar}
+              className="md:hidden h-10 w-10 -ml-1 inline-flex items-center justify-center rounded-lg text-[#00d4ff] border border-[rgba(0,212,255,0.2)] shrink-0"
+              aria-label="Abrir conversas"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+          )}
           <div
             className="w-2 h-2 rounded-full pulse-dot"
             style={{ background: "var(--success)", boxShadow: "0 0 8px var(--success)" }}
