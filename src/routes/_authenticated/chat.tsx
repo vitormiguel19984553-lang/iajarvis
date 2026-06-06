@@ -209,6 +209,10 @@ function ChatPage() {
           }}
           onDelete={(id) => { deleteThread(id); toast("Conversa eliminada"); }}
           onClose={() => setHistoryOpen(false)}
+          onNavigate={handleSidebar}
+          onNewChat={() => { createThread(); toast.success("Nova conversa"); }}
+          isAdmin={isAdmin}
+          onLogout={handleLogout}
         />
       )}
 
