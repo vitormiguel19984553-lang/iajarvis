@@ -425,7 +425,7 @@ ${c}${truncated}`;
           </span>
         </div>
 
-        <div className="flex gap-1.5">
+        <div className="hidden md:flex gap-1.5">
           {["All", "Files", "Activity", "Stats"].map((tab) => {
             const key = tab.toLowerCase();
             const active = activeTab === key;
@@ -446,8 +446,8 @@ ${c}${truncated}`;
           })}
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="text-[12px] text-muted-foreground">Model: {modelLabel}</span>
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="hidden md:inline text-[12px] text-muted-foreground">Model: {modelLabel}</span>
           <div
             className="text-[10px] rounded-md px-2 py-0.5 font-bold tracking-[0.18em]"
             style={{

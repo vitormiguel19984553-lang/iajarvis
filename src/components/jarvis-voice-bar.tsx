@@ -285,7 +285,7 @@ export function JarvisVoiceBar({
             }}
             rows={1}
             placeholder="Message J.A.R.V.I.S… or use voice above"
-            className="w-full bg-transparent border-0 resize-none text-[13px] leading-6 outline-none placeholder:text-muted-foreground max-h-[120px]"
+            className="w-full bg-transparent border-0 resize-none text-[16px] md:text-[13px] leading-6 outline-none placeholder:text-muted-foreground max-h-[120px]"
           />
         </div>
         {isBusy ? (
