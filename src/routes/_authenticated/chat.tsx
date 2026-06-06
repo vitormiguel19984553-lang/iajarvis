@@ -47,7 +47,9 @@ function ChatPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [showRightPanel, setShowRightPanel] = useState(true);
-  const [historyOpen, setHistoryOpen] = useState(true);
+  const [historyOpen, setHistoryOpen] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth >= 768 : true,
+  );
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
