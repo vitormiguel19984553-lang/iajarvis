@@ -184,22 +184,29 @@ function ChatPage() {
       />
 
 
-      <JarvisSidebar
-        active={nav}
-        onSelect={handleSidebar}
-        onNewChat={() => { createThread(); toast.success("Nova conversa"); }}
-        onToggleHistory={() => setHistoryOpen((v) => !v)}
-        historyOpen={historyOpen}
-        preferredName={profile?.preferred_name ?? null}
-        isAdmin={isAdmin}
-        onLogout={handleLogout}
-      />
+      <div className="hidden md:contents">
+        <JarvisSidebar
+          active={nav}
+          onSelect={handleSidebar}
+          onNewChat={() => { createThread(); toast.success("Nova conversa"); }}
+          onToggleHistory={() => setHistoryOpen((v) => !v)}
+          historyOpen={historyOpen}
+          preferredName={profile?.preferred_name ?? null}
+          isAdmin={isAdmin}
+          onLogout={handleLogout}
+        />
+      </div>
 
       {historyOpen && (
         <ThreadListPanel
           threads={threads}
           activeId={activeId}
-          onSelect={(id) => setActiveId(id)}
+          onSelect={(id) => {
+            setActiveId(id);
+            if (typeof window !== "undefined" && window.innerWidth < 768) {
+              setHistoryOpen(false);
+            }
+          }}
           onDelete={(id) => { deleteThread(id); toast("Conversa eliminada"); }}
           onClose={() => setHistoryOpen(false)}
         />
@@ -212,6 +219,7 @@ function ChatPage() {
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           onAttachClick={() => fileInputRef.current?.click()}
+          onToggleSidebar={() => setHistoryOpen((v) => !v)}
           settings={settings}
           skills={skills}
           onLearnSkill={(text) => {
@@ -233,15 +241,16 @@ function ChatPage() {
         />
       )}
       {showRightPanel && (
-        <JarvisRightPanel
-          section={section}
-          files={files}
-          onPickFiles={pickFiles}
-          onRemoveFile={(name) => setFiles((prev) => prev.filter((f) => f.name !== name))}
-          activities={activities}
-          stats={stats}
-        />
-
+        <div className="hidden md:contents">
+          <JarvisRightPanel
+            section={section}
+            files={files}
+            onPickFiles={pickFiles}
+            onRemoveFile={(name) => setFiles((prev) => prev.filter((f) => f.name !== name))}
+            activities={activities}
+            stats={stats}
+          />
+        </div>
       )}
 
       <SettingsDialog
