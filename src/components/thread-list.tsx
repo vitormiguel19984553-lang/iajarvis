@@ -100,5 +100,6 @@ export function ThreadListPanel({
         )}
       </div>
     </aside>
+    </>
   );
 }
