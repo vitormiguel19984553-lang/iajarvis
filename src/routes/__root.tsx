@@ -7,6 +7,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { ErrorBoundary } from "@/components/error-boundary";
 
 import appCss from "../styles.css?url";
 
@@ -124,7 +125,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <ErrorBoundary>
+        <Outlet />
+      </ErrorBoundary>
     </QueryClientProvider>
   );
 }
