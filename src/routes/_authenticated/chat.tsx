@@ -121,6 +121,7 @@ function ChatPage() {
       type: f.name.split(".").pop()?.toLowerCase() || "file",
       status: "analyzing",
       mimeType: f.type || "application/octet-stream",
+      progress: 0,
     }));
     setFiles((prev) => [...prev, ...placeholders]);
     toast.success(`${accepted.length} ficheiro(s) — a ler conteúdo…`);
@@ -128,7 +129,11 @@ function ChatPage() {
     const { extractFileContent } = await import("@/lib/file-extractor");
     await Promise.all(
       accepted.map(async (f) => {
-        const r = await extractFileContent(f);
+        const r = await extractFileContent(f, (p) => {
+          setFiles((prev) =>
+            prev.map((e) => (e.name === f.name ? { ...e, progress: p } : e)),
+          );
+        });
         setFiles((prev) =>
           prev.map((e) =>
             e.name === f.name
@@ -142,10 +147,14 @@ function ChatPage() {
                   wordCount: r.wordCount,
                   pageCount: r.pageCount,
                   errorMsg: r.error,
+                  progress: 100,
                 }
               : e,
           ),
         );
+        if (r.error) {
+          toast.error(`Falha em ${f.name}`, { description: r.error });
+        }
       }),
     );
   };

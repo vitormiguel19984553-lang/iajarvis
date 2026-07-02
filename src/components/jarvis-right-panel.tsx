@@ -13,6 +13,7 @@ export type UploadedFile = {
   base64?: string;
   wordCount?: number;
   pageCount?: number;
+  progress?: number; // 0-100 while analyzing
   errorMsg?: string;
 };
 
@@ -128,9 +129,19 @@ export function JarvisRightPanel({
                     {f.status === "analyzed" && f.pageCount
                       ? ` · ${f.pageCount} pág.`
                       : ""}
-                    {f.status === "analyzing" ? " · a ler…" : ""}
-                    {f.status === "error" ? " · erro" : ""}
+                    {f.status === "analyzing"
+                      ? ` · a ler… ${f.progress ?? 0}%`
+                      : ""}
+                    {f.status === "error" ? ` · ${f.errorMsg ?? "erro"}` : ""}
                   </div>
+                  {f.status === "analyzing" && (
+                    <div className="mt-1 h-1 w-full rounded-full bg-[rgba(255,255,255,0.06)] overflow-hidden">
+                      <div
+                        className="h-full bg-[#00d4ff] transition-all duration-200"
+                        style={{ width: `${Math.max(4, f.progress ?? 0)}%` }}
+                      />
+                    </div>
+                  )}
                 </div>
                 {onPreviewFile && (
                   <button
