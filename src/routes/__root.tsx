@@ -85,7 +85,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:description", content: "Jarvis IA: IA generativa minimalista e futurista que transforma ideias complexas em realidade com máxima eficiência, estilo ultra-clean e performance avançada." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a906ad03-664a-4190-8ef3-de4ae53fcf98/id-preview-05f19811--f2d1d06f-a46e-4ea1-9f85-d4d9ac93601d.lovable.app-1779788678291.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a906ad03-664a-4190-8ef3-de4ae53fcf98/id-preview-05f19811--f2d1d06f-a46e-4ea1-9f85-d4d9ac93601d.lovable.app-1779788678291.png" },
-      { name: "theme-color", content: "#0a0a0f" },
+      { name: "theme-color", content: "#050b0f" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { name: "apple-mobile-web-app-title", content: "Jarvis" },
@@ -94,6 +94,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Work+Sans:wght@300;400;500;600;700&display=swap" },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       { rel: "icon", type: "image/png", sizes: "192x192", href: "/icon-192.png" },

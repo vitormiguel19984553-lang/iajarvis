@@ -38,13 +38,13 @@ function ResetPasswordPage() {
           onChange={(e) => setPassword(e.target.value)}
           required
           minLength={6}
-          className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[#00d4ff]"
+          className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[#3ee6ff]"
         />
         <button
           type="submit"
           disabled={busy}
           className="w-full py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-50"
-          style={{ background: "linear-gradient(135deg, #00d4ff, #7c3aed)" }}
+          style={{ background: "linear-gradient(135deg, #3ee6ff, #7c3aed)" }}
         >
           {busy ? "..." : "Atualizar senha"}
         </button>

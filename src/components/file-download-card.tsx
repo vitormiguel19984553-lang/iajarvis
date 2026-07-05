@@ -31,7 +31,7 @@ const COLORS: Record<string, string> = {
 export function FileDownloadCard({ file }: { file: GeneratedFile }) {
   const [downloading, setDownloading] = useState(false);
   const [done, setDone] = useState(false);
-  const color = COLORS[file.ext] || "#00d4ff";
+  const color = COLORS[file.ext] || "#3ee6ff";
   const label = ICONS[file.ext] || file.ext.slice(0, 4).toUpperCase();
   const sizeKB = Math.max(1, Math.round(file.size / 1024));
 

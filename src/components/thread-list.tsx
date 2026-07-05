@@ -65,7 +65,7 @@ export function ThreadListPanel({
         "flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] transition-colors min-h-[44px]",
         danger
           ? "text-foreground/85 hover:bg-[rgba(239,68,68,0.08)] hover:text-destructive"
-          : "text-foreground/85 hover:bg-[rgba(0,212,255,0.06)] hover:text-[#00d4ff]",
+          : "text-foreground/85 hover:bg-[rgba(62, 230, 255,0.06)] hover:text-[#3ee6ff]",
       )}
     >
       <Icon className="h-4 w-4 shrink-0" />
@@ -110,7 +110,7 @@ export function ThreadListPanel({
                 onNewChat();
                 onClose();
               }}
-              className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-[13px] font-medium bg-[rgba(0,212,255,0.1)] text-[#00d4ff] hover:bg-[rgba(0,212,255,0.16)] transition-colors min-h-[44px]"
+              className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-[13px] font-medium bg-[rgba(62, 230, 255,0.1)] text-[#3ee6ff] hover:bg-[rgba(62, 230, 255,0.16)] transition-colors min-h-[44px]"
             >
               <Plus className="h-4 w-4" />
               Nova conversa
@@ -133,7 +133,7 @@ export function ThreadListPanel({
                     className={cn(
                       "group flex items-center gap-2 px-2 py-2 rounded-lg cursor-pointer transition-colors",
                       isActive
-                        ? "bg-[rgba(0,212,255,0.1)] text-[#00d4ff]"
+                        ? "bg-[rgba(62, 230, 255,0.1)] text-[#3ee6ff]"
                         : "text-foreground/85 hover:bg-[rgba(255,255,255,0.04)]",
                     )}
                     onClick={() => onSelect(t.id)}
