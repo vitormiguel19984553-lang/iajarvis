@@ -471,58 +471,88 @@ ${c}${truncated}`;
 
       <div ref={scrollerRef} className="flex-1 overflow-y-auto scroll-thin">
         {messages.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center px-6 max-w-2xl mx-auto">
+          <div className="h-full flex flex-col items-center justify-center px-6 focus-column">
+            {/* Arc Reactor orb */}
+            <div className="relative h-40 w-40 mb-8 flex items-center justify-center">
+              <div
+                className="absolute inset-0 rounded-full spin-ring"
+                style={{
+                  border: "1px dashed rgba(62,230,255,0.25)",
+                  maskImage: "conic-gradient(from 0deg, transparent 0deg, black 60deg, black 300deg, transparent 360deg)",
+                }}
+              />
+              <div
+                className="absolute inset-3 rounded-full spin-ring-reverse"
+                style={{ border: "1px solid rgba(62,230,255,0.18)" }}
+              />
+              <div
+                className="absolute inset-6 rounded-full"
+                style={{ border: "1px solid rgba(62,230,255,0.12)" }}
+              />
+              <div
+                className="h-20 w-20 rounded-full flex items-center justify-center text-white text-[26px] font-bold relative float-up"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  background: "var(--gradient-arc)",
+                  boxShadow: "var(--glow-cyan-strong), inset 0 0 24px rgba(255,255,255,0.25)",
+                  animation: "orbPulse 3s ease-in-out infinite",
+                }}
+              >
+                J
+              </div>
+            </div>
             <div
-              className="h-24 w-24 rounded-full mb-7 flex items-center justify-center text-white text-[32px] font-bold relative"
-              style={{
-                fontFamily: "var(--font-display)",
-                background:
-                  "radial-gradient(circle at 35% 30%, #4ff4ff, #00a8ff 45%, #7c3aed 90%)",
-                boxShadow:
-                  "0 0 60px color-mix(in oklab, var(--accent-cyan) 45%, transparent), inset 0 0 24px rgba(255,255,255,0.15)",
-                animation: "orbPulse 3s ease-in-out infinite",
-              }}
+              className="text-[10px] uppercase tracking-[0.4em] text-primary/70 mb-3"
+              style={{ fontFamily: "var(--font-display)" }}
             >
-              J
+              · System Online ·
             </div>
             <h1
-              className="text-[28px] tracking-[0.04em] text-center text-foreground"
+              className="text-[26px] md:text-[30px] tracking-[-0.01em] text-center text-foreground text-glow-cyan"
               style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}
             >
               {greet()}, {greetingName || "Tony"}.
             </h1>
-            <p className="text-[14px] text-muted-foreground text-center mt-2 mb-8">
+            <p className="text-[14px] text-muted-foreground text-center mt-2 mb-10">
               How can I assist you today?
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full max-w-xl">
-              {SUGGESTIONS.map((s) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full">
+              {SUGGESTIONS.map((s, i) => (
                 <button
                   key={s}
                   onClick={() => setInput(s)}
-                  className="text-left text-[13px] text-foreground/85 px-4 py-3 rounded-[10px] border border-border bg-elevated hover:border-[rgba(62, 230, 255,0.35)] hover:text-[#3ee6ff] transition-colors"
+                  className="group text-left text-[13px] text-foreground/85 px-4 py-3.5 rounded-xl glass-panel hover:hud-border hover:text-[#3ee6ff] transition-all hover:-translate-y-0.5"
+                  style={{ animation: `messageIn 0.4s ${0.1 + i * 0.06}s both` }}
                 >
+                  <span className="opacity-50 mr-2 font-mono text-[10px]">0{i + 1}</span>
                   {s}
                 </button>
               ))}
             </div>
-            <div className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[12px] text-muted-foreground">
-              <span>🎙 Voice conversation</span>
-              <span>📁 File analysis</span>
-              <span>🧠 {skills.length} learned skills</span>
-              <span>⚡ Auto-routed models</span>
+            <div className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[11px] text-muted-foreground uppercase tracking-[0.15em]" style={{ fontFamily: "var(--font-display)" }}>
+              <span>◈ Voice</span>
+              <span>◈ Files</span>
+              <span>◈ {skills.length} Skills</span>
+              <span>◈ Auto Router</span>
             </div>
           </div>
         ) : (
-          <div className="max-w-3xl mx-auto px-6 py-5 flex flex-col gap-5">
+          <div className="focus-column px-4 md:px-6 py-6 flex flex-col gap-5">
             {messages.map((m) => (
               <ChatMessage key={m.id} message={m} generatedFiles={generatedFiles[m.id]} />
             ))}
             {status === "submitted" && (
-              <div className="text-[11px] text-muted-foreground pl-11">Thinking…</div>
+              <div className="text-[11px] text-primary/80 pl-11 flex items-center gap-2 uppercase tracking-[0.2em]" style={{ fontFamily: "var(--font-display)" }}>
+                <span className="typing-dot" />
+                <span className="typing-dot" />
+                <span className="typing-dot" />
+                <span className="ml-1">Processing</span>
+              </div>
             )}
           </div>
         )}
       </div>
+
 
       {error && (
         <div className="px-5 py-2 text-[12px] text-destructive border-t border-border">
