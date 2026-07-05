@@ -34,7 +34,7 @@ export function JarvisSidebar({
     <aside className="w-14 shrink-0 h-full bg-sidebar border-r border-sidebar-border flex flex-col items-center pt-4 gap-1">
       <div
         className="h-8 w-8 rounded-lg mb-3 flex items-center justify-center text-white text-[14px] font-bold tracking-tight"
-        style={{ background: "linear-gradient(135deg, #00d4ff, #7c3aed)" }}
+        style={{ background: "linear-gradient(135deg, #3ee6ff, #7c3aed)" }}
       >
         J
       </div>
@@ -42,7 +42,7 @@ export function JarvisSidebar({
       <button
         onClick={onNewChat}
         title="Nova conversa"
-        className="h-10 w-10 rounded-[10px] flex items-center justify-center text-muted-foreground hover:bg-[rgba(0,212,255,0.06)] hover:text-foreground transition-colors mb-1"
+        className="h-10 w-10 rounded-[10px] flex items-center justify-center text-muted-foreground hover:bg-[rgba(62, 230, 255,0.06)] hover:text-foreground transition-colors mb-1"
       >
         <Plus className="h-[18px] w-[18px]" />
       </button>
@@ -53,8 +53,8 @@ export function JarvisSidebar({
         className={cn(
           "h-10 w-10 rounded-[10px] flex items-center justify-center transition-colors mb-1",
           historyOpen
-            ? "bg-[rgba(0,212,255,0.1)] text-[#00d4ff]"
-            : "text-muted-foreground hover:bg-[rgba(0,212,255,0.06)] hover:text-foreground",
+            ? "bg-[rgba(62, 230, 255,0.1)] text-[#3ee6ff]"
+            : "text-muted-foreground hover:bg-[rgba(62, 230, 255,0.06)] hover:text-foreground",
         )}
       >
         <History className="h-[18px] w-[18px]" />
@@ -71,8 +71,8 @@ export function JarvisSidebar({
             className={cn(
               "h-10 w-10 rounded-[10px] flex items-center justify-center transition-colors",
               isActive
-                ? "bg-[rgba(0,212,255,0.1)] text-[#00d4ff]"
-                : "text-muted-foreground hover:bg-[rgba(0,212,255,0.06)] hover:text-foreground",
+                ? "bg-[rgba(62, 230, 255,0.1)] text-[#3ee6ff]"
+                : "text-muted-foreground hover:bg-[rgba(62, 230, 255,0.06)] hover:text-foreground",
             )}
           >
             <Icon className="h-[18px] w-[18px]" />
@@ -85,7 +85,7 @@ export function JarvisSidebar({
       <button
         onClick={() => onSelect("planos")}
         title="Planos"
-        className="h-10 w-10 rounded-[10px] flex items-center justify-center text-muted-foreground hover:bg-[rgba(0,212,255,0.06)] hover:text-[#00d4ff] transition-colors"
+        className="h-10 w-10 rounded-[10px] flex items-center justify-center text-muted-foreground hover:bg-[rgba(62, 230, 255,0.06)] hover:text-[#3ee6ff] transition-colors"
       >
         <Sparkles className="h-[18px] w-[18px]" />
       </button>
@@ -94,7 +94,7 @@ export function JarvisSidebar({
         <button
           onClick={() => onSelect("admin")}
           title="Admin"
-          className="h-10 w-10 rounded-[10px] flex items-center justify-center text-muted-foreground hover:bg-[rgba(0,212,255,0.06)] hover:text-foreground transition-colors"
+          className="h-10 w-10 rounded-[10px] flex items-center justify-center text-muted-foreground hover:bg-[rgba(62, 230, 255,0.06)] hover:text-foreground transition-colors"
         >
           <Shield className="h-[18px] w-[18px]" />
         </button>
@@ -103,7 +103,7 @@ export function JarvisSidebar({
       <button
         onClick={() => onSelect("perfil")}
         title={preferredName ? `Olá, ${preferredName}` : "Perfil"}
-        className="h-10 w-10 rounded-[10px] flex items-center justify-center text-muted-foreground hover:bg-[rgba(0,212,255,0.06)] hover:text-foreground transition-colors"
+        className="h-10 w-10 rounded-[10px] flex items-center justify-center text-muted-foreground hover:bg-[rgba(62, 230, 255,0.06)] hover:text-foreground transition-colors"
       >
         <User className="h-[18px] w-[18px]" />
       </button>
@@ -119,10 +119,10 @@ export function JarvisSidebar({
       )}
 
       <div
-        className="h-7 w-7 rounded-full mb-3 flex items-center justify-center text-[10px] font-semibold text-[#00d4ff] border"
+        className="h-7 w-7 rounded-full mb-3 flex items-center justify-center text-[10px] font-semibold text-[#3ee6ff] border"
         style={{
           background: "linear-gradient(135deg, #3a3a5c, #2a2a40)",
-          borderColor: "rgba(0,212,255,0.12)",
+          borderColor: "rgba(62, 230, 255,0.12)",
         }}
         title={preferredName ?? undefined}
       >

@@ -159,7 +159,7 @@ export function VoiceMode({ open, onClose, onUserSpeech }: Props) {
         <X className="h-5 w-5" />
       </button>
 
-      <div className="text-[11px] uppercase tracking-[0.3em] text-[#00d4ff] mb-6">
+      <div className="text-[11px] uppercase tracking-[0.3em] text-[#3ee6ff] mb-6">
         Live voice mode
       </div>
 
@@ -169,7 +169,7 @@ export function VoiceMode({ open, onClose, onUserSpeech }: Props) {
             <div
               className="absolute inset-0 rounded-full"
               style={{
-                border: "1px solid #00d4ff",
+                border: "1px solid #3ee6ff",
                 animation: "orbRing 2s ease-out infinite",
                 opacity: 0.35,
               }}
@@ -196,8 +196,8 @@ export function VoiceMode({ open, onClose, onUserSpeech }: Props) {
                 : "radial-gradient(circle at 35% 35%, #3a3a5a, #1a1a2e)",
             boxShadow:
               speaking || listening
-                ? "0 0 60px rgba(0,212,255,0.4)"
-                : "0 0 20px rgba(0,212,255,0.15)",
+                ? "0 0 60px rgba(62, 230, 255,0.4)"
+                : "0 0 20px rgba(62, 230, 255,0.15)",
           }}
         />
       </div>
@@ -222,9 +222,9 @@ export function VoiceMode({ open, onClose, onUserSpeech }: Props) {
         onClick={toggle}
         className="mt-10 h-14 w-14 rounded-full border-2 flex items-center justify-center transition-all"
         style={{
-          borderColor: shouldListenRef.current ? "#00d4ff" : "rgba(255,255,255,0.15)",
-          background: shouldListenRef.current ? "rgba(0,212,255,0.12)" : "transparent",
-          color: shouldListenRef.current ? "#00d4ff" : "#9ca3af",
+          borderColor: shouldListenRef.current ? "#3ee6ff" : "rgba(255,255,255,0.15)",
+          background: shouldListenRef.current ? "rgba(62, 230, 255,0.12)" : "transparent",
+          color: shouldListenRef.current ? "#3ee6ff" : "#9ca3af",
         }}
       >
         {shouldListenRef.current ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}

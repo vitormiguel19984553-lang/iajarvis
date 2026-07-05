@@ -37,7 +37,7 @@ const fileColors: Record<string, string> = {
   ts: "#7c3aed",
   tsx: "#7c3aed",
   json: "#7c3aed",
-  default: "#00d4ff",
+  default: "#3ee6ff",
 };
 
 function FileTypeIcon({ type }: { type: string }) {
@@ -107,7 +107,7 @@ export function JarvisRightPanel({
             {files.map((f) => (
               <div
                 key={f.name}
-                className="group flex gap-2.5 items-center p-2 rounded-lg bg-background border border-border hover:border-[rgba(0,212,255,0.25)] transition-colors"
+                className="group flex gap-2.5 items-center p-2 rounded-lg bg-background border border-border hover:border-[rgba(62, 230, 255,0.25)] transition-colors"
                 title={
                   f.status === "analyzed"
                     ? `${f.wordCount ? `${f.wordCount} palavras` : ""}${f.pageCount ? ` · ${f.pageCount} páginas` : ""}`
@@ -137,7 +137,7 @@ export function JarvisRightPanel({
                   {f.status === "analyzing" && (
                     <div className="mt-1 h-1 w-full rounded-full bg-[rgba(255,255,255,0.06)] overflow-hidden">
                       <div
-                        className="h-full bg-[#00d4ff] transition-all duration-200"
+                        className="h-full bg-[#3ee6ff] transition-all duration-200"
                         style={{ width: `${Math.max(4, f.progress ?? 0)}%` }}
                       />
                     </div>
@@ -146,7 +146,7 @@ export function JarvisRightPanel({
                 {onPreviewFile && (
                   <button
                     onClick={() => onPreviewFile(f.name)}
-                    className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-[#00d4ff] transition-opacity"
+                    className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-[#3ee6ff] transition-opacity"
                     title="Preview"
                   >
                     <Eye className="h-3.5 w-3.5" />
@@ -161,7 +161,7 @@ export function JarvisRightPanel({
                 </button>
                 <div className="shrink-0 group-hover:opacity-0 transition-opacity">
                   {f.status === "analyzing" ? (
-                    <Loader2 className="h-3 w-3 animate-spin text-[#00d4ff]" />
+                    <Loader2 className="h-3 w-3 animate-spin text-[#3ee6ff]" />
                   ) : (
                     <div
                       className="w-1.5 h-1.5 rounded-full"
@@ -180,7 +180,7 @@ export function JarvisRightPanel({
             ))}
             <button
               onClick={() => inputRef.current?.click()}
-              className="flex items-center justify-center gap-1.5 py-2 rounded-lg border border-dashed border-border text-muted-foreground text-[12px] hover:text-[#00d4ff] hover:border-[rgba(0,212,255,0.35)] transition-colors"
+              className="flex items-center justify-center gap-1.5 py-2 rounded-lg border border-dashed border-border text-muted-foreground text-[12px] hover:text-[#3ee6ff] hover:border-[rgba(62, 230, 255,0.35)] transition-colors"
             >
               <Plus className="h-3.5 w-3.5" />
               Add file
@@ -208,8 +208,8 @@ export function JarvisRightPanel({
                 key={i}
                 className="flex items-center gap-2 px-2.5 py-1.5 rounded-md"
                 style={{
-                  background: a.state === "active" ? "rgba(0,212,255,0.06)" : "transparent",
-                  border: `1px solid ${a.state === "active" ? "rgba(0,212,255,0.15)" : "transparent"}`,
+                  background: a.state === "active" ? "rgba(62, 230, 255,0.06)" : "transparent",
+                  border: `1px solid ${a.state === "active" ? "rgba(62, 230, 255,0.15)" : "transparent"}`,
                 }}
               >
                 <div className="shrink-0">
@@ -228,7 +228,7 @@ export function JarvisRightPanel({
                     <div
                       className="w-4 h-4 rounded-full spin-ring"
                       style={{
-                        border: "2px solid #00d4ff",
+                        border: "2px solid #3ee6ff",
                         borderTopColor: "transparent",
                       }}
                     />

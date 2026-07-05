@@ -33,7 +33,7 @@ export class ErrorBoundary extends Component<Props, State> {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background text-foreground p-6">
         <div className="max-w-md w-full text-center rounded-xl border border-border p-6 bg-sidebar">
-          <div className="text-[11px] tracking-[0.2em] font-semibold text-[#00d4ff] mb-2">
+          <div className="text-[11px] tracking-[0.2em] font-semibold text-[#3ee6ff] mb-2">
             J.A.R.V.I.S · ERRO
           </div>
           <h1 className="text-xl font-semibold mb-2">Algo correu mal</h1>
@@ -49,7 +49,7 @@ export class ErrorBoundary extends Component<Props, State> {
           <div className="flex gap-2 justify-center">
             <button
               onClick={this.reset}
-              className="px-4 py-2 rounded-lg bg-[rgba(0,212,255,0.1)] text-[#00d4ff] border border-[rgba(0,212,255,0.3)] text-sm hover:bg-[rgba(0,212,255,0.16)]"
+              className="px-4 py-2 rounded-lg bg-[rgba(62, 230, 255,0.1)] text-[#3ee6ff] border border-[rgba(62, 230, 255,0.3)] text-sm hover:bg-[rgba(62, 230, 255,0.16)]"
             >
               Tentar novamente
             </button>

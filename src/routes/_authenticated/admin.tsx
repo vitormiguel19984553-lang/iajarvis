@@ -177,7 +177,7 @@ function AdminPage() {
           >
             <ArrowLeft className="h-4 w-4" />
           </button>
-          <Shield className="h-5 w-5 text-[#00d4ff]" />
+          <Shield className="h-5 w-5 text-[#3ee6ff]" />
           <h1 className="text-lg font-semibold tracking-tight">Admin · J.A.R.V.I.S</h1>
         </div>
         <div className="flex gap-1">
@@ -203,7 +203,7 @@ function AdminPage() {
           <>
             <section className="rounded-xl border border-border/60 bg-card/40 p-5">
               <h2 className="text-sm font-semibold mb-4 flex items-center gap-2">
-                <KeyRound className="h-4 w-4 text-[#00d4ff]" /> Gerar chaves
+                <KeyRound className="h-4 w-4 text-[#3ee6ff]" /> Gerar chaves
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
                 <div className="space-y-1.5">
@@ -280,7 +280,7 @@ function AdminPage() {
                               ? <span className="text-destructive">revogada</span>
                               : used
                                 ? <span className="text-muted-foreground">usada</span>
-                                : <span className="text-[#00d4ff]">disponível</span>}
+                                : <span className="text-[#3ee6ff]">disponível</span>}
                           </TableCell>
                           <TableCell className="text-xs text-muted-foreground">{k.notes ?? "—"}</TableCell>
                           <TableCell className="text-right">
@@ -360,7 +360,7 @@ function AdminPage() {
                       <TableCell className="text-xs">
                         {p.is_suspended
                           ? <span className="text-destructive">suspenso</span>
-                          : <span className="text-[#00d4ff]">ativo</span>}
+                          : <span className="text-[#3ee6ff]">ativo</span>}
                       </TableCell>
                       <TableCell className="text-right">
                         <Button

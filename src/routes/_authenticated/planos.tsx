@@ -41,7 +41,7 @@ const TIERS: Tier[] = [
     price: "€9,99",
     period: "/mês",
     icon: Zap,
-    accent: "#00d4ff",
+    accent: "#3ee6ff",
     highlight: true,
     features: [
       "Mensagens ilimitadas",
@@ -95,7 +95,7 @@ function PlansPage() {
       <div className="max-w-6xl mx-auto">
         <Link
           to="/chat"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[#00d4ff] mb-6"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[#3ee6ff] mb-6"
         >
           <ArrowLeft className="h-4 w-4" /> Voltar ao chat
         </Link>
@@ -179,7 +179,7 @@ function PlansPage() {
                       background:
                         tier.id === "ultra"
                           ? "linear-gradient(135deg, #fbbf24, #f59e0b)"
-                          : "linear-gradient(135deg, #00d4ff, #7c3aed)",
+                          : "linear-gradient(135deg, #3ee6ff, #7c3aed)",
                     }}
                   >
                     {tier.cta}

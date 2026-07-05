@@ -93,7 +93,7 @@ export function SettingsDialog({
               value={settings.systemPrompt}
               onChange={(e) => updateSettings({ systemPrompt: e.target.value })}
               rows={5}
-              className="w-full bg-background border border-border rounded-lg p-3 text-[12.5px] text-foreground outline-none focus:border-[rgba(0,212,255,0.4)] resize-none"
+              className="w-full bg-background border border-border rounded-lg p-3 text-[12.5px] text-foreground outline-none focus:border-[rgba(62, 230, 255,0.4)] resize-none"
               placeholder="e.g. You are a careful research assistant. Always cite sources…"
             />
             <div className="flex justify-between mt-1.5">
@@ -108,7 +108,7 @@ export function SettingsDialog({
                   });
                   toast.success("Reset to default");
                 }}
-                className="text-[11px] text-[#00d4ff] hover:underline"
+                className="text-[11px] text-[#3ee6ff] hover:underline"
               >
                 Reset
               </button>
@@ -125,7 +125,7 @@ export function SettingsDialog({
                 onClick={() => updateSettings({ modelMode: "auto" })}
                 className={`flex-1 text-[12px] py-2 rounded-lg border transition-colors ${
                   settings.modelMode === "auto"
-                    ? "border-[#00d4ff] bg-[rgba(0,212,255,0.1)] text-[#00d4ff]"
+                    ? "border-[#3ee6ff] bg-[rgba(62, 230, 255,0.1)] text-[#3ee6ff]"
                     : "border-border text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -135,7 +135,7 @@ export function SettingsDialog({
                 onClick={() => updateSettings({ modelMode: "manual" })}
                 className={`flex-1 text-[12px] py-2 rounded-lg border transition-colors ${
                   settings.modelMode === "manual"
-                    ? "border-[#00d4ff] bg-[rgba(0,212,255,0.1)] text-[#00d4ff]"
+                    ? "border-[#3ee6ff] bg-[rgba(62, 230, 255,0.1)] text-[#3ee6ff]"
                     : "border-border text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -164,7 +164,7 @@ export function SettingsDialog({
                           title={m.gatewayId ? `Encaminhado para ${m.gatewayId}` : m.label}
                           className={`w-full flex items-center justify-between gap-2 px-3 py-2 text-left transition-colors ${
                             selected
-                              ? "bg-[rgba(0,212,255,0.08)] text-[#00d4ff]"
+                              ? "bg-[rgba(62, 230, 255,0.08)] text-[#3ee6ff]"
                               : allowed
                                 ? "text-foreground hover:bg-background/60"
                                 : "text-muted-foreground/60 cursor-not-allowed"
@@ -260,7 +260,7 @@ export function SettingsDialog({
                   key={s.id}
                   className="group flex items-start gap-2 p-2 rounded-md bg-background border border-border"
                 >
-                  <span className="text-[11px] text-[#00d4ff] mt-0.5">◆</span>
+                  <span className="text-[11px] text-[#3ee6ff] mt-0.5">◆</span>
                   <span className="flex-1 text-[12px] text-foreground/90 leading-relaxed">
                     {s.text}
                   </span>

@@ -396,7 +396,7 @@ ${c}${truncated}`;
           {onToggleSidebar && (
             <button
               onClick={onToggleSidebar}
-              className="md:hidden h-10 w-10 -ml-1 inline-flex items-center justify-center rounded-lg text-[#00d4ff] border border-[rgba(0,212,255,0.2)] shrink-0"
+              className="md:hidden h-10 w-10 -ml-1 inline-flex items-center justify-center rounded-lg text-[#3ee6ff] border border-[rgba(62, 230, 255,0.2)] shrink-0"
               aria-label="Abrir conversas"
             >
               <Menu className="h-5 w-5" />
@@ -436,8 +436,8 @@ ${c}${truncated}`;
                 className={cn(
                   "text-[12px] px-3 py-1 rounded-lg font-medium transition-colors",
                   active
-                    ? "bg-[rgba(0,212,255,0.1)] text-[#00d4ff]"
-                    : "text-muted-foreground hover:text-[#00d4ff]",
+                    ? "bg-[rgba(62, 230, 255,0.1)] text-[#3ee6ff]"
+                    : "text-muted-foreground hover:text-[#3ee6ff]",
                 )}
               >
                 {tab}
@@ -499,7 +499,7 @@ ${c}${truncated}`;
                 <button
                   key={s}
                   onClick={() => setInput(s)}
-                  className="text-left text-[13px] text-foreground/85 px-4 py-3 rounded-[10px] border border-border bg-elevated hover:border-[rgba(0,212,255,0.35)] hover:text-[#00d4ff] transition-colors"
+                  className="text-left text-[13px] text-foreground/85 px-4 py-3 rounded-[10px] border border-border bg-elevated hover:border-[rgba(62, 230, 255,0.35)] hover:text-[#3ee6ff] transition-colors"
                 >
                   {s}
                 </button>

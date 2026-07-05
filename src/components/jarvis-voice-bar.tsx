@@ -22,7 +22,7 @@ function Orb({ listening, recording }: { listening: boolean; recording: boolean 
           <div
             className="absolute inset-0 rounded-full"
             style={{
-              border: `1px solid ${recording ? "#ef4444" : "#00d4ff"}`,
+              border: `1px solid ${recording ? "#ef4444" : "#3ee6ff"}`,
               animation: "orbRing 1.8s ease-out infinite",
               opacity: 0.4,
             }}
@@ -30,7 +30,7 @@ function Orb({ listening, recording }: { listening: boolean; recording: boolean 
           <div
             className="absolute inset-0 rounded-full"
             style={{
-              border: `1px solid ${recording ? "#ef4444" : "#00d4ff"}`,
+              border: `1px solid ${recording ? "#ef4444" : "#3ee6ff"}`,
               animation: "orbRing 1.8s ease-out 0.6s infinite",
               opacity: 0.25,
             }}
@@ -47,9 +47,9 @@ function Orb({ listening, recording }: { listening: boolean; recording: boolean 
             : listening
               ? "radial-gradient(circle at 35% 35%, #22eeff, #0a7aff, #7c3aed)"
               : "radial-gradient(circle at 35% 35%, #3a3a5a, #1a1a2e)",
-          border: `1.5px solid ${active ? (recording ? "#ef4444" : "#00d4ff") : "rgba(0,212,255,0.12)"}`,
+          border: `1.5px solid ${active ? (recording ? "#ef4444" : "#3ee6ff") : "rgba(62, 230, 255,0.12)"}`,
           boxShadow: active
-            ? `0 0 24px ${recording ? "rgba(239,68,68,0.5)" : "rgba(0,212,255,0.5)"}`
+            ? `0 0 24px ${recording ? "rgba(239,68,68,0.5)" : "rgba(62, 230, 255,0.5)"}`
             : "none",
         }}
       >
@@ -205,8 +205,8 @@ export function JarvisVoiceBar({
                     listening || recording
                       ? recording
                         ? "#ef4444"
-                        : "#00d4ff"
-                      : "rgba(0,212,255,0.2)",
+                        : "#3ee6ff"
+                      : "rgba(62, 230, 255,0.2)",
                   height: 5,
                   transition:
                     listening || recording ? "height 0.1s" : "height 0.4s ease",
@@ -229,8 +229,8 @@ export function JarvisVoiceBar({
             className={cn(
               "w-10 h-10 rounded-[10px] border flex items-center justify-center transition-all",
               listening
-                ? "border-[#00d4ff] bg-[rgba(0,212,255,0.12)] text-[#00d4ff]"
-                : "border-border text-muted-foreground hover:text-[#00d4ff]",
+                ? "border-[#3ee6ff] bg-[rgba(62, 230, 255,0.12)] text-[#3ee6ff]"
+                : "border-border text-muted-foreground hover:text-[#3ee6ff]",
             )}
           >
             <Mic className="h-4 w-4" />
@@ -268,11 +268,11 @@ export function JarvisVoiceBar({
           type="button"
           onClick={onAttachClick}
           title="Attach files"
-          className="w-9 h-9 rounded-lg border border-border bg-transparent flex items-center justify-center text-muted-foreground hover:text-[#00d4ff] transition-colors shrink-0"
+          className="w-9 h-9 rounded-lg border border-border bg-transparent flex items-center justify-center text-muted-foreground hover:text-[#3ee6ff] transition-colors shrink-0"
         >
           <Paperclip className="h-4 w-4" />
         </button>
-        <div className="flex-1 bg-background border border-border rounded-[10px] px-3.5 py-2.5 flex items-center focus-within:border-[rgba(0,212,255,0.35)] transition-colors">
+        <div className="flex-1 bg-background border border-border rounded-[10px] px-3.5 py-2.5 flex items-center focus-within:border-[rgba(62, 230, 255,0.35)] transition-colors">
           <textarea
             ref={taRef}
             value={input}
@@ -292,7 +292,7 @@ export function JarvisVoiceBar({
           <button
             type="button"
             onClick={onStop}
-            className="w-9 h-9 rounded-lg border border-border flex items-center justify-center text-[#00d4ff] hover:bg-[rgba(0,212,255,0.1)] transition-colors shrink-0"
+            className="w-9 h-9 rounded-lg border border-border flex items-center justify-center text-[#3ee6ff] hover:bg-[rgba(62, 230, 255,0.1)] transition-colors shrink-0"
           >
             <Square className="h-3.5 w-3.5" fill="currentColor" />
           </button>
@@ -300,7 +300,7 @@ export function JarvisVoiceBar({
           <button
             type="submit"
             disabled={!input.trim()}
-            className="w-9 h-9 rounded-lg border border-border flex items-center justify-center text-[#00d4ff] hover:bg-[rgba(0,212,255,0.1)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
+            className="w-9 h-9 rounded-lg border border-border flex items-center justify-center text-[#3ee6ff] hover:bg-[rgba(62, 230, 255,0.1)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
           >
             <ArrowUp className="h-4 w-4" />
           </button>
