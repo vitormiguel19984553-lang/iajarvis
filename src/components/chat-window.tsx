@@ -391,12 +391,12 @@ ${c}${truncated}`;
         if (dropped.length > 0) onPickFiles(dropped);
       }}
     >
-      <header className="h-[52px] border-b border-border flex items-center justify-between px-3 md:px-5 shrink-0 gap-2">
-        <div className="flex items-center gap-2 md:gap-2.5 min-w-0">
+      <header className="h-[56px] border-b border-border/70 flex items-center justify-between px-3 md:px-5 shrink-0 gap-2 glass-panel relative">
+        <div className="flex items-center gap-2 md:gap-3 min-w-0">
           {onToggleSidebar && (
             <button
               onClick={onToggleSidebar}
-              className="md:hidden h-10 w-10 -ml-1 inline-flex items-center justify-center rounded-lg text-[#3ee6ff] border border-[rgba(62, 230, 255,0.2)] shrink-0"
+              className="md:hidden h-10 w-10 -ml-1 inline-flex items-center justify-center rounded-lg text-primary hud-border shrink-0"
               aria-label="Abrir conversas"
             >
               <Menu className="h-5 w-5" />
@@ -404,16 +404,16 @@ ${c}${truncated}`;
           )}
           <div
             className="w-2 h-2 rounded-full pulse-dot"
-            style={{ background: "var(--success)", boxShadow: "0 0 8px var(--success)" }}
+            style={{ background: "var(--success)", color: "var(--success)" }}
           />
           <span
-            className="text-[13px] font-semibold tracking-[0.18em] text-foreground"
+            className="text-[13px] font-semibold tracking-[0.28em] text-foreground text-glow-cyan"
             style={{ fontFamily: "var(--font-display)" }}
           >
             J.A.R.V.I.S
           </span>
           <span
-            className="text-[10px] uppercase tracking-[0.15em] rounded-full px-2 py-0.5 font-semibold"
+            className="hidden sm:inline text-[9px] uppercase tracking-[0.22em] rounded-full px-2 py-0.5 font-semibold"
             style={{
               color: "var(--success)",
               background: "color-mix(in oklab, var(--success) 12%, transparent)",
@@ -425,7 +425,7 @@ ${c}${truncated}`;
           </span>
         </div>
 
-        <div className="hidden md:flex gap-1.5">
+        <div className="hidden md:flex gap-1">
           {["All", "Files", "Activity", "Stats"].map((tab) => {
             const key = tab.toLowerCase();
             const active = activeTab === key;
@@ -434,11 +434,12 @@ ${c}${truncated}`;
                 key={tab}
                 onClick={() => setActiveTab(key)}
                 className={cn(
-                  "text-[12px] px-3 py-1 rounded-lg font-medium transition-colors",
+                  "text-[11px] uppercase tracking-[0.18em] px-3 py-1.5 rounded-lg font-semibold transition-all",
                   active
-                    ? "bg-[rgba(62, 230, 255,0.1)] text-[#3ee6ff]"
-                    : "text-muted-foreground hover:text-[#3ee6ff]",
+                    ? "bg-primary/10 text-primary hud-border"
+                    : "text-muted-foreground hover:text-primary",
                 )}
+                style={{ fontFamily: "var(--font-display)" }}
               >
                 {tab}
               </button>
@@ -447,27 +448,31 @@ ${c}${truncated}`;
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <span className="hidden md:inline text-[12px] text-muted-foreground">Model: {modelLabel}</span>
+          <span className="hidden md:inline text-[11px] text-muted-foreground uppercase tracking-[0.15em]" style={{ fontFamily: "var(--font-display)" }}>{modelLabel}</span>
           <div
-            className="text-[10px] rounded-md px-2 py-0.5 font-bold tracking-[0.18em]"
+            className="text-[10px] rounded-md px-2 py-0.5 font-bold tracking-[0.22em]"
             style={{
               fontFamily: "var(--font-display)",
               color: settings.modelMode === "auto" ? "var(--accent-cyan)" : "var(--premium)",
               background:
                 settings.modelMode === "auto"
-                  ? "color-mix(in oklab, var(--accent-cyan) 10%, transparent)"
+                  ? "color-mix(in oklab, var(--accent-cyan) 12%, transparent)"
                   : "color-mix(in oklab, var(--premium) 14%, transparent)",
               border: `1px solid ${
                 settings.modelMode === "auto"
-                  ? "color-mix(in oklab, var(--accent-cyan) 25%, transparent)"
+                  ? "color-mix(in oklab, var(--accent-cyan) 30%, transparent)"
                   : "color-mix(in oklab, var(--premium) 35%, transparent)"
               }`,
+              boxShadow: settings.modelMode === "auto" ? "0 0 12px rgba(62,230,255,0.25)" : "0 0 12px rgba(192,132,252,0.25)",
             }}
           >
             {settings.modelMode === "auto" ? "AUTO" : "PRO"}
           </div>
         </div>
+        {/* HUD scan line accent */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(62,230,255,0.5), transparent)" }} />
       </header>
+
 
       <div ref={scrollerRef} className="flex-1 overflow-y-auto scroll-thin">
         {messages.length === 0 ? (
