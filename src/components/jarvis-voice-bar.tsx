@@ -263,8 +263,9 @@ export function JarvisVoiceBar({
           e.preventDefault();
           onSubmit();
         }}
-        className="flex gap-2 items-end"
+        className="focus-column flex gap-2 items-end"
       >
+
         <button
           type="button"
           onClick={onAttachClick}
