@@ -188,6 +188,7 @@ export function JarvisVoiceBar({
     }
   };
 
+  return (
     <div className="border-t border-border/70 glass-panel px-3 md:px-5 py-3.5 flex flex-col gap-3 shrink-0 kb-safe-bottom sticky bottom-0 z-10 relative">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(62,230,255,0.4), transparent)" }} />
       <div className="focus-column bg-background/60 hud-border rounded-2xl px-4 py-2.5 flex items-center gap-3.5">
