@@ -132,14 +132,30 @@ export function ThreadListPanel({
           </div>
         )}
 
+        {/* Search */}
+        <div className="p-2 border-b border-border">
+          <div className="relative">
+            <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+            <input
+              id="jarvis-thread-search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Escape") { setQuery(""); (e.target as HTMLInputElement).blur(); } }}
+              placeholder="Procurar conversas… (Ctrl+K)"
+              className="w-full h-9 pl-8 pr-2 bg-background/60 border border-border rounded-md text-[12px] outline-none focus:border-primary/50"
+              aria-label="Procurar conversas"
+            />
+          </div>
+        </div>
+
         <div className="flex-1 overflow-y-auto scroll-thin p-2">
-          {threads.length === 0 ? (
+          {filtered.length === 0 ? (
             <div className="text-[12px] text-muted-foreground text-center py-6">
-              No conversations yet.
+              {query ? "Sem resultados." : "No conversations yet."}
             </div>
           ) : (
             <div className="flex flex-col gap-1">
-              {threads.map((t) => {
+              {filtered.map((t) => {
                 const isActive = t.id === activeId;
                 return (
                   <div
