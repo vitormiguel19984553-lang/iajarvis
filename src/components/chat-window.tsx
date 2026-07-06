@@ -150,7 +150,7 @@ ${c}${truncated}`;
   const processedFilesRef = useRef<Set<string>>(new Set());
 
 
-  const { messages, sendMessage, status, stop, error } = useChat({
+  const { messages, sendMessage, status, stop, error, regenerate, setMessages } = useChat({
     id: thread.id,
     messages: thread.messages,
     transport,
@@ -159,6 +159,21 @@ ${c}${truncated}`;
       toast.error(title, description ? { description } : undefined);
     },
   });
+
+  const busy = status === "submitted" || status === "streaming";
+
+  const handleRegenerate = () => {
+    if (busy) return;
+    void regenerate();
+  };
+
+  const handleEditUserMessage = (id: string, newText: string) => {
+    if (busy) return;
+    const idx = messages.findIndex((m) => m.id === id);
+    if (idx === -1) return;
+    setMessages(messages.slice(0, idx));
+    void sendMessage({ text: newText });
+  };
 
   useEffect(() => {
     onMessagesChange(messages);
@@ -543,9 +558,24 @@ ${c}${truncated}`;
           </div>
         ) : (
           <div className="focus-column px-4 md:px-6 py-6 flex flex-col gap-5">
-            {messages.map((m) => (
-              <ChatMessage key={m.id} message={m} generatedFiles={generatedFiles[m.id]} />
-            ))}
+            {messages.map((m, i) => {
+              const isLastAssistant =
+                m.role === "assistant" && i === messages.length - 1 && !busy;
+              return (
+                <ChatMessage
+                  key={m.id}
+                  message={m}
+                  generatedFiles={generatedFiles[m.id]}
+                  isLastAssistant={isLastAssistant}
+                  onRegenerate={isLastAssistant ? handleRegenerate : undefined}
+                  onEdit={
+                    m.role === "user"
+                      ? (newText) => handleEditUserMessage(m.id, newText)
+                      : undefined
+                  }
+                />
+              );
+            })}
             {status === "submitted" && (
               <div className="text-[11px] text-primary/80 pl-11 flex items-center gap-2 uppercase tracking-[0.2em]" style={{ fontFamily: "var(--font-display)" }}>
                 <span className="typing-dot" />
