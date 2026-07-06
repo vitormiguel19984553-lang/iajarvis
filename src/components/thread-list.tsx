@@ -50,6 +50,18 @@ export function ThreadListPanel({
   isAdmin,
   onLogout,
 }: Props) {
+  const [query, setQuery] = useState("");
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return threads;
+    return threads.filter((t) => {
+      if (t.title.toLowerCase().includes(q)) return true;
+      return t.messages.some((m) => {
+        const parts = (m as unknown as { parts?: Array<{ type: string; text?: string }> }).parts ?? [];
+        return parts.some((p) => p.type === "text" && (p.text ?? "").toLowerCase().includes(q));
+      });
+    });
+  }, [threads, query]);
   const navItem = (
     key: string,
     Icon: typeof Settings,
