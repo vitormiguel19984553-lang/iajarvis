@@ -160,16 +160,17 @@ ${c}${truncated}`;
     },
   });
 
+  const busy = status === "submitted" || status === "streaming";
+
   const handleRegenerate = () => {
-    if (isBusy) return;
+    if (busy) return;
     void regenerate();
   };
 
   const handleEditUserMessage = (id: string, newText: string) => {
-    if (isBusy) return;
+    if (busy) return;
     const idx = messages.findIndex((m) => m.id === id);
     if (idx === -1) return;
-    // Drop this user message and everything after; resubmit edited text.
     setMessages(messages.slice(0, idx));
     void sendMessage({ text: newText });
   };
