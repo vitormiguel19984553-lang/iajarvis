@@ -13,6 +13,7 @@ import { ThreadListPanel } from "@/components/thread-list";
 import { useThreads } from "@/lib/use-threads";
 import { useSettings } from "@/lib/use-settings";
 import { useAuth } from "@/lib/use-auth";
+import { useShortcuts } from "@/lib/use-shortcuts";
 import { supabase } from "@/integrations/supabase/client";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
