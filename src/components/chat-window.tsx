@@ -558,9 +558,24 @@ ${c}${truncated}`;
           </div>
         ) : (
           <div className="focus-column px-4 md:px-6 py-6 flex flex-col gap-5">
-            {messages.map((m) => (
-              <ChatMessage key={m.id} message={m} generatedFiles={generatedFiles[m.id]} />
-            ))}
+            {messages.map((m, i) => {
+              const isLastAssistant =
+                m.role === "assistant" && i === messages.length - 1 && !busy;
+              return (
+                <ChatMessage
+                  key={m.id}
+                  message={m}
+                  generatedFiles={generatedFiles[m.id]}
+                  isLastAssistant={isLastAssistant}
+                  onRegenerate={isLastAssistant ? handleRegenerate : undefined}
+                  onEdit={
+                    m.role === "user"
+                      ? (newText) => handleEditUserMessage(m.id, newText)
+                      : undefined
+                  }
+                />
+              );
+            })}
             {status === "submitted" && (
               <div className="text-[11px] text-primary/80 pl-11 flex items-center gap-2 uppercase tracking-[0.2em]" style={{ fontFamily: "var(--font-display)" }}>
                 <span className="typing-dot" />
