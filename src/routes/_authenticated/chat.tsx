@@ -78,6 +78,25 @@ function ChatPage() {
     else if (key === "admin") navigate({ to: "/admin" });
   };
 
+  useShortcuts({
+    "mod+k": () => {
+      setHistoryOpen(true);
+      requestAnimationFrame(() => {
+        const el = document.getElementById("jarvis-thread-search") as HTMLInputElement | null;
+        el?.focus();
+        el?.select();
+      });
+    },
+    "mod+n": () => { createThread(); toast.success("Nova conversa"); },
+    "mod+shift+d": () => setHistoryOpen((v) => !v),
+    "mod+/": () => setShowRightPanel((v) => !v),
+    "mod+,": () => setSettingsOpen(true),
+    "escape": () => {
+      if (settingsOpen) setSettingsOpen(false);
+      else if (typeof window !== "undefined" && window.innerWidth < 768 && historyOpen) setHistoryOpen(false);
+    },
+  });
+
   const MAX_SIZE = 20 * 1024 * 1024;
   const MAX_FILES = 10;
 
