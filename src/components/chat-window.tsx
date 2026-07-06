@@ -150,7 +150,7 @@ ${c}${truncated}`;
   const processedFilesRef = useRef<Set<string>>(new Set());
 
 
-  const { messages, sendMessage, status, stop, error } = useChat({
+  const { messages, sendMessage, status, stop, error, regenerate, setMessages } = useChat({
     id: thread.id,
     messages: thread.messages,
     transport,
@@ -159,6 +159,20 @@ ${c}${truncated}`;
       toast.error(title, description ? { description } : undefined);
     },
   });
+
+  const handleRegenerate = () => {
+    if (isBusy) return;
+    void regenerate();
+  };
+
+  const handleEditUserMessage = (id: string, newText: string) => {
+    if (isBusy) return;
+    const idx = messages.findIndex((m) => m.id === id);
+    if (idx === -1) return;
+    // Drop this user message and everything after; resubmit edited text.
+    setMessages(messages.slice(0, idx));
+    void sendMessage({ text: newText });
+  };
 
   useEffect(() => {
     onMessagesChange(messages);
