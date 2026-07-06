@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react";
 import {
   MessageSquare,
   Trash2,
@@ -10,6 +11,7 @@ import {
   Shield,
   LogOut,
   Plus,
+  Search,
 } from "lucide-react";
 import type { Thread } from "@/lib/use-threads";
 import { cn } from "@/lib/utils";
