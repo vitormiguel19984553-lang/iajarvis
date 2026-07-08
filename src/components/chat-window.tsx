@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState, useMemo, lazy, Suspense } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { ChatMessage } from "@/components/chat-message";
 import { JarvisVoiceBar } from "@/components/jarvis-voice-bar";
-import { VoiceMode } from "@/components/voice-mode";
+const VoiceMode = lazy(() =>
+  import("@/components/voice-mode").then((m) => ({ default: m.VoiceMode })),
+);
 import type { Thread } from "@/lib/use-threads";
 import type { Settings, LearnedSkill } from "@/lib/use-settings";
 import { MODEL_CATALOG } from "@/lib/models";
@@ -722,11 +724,15 @@ ${c}${truncated}`;
         onOpenVoiceMode={() => setVoiceModeOpen(true)}
       />
 
-      <VoiceMode
-        open={voiceModeOpen}
-        onClose={() => setVoiceModeOpen(false)}
-        onUserSpeech={handleVoiceModeSpeech}
-      />
+      {voiceModeOpen && (
+        <Suspense fallback={null}>
+          <VoiceMode
+            open={voiceModeOpen}
+            onClose={() => setVoiceModeOpen(false)}
+            onUserSpeech={handleVoiceModeSpeech}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }
