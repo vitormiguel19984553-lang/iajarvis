@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import type { UIMessage } from "ai";
 import { JarvisSidebar } from "@/components/jarvis-sidebar";
 import {
@@ -8,7 +8,9 @@ import {
   type Activity,
 } from "@/components/jarvis-right-panel";
 import { ChatWindow } from "@/components/chat-window";
-import { SettingsDialog } from "@/components/settings-dialog";
+const SettingsDialog = lazy(() =>
+  import("@/components/settings-dialog").then((m) => ({ default: m.SettingsDialog })),
+);
 import { ThreadListPanel } from "@/components/thread-list";
 import { useThreads } from "@/lib/use-threads";
 import { useSettings } from "@/lib/use-settings";
