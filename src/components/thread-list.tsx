@@ -182,6 +182,7 @@ export function ThreadListPanel({
                       }}
                       className="md:opacity-0 md:group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-opacity p-1"
                       title="Delete"
+                      aria-label={`Eliminar conversa ${t.title}`}
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>

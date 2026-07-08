@@ -228,6 +228,8 @@ export function JarvisVoiceBar({
           <button
             onClick={toggleMic}
             title="Dictate (speech to text)"
+            aria-label="Ditar por voz"
+            aria-pressed={listening}
             className={cn(
               "w-10 h-10 rounded-[10px] border flex items-center justify-center transition-all",
               listening
@@ -240,6 +242,8 @@ export function JarvisVoiceBar({
           <button
             onClick={toggleRecording}
             title="Record audio"
+            aria-label="Gravar áudio"
+            aria-pressed={recording}
             className={cn(
               "w-10 h-10 rounded-[10px] border flex items-center justify-center transition-all",
               recording
@@ -252,6 +256,7 @@ export function JarvisVoiceBar({
           <button
             onClick={onOpenVoiceMode}
             title="Open live voice chat"
+            aria-label="Abrir modo de voz ao vivo"
             className="w-10 h-10 rounded-[10px] border border-border text-muted-foreground hover:text-[#7c3aed] hover:border-[rgba(124,58,237,0.4)] flex items-center justify-center transition-all"
           >
             <Radio className="h-4 w-4" />
@@ -271,6 +276,7 @@ export function JarvisVoiceBar({
           type="button"
           onClick={onAttachClick}
           title="Attach files"
+          aria-label="Anexar ficheiros"
           className="w-9 h-9 rounded-lg border border-border bg-transparent flex items-center justify-center text-muted-foreground hover:text-[#3ee6ff] transition-colors shrink-0"
         >
           <Paperclip className="h-4 w-4" />
@@ -295,6 +301,7 @@ export function JarvisVoiceBar({
           <button
             type="button"
             onClick={onStop}
+            aria-label="Parar geração"
             className="w-9 h-9 rounded-lg border border-border flex items-center justify-center text-[#3ee6ff] hover:bg-[rgba(62, 230, 255,0.1)] transition-colors shrink-0"
           >
             <Square className="h-3.5 w-3.5" fill="currentColor" />
@@ -303,6 +310,7 @@ export function JarvisVoiceBar({
           <button
             type="submit"
             disabled={!input.trim()}
+            aria-label="Enviar mensagem"
             className="w-9 h-9 rounded-lg border border-border flex items-center justify-center text-[#3ee6ff] hover:bg-[rgba(62, 230, 255,0.1)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
           >
             <ArrowUp className="h-4 w-4" />
