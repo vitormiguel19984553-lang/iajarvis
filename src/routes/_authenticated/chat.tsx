@@ -288,16 +288,20 @@ function ChatPage() {
         </div>
       )}
 
-      <SettingsDialog
-        open={settingsOpen}
-        onOpenChange={setSettingsOpen}
-        settings={settings}
-        updateSettings={updateSettings}
-        skills={skills}
-        removeSkill={removeSkill}
-        clearSkills={clearSkills}
-        plan={(profile?.plan_type as "free" | "pro" | "ultra") ?? "free"}
-      />
+      {settingsOpen && (
+        <Suspense fallback={null}>
+          <SettingsDialog
+            open={settingsOpen}
+            onOpenChange={setSettingsOpen}
+            settings={settings}
+            updateSettings={updateSettings}
+            skills={skills}
+            removeSkill={removeSkill}
+            clearSkills={clearSkills}
+            plan={(profile?.plan_type as "free" | "pro" | "ultra") ?? "free"}
+          />
+        </Suspense>
+      )}
       <Toaster theme="dark" position="bottom-right" />
     </div>
   );
