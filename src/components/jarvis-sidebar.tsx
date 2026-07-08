@@ -41,7 +41,7 @@ export function JarvisSidebar({
 
       <button
         onClick={onNewChat}
-        title="Nova conversa"
+        title="Nova conversa" aria-label="Nova conversa"
         className="h-10 w-10 rounded-[10px] flex items-center justify-center text-muted-foreground hover:bg-[rgba(62, 230, 255,0.06)] hover:text-foreground transition-colors mb-1"
       >
         <Plus className="h-[18px] w-[18px]" />
@@ -49,7 +49,7 @@ export function JarvisSidebar({
 
       <button
         onClick={onToggleHistory}
-        title="Conversas"
+        title="Conversas" aria-label="Conversas" aria-pressed={historyOpen}
         className={cn(
           "h-10 w-10 rounded-[10px] flex items-center justify-center transition-colors mb-1",
           historyOpen
@@ -67,7 +67,7 @@ export function JarvisSidebar({
           <button
             key={it.key}
             onClick={() => onSelect(it.key)}
-            title={it.label}
+            title={it.label} aria-label={it.label} aria-current={isActive ? "page" : undefined}
             className={cn(
               "h-10 w-10 rounded-[10px] flex items-center justify-center transition-colors",
               isActive
@@ -84,7 +84,7 @@ export function JarvisSidebar({
 
       <button
         onClick={() => onSelect("planos")}
-        title="Planos"
+        title="Planos" aria-label="Planos"
         className="h-10 w-10 rounded-[10px] flex items-center justify-center text-muted-foreground hover:bg-[rgba(62, 230, 255,0.06)] hover:text-[#3ee6ff] transition-colors"
       >
         <Sparkles className="h-[18px] w-[18px]" />
@@ -93,7 +93,7 @@ export function JarvisSidebar({
       {isAdmin && (
         <button
           onClick={() => onSelect("admin")}
-          title="Admin"
+          title="Admin" aria-label="Admin"
           className="h-10 w-10 rounded-[10px] flex items-center justify-center text-muted-foreground hover:bg-[rgba(62, 230, 255,0.06)] hover:text-foreground transition-colors"
         >
           <Shield className="h-[18px] w-[18px]" />
@@ -102,7 +102,7 @@ export function JarvisSidebar({
 
       <button
         onClick={() => onSelect("perfil")}
-        title={preferredName ? `Olá, ${preferredName}` : "Perfil"}
+        title={preferredName ? `Olá, ${preferredName}` : "Perfil"} aria-label="Perfil"
         className="h-10 w-10 rounded-[10px] flex items-center justify-center text-muted-foreground hover:bg-[rgba(62, 230, 255,0.06)] hover:text-foreground transition-colors"
       >
         <User className="h-[18px] w-[18px]" />
@@ -111,7 +111,7 @@ export function JarvisSidebar({
       {onLogout && (
         <button
           onClick={onLogout}
-          title="Terminar sessão"
+          title="Terminar sessão" aria-label="Terminar sessão"
           className="h-10 w-10 rounded-[10px] flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-[rgba(239,68,68,0.08)] transition-colors mb-1"
         >
           <LogOut className="h-[18px] w-[18px]" />
