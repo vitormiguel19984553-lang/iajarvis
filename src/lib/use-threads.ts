@@ -8,6 +8,7 @@ export type Thread = {
   createdAt: number;
   updatedAt: number;
   messages: UIMessage[];
+  loaded: boolean;
 };
 
 export function useThreads(userId: string | undefined) {
