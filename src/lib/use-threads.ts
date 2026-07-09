@@ -69,7 +69,7 @@ export function useThreads(userId: string | undefined) {
       const set = new Set(msgs.map((m) => m.id));
       savedIdsRef.current.set(activeId, set);
       setThreads((prev) =>
-        prev.map((x) => (x.id === activeId ? { ...x, messages: msgs } : x)),
+        prev.map((x) => (x.id === activeId ? { ...x, messages: msgs, loaded: true } : x)),
       );
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
