@@ -161,7 +161,7 @@ export function SettingsDialog({
                             updateSettings({ manualModel: m.id as ModelId });
                             toast.success(`Modelo: ${m.label}`);
                           }}
-                          title={m.gatewayId ? `Encaminhado para ${m.gatewayId}` : m.label}
+                          title={m.gatewayId && m.category !== "platform" ? `Modelo não disponível nativamente — encaminhado via gateway para ${m.gatewayId}` : m.label}
                           className={`w-full flex items-center justify-between gap-2 px-3 py-2 text-left transition-colors ${
                             selected
                               ? "bg-[rgba(62, 230, 255,0.08)] text-[#3ee6ff]"
