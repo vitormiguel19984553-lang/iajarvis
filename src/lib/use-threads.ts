@@ -40,6 +40,7 @@ export function useThreads(userId: string | undefined) {
         createdAt: new Date(c.created_at).getTime(),
         updatedAt: new Date(c.updated_at).getTime(),
         messages: [],
+        loaded: false,
       }));
       setThreads(list);
       setHydrated(true);
