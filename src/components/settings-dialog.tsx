@@ -185,15 +185,16 @@ export function SettingsDialog({
                                   NEW
                                 </span>
                               )}
-                              {m.gatewayId && (
+                              {m.gatewayId && m.category !== "platform" && (
                                 <span
                                   className="text-[9px] px-1.5 rounded font-semibold"
                                   style={{
                                     color: "var(--warning)",
                                     background: "color-mix(in oklab, var(--warning) 10%, transparent)",
                                   }}
+                                  title={`Encaminhado via gateway para ${m.gatewayId}`}
                                 >
-                                  fallback
+                                  equiv. via gateway
                                 </span>
                               )}
                             </span>
