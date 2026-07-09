@@ -54,7 +54,7 @@ export function useThreads(userId: string | undefined) {
   useEffect(() => {
     if (!activeId) return;
     const t = threads.find((x) => x.id === activeId);
-    if (!t || t.messages.length > 0) return;
+    if (!t || t.loaded) return;
     (async () => {
       const { data } = await supabase
         .from("messages")
