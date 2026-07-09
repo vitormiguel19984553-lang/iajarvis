@@ -89,6 +89,7 @@ export function useThreads(userId: string | undefined) {
       createdAt: new Date(data.created_at).getTime(),
       updatedAt: new Date(data.updated_at).getTime(),
       messages: [],
+      loaded: true,
     };
     savedIdsRef.current.set(t.id, new Set());
     setThreads((prev) => [t, ...prev]);
