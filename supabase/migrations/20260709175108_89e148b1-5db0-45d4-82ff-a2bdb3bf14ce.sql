@@ -1,0 +1,1 @@
+GRANT UPDATE (plan_type, plan_expires_at, is_suspended, messages_today, messages_reset_at) ON public.profiles TO authenticated;

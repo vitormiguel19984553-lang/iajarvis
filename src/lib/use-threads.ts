@@ -8,6 +8,7 @@ export type Thread = {
   createdAt: number;
   updatedAt: number;
   messages: UIMessage[];
+  loaded: boolean;
 };
 
 export function useThreads(userId: string | undefined) {
@@ -39,6 +40,7 @@ export function useThreads(userId: string | undefined) {
         createdAt: new Date(c.created_at).getTime(),
         updatedAt: new Date(c.updated_at).getTime(),
         messages: [],
+        loaded: false,
       }));
       setThreads(list);
       setHydrated(true);
@@ -52,7 +54,7 @@ export function useThreads(userId: string | undefined) {
   useEffect(() => {
     if (!activeId) return;
     const t = threads.find((x) => x.id === activeId);
-    if (!t || t.messages.length > 0) return;
+    if (!t || t.loaded) return;
     (async () => {
       const { data } = await supabase
         .from("messages")
@@ -67,7 +69,7 @@ export function useThreads(userId: string | undefined) {
       const set = new Set(msgs.map((m) => m.id));
       savedIdsRef.current.set(activeId, set);
       setThreads((prev) =>
-        prev.map((x) => (x.id === activeId ? { ...x, messages: msgs } : x)),
+        prev.map((x) => (x.id === activeId ? { ...x, messages: msgs, loaded: true } : x)),
       );
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -87,6 +89,7 @@ export function useThreads(userId: string | undefined) {
       createdAt: new Date(data.created_at).getTime(),
       updatedAt: new Date(data.updated_at).getTime(),
       messages: [],
+      loaded: true,
     };
     savedIdsRef.current.set(t.id, new Set());
     setThreads((prev) => [t, ...prev]);
