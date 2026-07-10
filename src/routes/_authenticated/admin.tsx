@@ -169,7 +169,13 @@ function AdminPage() {
 
   return (
     <div className="relative min-h-screen w-full text-foreground overflow-hidden">
-      <header className="border-b border-border/60 px-6 py-4 flex items-center justify-between">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px]"
+        style={{ background: "var(--gradient-halo)" }}
+      />
+      <header className="glass-panel border-0 border-b border-[color:var(--sidebar-border)] px-6 py-4 flex items-center justify-between rounded-none">
+
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate({ to: "/chat" })}
