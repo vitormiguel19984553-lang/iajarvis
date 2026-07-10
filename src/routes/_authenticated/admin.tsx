@@ -161,15 +161,21 @@ function AdminPage() {
 
   if (loading || !isAdmin) {
     return (
-      <div className="h-screen w-full flex items-center justify-center bg-background text-muted-foreground">
+      <div className="h-screen w-full flex items-center justify-center text-muted-foreground">
         A verificar permissões…
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen w-full bg-background text-foreground">
-      <header className="border-b border-border/60 px-6 py-4 flex items-center justify-between">
+    <div className="relative min-h-screen w-full text-foreground overflow-hidden">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px]"
+        style={{ background: "var(--gradient-halo)" }}
+      />
+      <header className="glass-panel border-0 border-b border-[color:var(--sidebar-border)] px-6 py-4 flex items-center justify-between rounded-none">
+
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate({ to: "/chat" })}
@@ -177,7 +183,7 @@ function AdminPage() {
           >
             <ArrowLeft className="h-4 w-4" />
           </button>
-          <Shield className="h-5 w-5 text-[#3ee6ff]" />
+          <Shield className="h-5 w-5 text-[color:var(--accent-cyan)]" />
           <h1 className="text-lg font-semibold tracking-tight">Admin · J.A.R.V.I.S</h1>
         </div>
         <div className="flex gap-1">
@@ -201,9 +207,9 @@ function AdminPage() {
       <main className="max-w-6xl mx-auto p-6 space-y-8">
         {tab === "keys" && (
           <>
-            <section className="rounded-xl border border-border/60 bg-card/40 p-5">
+            <section className="glass-panel hud-border rounded-xl p-5">
               <h2 className="text-sm font-semibold mb-4 flex items-center gap-2">
-                <KeyRound className="h-4 w-4 text-[#3ee6ff]" /> Gerar chaves
+                <KeyRound className="h-4 w-4 text-[color:var(--accent-cyan)]" /> Gerar chaves
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
                 <div className="space-y-1.5">
@@ -251,7 +257,7 @@ function AdminPage() {
               </div>
             </section>
 
-            <section className="rounded-xl border border-border/60 bg-card/40">
+            <section className="glass-panel hud-border rounded-xl">
               <div className="px-5 py-3 border-b border-border/60 text-sm font-semibold">
                 Chaves geradas ({keys.length})
               </div>
@@ -280,7 +286,7 @@ function AdminPage() {
                               ? <span className="text-destructive">revogada</span>
                               : used
                                 ? <span className="text-muted-foreground">usada</span>
-                                : <span className="text-[#3ee6ff]">disponível</span>}
+                                : <span className="text-[color:var(--accent-cyan)]">disponível</span>}
                           </TableCell>
                           <TableCell className="text-xs text-muted-foreground">{k.notes ?? "—"}</TableCell>
                           <TableCell className="text-right">
@@ -317,7 +323,7 @@ function AdminPage() {
         )}
 
         {tab === "users" && (
-          <section className="rounded-xl border border-border/60 bg-card/40">
+          <section className="glass-panel hud-border rounded-xl">
             <div className="px-5 py-3 border-b border-border/60 text-sm font-semibold">
               Utilizadores ({profiles.length})
             </div>
@@ -360,7 +366,7 @@ function AdminPage() {
                       <TableCell className="text-xs">
                         {p.is_suspended
                           ? <span className="text-destructive">suspenso</span>
-                          : <span className="text-[#3ee6ff]">ativo</span>}
+                          : <span className="text-[color:var(--accent-cyan)]">ativo</span>}
                       </TableCell>
                       <TableCell className="text-right">
                         <Button
