@@ -184,7 +184,7 @@ function PlansPage() {
                       background:
                         tier.id === "ultra"
                           ? "linear-gradient(135deg, #fbbf24, #f59e0b)"
-                          : "linear-gradient(135deg, #3ee6ff, #7c3aed)",
+                          : "var(--gradient-button)",
                     }}
                   >
                     {tier.cta}
