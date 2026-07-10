@@ -99,6 +99,7 @@
 
   /* Cinematic gradients & shadows */
   --gradient-arc: radial-gradient(circle at 30% 25%, #7df9ff 0%, #3ee6ff 35%, #0ea5c4 70%, transparent 100%);
+  --gradient-button: linear-gradient(135deg, #3ee6ff, #7c3aed);
   --gradient-hud: linear-gradient(135deg, rgba(62,230,255,0.14), rgba(62,230,255,0.02) 60%);
   --gradient-halo: radial-gradient(ellipse at top, rgba(62,230,255,0.18), transparent 60%);
   --glow-cyan: 0 0 24px rgba(62, 230, 255, 0.35), 0 0 60px rgba(62, 230, 255, 0.12);
