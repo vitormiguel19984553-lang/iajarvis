@@ -95,7 +95,7 @@ function PlansPage() {
       <div className="max-w-6xl mx-auto">
         <Link
           to="/chat"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[#3ee6ff] mb-6"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[color:var(--accent-cyan)] mb-6"
         >
           <ArrowLeft className="h-4 w-4" /> Voltar ao chat
         </Link>

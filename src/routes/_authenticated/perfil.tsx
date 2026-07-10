@@ -90,7 +90,7 @@ function PerfilPage() {
   return (
     <div className="min-h-screen bg-background text-foreground px-4 py-10">
       <div className="max-w-xl mx-auto">
-        <Link to="/chat" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[#3ee6ff] mb-6">
+        <Link to="/chat" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[color:var(--accent-cyan)] mb-6">
           <ArrowLeft className="h-4 w-4" /> Voltar ao chat
         </Link>
 
@@ -115,7 +115,7 @@ function PerfilPage() {
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="w-full mt-1 px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[#3ee6ff]"
+                className="w-full mt-1 px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[color:var(--accent-cyan)]"
               />
             </div>
             <div>
@@ -125,13 +125,13 @@ function PerfilPage() {
                 value={preferredName}
                 onChange={(e) => setPreferredName(e.target.value)}
                 required
-                className="w-full mt-1 px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[#3ee6ff]"
+                className="w-full mt-1 px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[color:var(--accent-cyan)]"
               />
             </div>
             <div className="grid grid-cols-2 gap-3 pt-2">
               <div className="rounded-lg bg-background border border-border p-3">
                 <div className="text-[11px] text-muted-foreground uppercase">Plano</div>
-                <div className="text-sm font-semibold text-[#3ee6ff] mt-1">{profile?.plan_type ?? "free"}</div>
+                <div className="text-sm font-semibold text-[color:var(--accent-cyan)] mt-1">{profile?.plan_type ?? "free"}</div>
               </div>
               <div className="rounded-lg bg-background border border-border p-3">
                 <div className="text-[11px] text-muted-foreground uppercase">Mensagens hoje</div>
@@ -153,12 +153,12 @@ function PerfilPage() {
         <div className="rounded-2xl border border-border bg-elevated p-6 mt-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-[#3ee6ff]" />
+              <Sparkles className="h-4 w-4 text-[color:var(--accent-cyan)]" />
               <h2 className="text-sm font-semibold uppercase tracking-wider">Plano</h2>
             </div>
             <Link
               to="/planos"
-              className="text-[12px] text-[#3ee6ff] hover:underline"
+              className="text-[12px] text-[color:var(--accent-cyan)] hover:underline"
             >
               Ver planos →
             </Link>
@@ -167,7 +167,7 @@ function PerfilPage() {
           <div className="grid grid-cols-2 gap-3 mb-5">
             <div className="rounded-lg bg-background border border-border p-3">
               <div className="text-[11px] text-muted-foreground uppercase">Plano atual</div>
-              <div className="text-base font-bold text-[#3ee6ff] mt-1 uppercase">
+              <div className="text-base font-bold text-[color:var(--accent-cyan)] mt-1 uppercase">
                 {profile?.plan_type ?? "free"}
               </div>
             </div>
@@ -187,7 +187,7 @@ function PerfilPage() {
                 value={keyCode}
                 onChange={(e) => setKeyCode(e.target.value.toUpperCase())}
                 placeholder="XXXX-XXXX-XXXX"
-                className="flex-1 px-3 py-2.5 rounded-lg bg-background border border-border text-sm font-mono tracking-wider focus:outline-none focus:border-[#3ee6ff]"
+                className="flex-1 px-3 py-2.5 rounded-lg bg-background border border-border text-sm font-mono tracking-wider focus:outline-none focus:border-[color:var(--accent-cyan)]"
               />
               <button
                 type="submit"

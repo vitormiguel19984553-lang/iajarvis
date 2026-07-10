@@ -136,7 +136,7 @@ function LoginPage() {
                 placeholder="Nome completo"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[#3ee6ff]"
+                className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[color:var(--accent-cyan)]"
               />
               <input
                 type="text"
@@ -144,7 +144,7 @@ function LoginPage() {
                 value={preferredName}
                 onChange={(e) => setPreferredName(e.target.value)}
                 required
-                className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[#3ee6ff]"
+                className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[color:var(--accent-cyan)]"
               />
             </>
           )}
@@ -154,7 +154,7 @@ function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[#3ee6ff]"
+            className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[color:var(--accent-cyan)]"
           />
           {mode !== "forgot" && (
             <input
@@ -164,7 +164,7 @@ function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[#3ee6ff]"
+              className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[color:var(--accent-cyan)]"
             />
           )}
           <button
@@ -186,12 +186,12 @@ function LoginPage() {
         <div className="mt-5 flex flex-col items-center gap-2 text-[12px] text-muted-foreground">
           {mode === "signin" && (
             <>
-              <button onClick={() => setMode("forgot")} className="hover:text-[#3ee6ff]">
+              <button onClick={() => setMode("forgot")} className="hover:text-[color:var(--accent-cyan)]">
                 Esqueci a senha
               </button>
               <span>
                 Não tem conta?{" "}
-                <button onClick={() => setMode("signup")} className="text-[#3ee6ff] hover:underline">
+                <button onClick={() => setMode("signup")} className="text-[color:var(--accent-cyan)] hover:underline">
                   Criar
                 </button>
               </span>
@@ -200,19 +200,19 @@ function LoginPage() {
           {mode === "signup" && (
             <span>
               Já tem conta?{" "}
-              <button onClick={() => setMode("signin")} className="text-[#3ee6ff] hover:underline">
+              <button onClick={() => setMode("signin")} className="text-[color:var(--accent-cyan)] hover:underline">
                 Entrar
               </button>
             </span>
           )}
           {mode === "forgot" && (
-            <button onClick={() => setMode("signin")} className="hover:text-[#3ee6ff]">
+            <button onClick={() => setMode("signin")} className="hover:text-[color:var(--accent-cyan)]">
               Voltar
             </button>
           )}
         </div>
         <div className="mt-4 text-center text-[11px] text-muted-foreground">
-          <Link to="/" className="hover:text-[#3ee6ff]">Início</Link>
+          <Link to="/" className="hover:text-[color:var(--accent-cyan)]">Início</Link>
         </div>
       </div>
       <Toaster theme="dark" position="bottom-right" />
