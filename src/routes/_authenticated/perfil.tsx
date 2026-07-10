@@ -88,17 +88,22 @@ function PerfilPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground px-4 py-10">
+    <div className="relative min-h-screen text-foreground px-4 py-10 overflow-hidden">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[380px]"
+        style={{ background: "var(--gradient-halo)" }}
+      />
       <div className="max-w-xl mx-auto">
-        <Link to="/chat" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[#3ee6ff] mb-6">
+        <Link to="/chat" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[color:var(--accent-cyan)] mb-6">
           <ArrowLeft className="h-4 w-4" /> Voltar ao chat
         </Link>
 
-        <div className="rounded-2xl border border-border bg-elevated p-8">
+        <div className="glass-panel rounded-2xl p-8">
           <div className="flex items-center gap-4 mb-6">
             <div
               className="h-14 w-14 rounded-2xl flex items-center justify-center text-white text-[20px] font-bold"
-              style={{ background: "linear-gradient(135deg, #3ee6ff, #7c3aed)" }}
+              style={{ background: "var(--gradient-arc)" }}
             >
               {(profile?.preferred_name ?? "J").slice(0, 1).toUpperCase()}
             </div>
@@ -115,7 +120,7 @@ function PerfilPage() {
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="w-full mt-1 px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[#3ee6ff]"
+                className="w-full mt-1 px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[color:var(--accent-cyan)]"
               />
             </div>
             <div>
@@ -125,15 +130,15 @@ function PerfilPage() {
                 value={preferredName}
                 onChange={(e) => setPreferredName(e.target.value)}
                 required
-                className="w-full mt-1 px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[#3ee6ff]"
+                className="w-full mt-1 px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[color:var(--accent-cyan)]"
               />
             </div>
             <div className="grid grid-cols-2 gap-3 pt-2">
-              <div className="rounded-lg bg-background border border-border p-3">
+              <div className="hud-border rounded-lg p-3 bg-[color:var(--surface)]/40">
                 <div className="text-[11px] text-muted-foreground uppercase">Plano</div>
-                <div className="text-sm font-semibold text-[#3ee6ff] mt-1">{profile?.plan_type ?? "free"}</div>
+                <div className="text-sm font-semibold text-[color:var(--accent-cyan)] mt-1">{profile?.plan_type ?? "free"}</div>
               </div>
-              <div className="rounded-lg bg-background border border-border p-3">
+              <div className="hud-border rounded-lg p-3 bg-[color:var(--surface)]/40">
                 <div className="text-[11px] text-muted-foreground uppercase">Mensagens hoje</div>
                 <div className="text-sm font-semibold mt-1">{profile?.messages_today ?? 0}</div>
               </div>
@@ -142,7 +147,7 @@ function PerfilPage() {
               type="submit"
               disabled={busy}
               className="w-full py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-50"
-              style={{ background: "linear-gradient(135deg, #3ee6ff, #7c3aed)" }}
+              style={{ background: "var(--gradient-button)" }}
             >
               {busy ? "..." : "Guardar"}
             </button>
@@ -150,28 +155,28 @@ function PerfilPage() {
         </div>
 
         {/* Plano atual + redeem */}
-        <div className="rounded-2xl border border-border bg-elevated p-6 mt-4">
+        <div className="glass-panel rounded-2xl p-6 mt-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-[#3ee6ff]" />
+              <Sparkles className="h-4 w-4 text-[color:var(--accent-cyan)]" />
               <h2 className="text-sm font-semibold uppercase tracking-wider">Plano</h2>
             </div>
             <Link
               to="/planos"
-              className="text-[12px] text-[#3ee6ff] hover:underline"
+              className="text-[12px] text-[color:var(--accent-cyan)] hover:underline"
             >
               Ver planos →
             </Link>
           </div>
 
           <div className="grid grid-cols-2 gap-3 mb-5">
-            <div className="rounded-lg bg-background border border-border p-3">
+            <div className="hud-border rounded-lg p-3 bg-[color:var(--surface)]/40">
               <div className="text-[11px] text-muted-foreground uppercase">Plano atual</div>
-              <div className="text-base font-bold text-[#3ee6ff] mt-1 uppercase">
+              <div className="text-base font-bold text-[color:var(--accent-cyan)] mt-1 uppercase">
                 {profile?.plan_type ?? "free"}
               </div>
             </div>
-            <div className="rounded-lg bg-background border border-border p-3">
+            <div className="hud-border rounded-lg p-3 bg-[color:var(--surface)]/40">
               <div className="text-[11px] text-muted-foreground uppercase">Expira em</div>
               <div className="text-sm font-semibold mt-1">{formatExpiry(profile?.plan_expires_at)}</div>
             </div>
@@ -187,13 +192,13 @@ function PerfilPage() {
                 value={keyCode}
                 onChange={(e) => setKeyCode(e.target.value.toUpperCase())}
                 placeholder="XXXX-XXXX-XXXX"
-                className="flex-1 px-3 py-2.5 rounded-lg bg-background border border-border text-sm font-mono tracking-wider focus:outline-none focus:border-[#3ee6ff]"
+                className="flex-1 px-3 py-2.5 rounded-lg bg-background border border-border text-sm font-mono tracking-wider focus:outline-none focus:border-[color:var(--accent-cyan)]"
               />
               <button
                 type="submit"
                 disabled={redeeming || !keyCode.trim()}
                 className="px-4 py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #3ee6ff, #7c3aed)" }}
+                style={{ background: "var(--gradient-button)" }}
               >
                 {redeeming ? "..." : "Ativar"}
               </button>
@@ -201,7 +206,7 @@ function PerfilPage() {
           </form>
         </div>
 
-        <div className="rounded-2xl border border-border bg-elevated p-6 mt-4">
+        <div className="glass-panel rounded-2xl p-6 mt-4">
           <button
             onClick={logout}
             className="w-full py-2.5 rounded-lg text-sm font-medium border border-border bg-background hover:bg-accent flex items-center justify-center gap-2"

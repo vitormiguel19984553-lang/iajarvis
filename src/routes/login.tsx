@@ -78,14 +78,25 @@ function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background text-foreground px-4">
-      <div className="w-full max-w-md rounded-2xl border border-border bg-elevated p-8 shadow-2xl">
+    <div className="relative min-h-screen flex items-center justify-center text-foreground px-4 overflow-hidden">
+      {/* Cinematic halo backdrop */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{ background: "var(--gradient-halo)" }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40 blur-3xl"
+        style={{ background: "var(--gradient-arc)" }}
+      />
+      <div className="glass-panel hud-border w-full max-w-md rounded-2xl p-8 shadow-[var(--shadow-elevated)]">
         <div className="flex flex-col items-center mb-6">
           <div
-            className="h-14 w-14 rounded-2xl flex items-center justify-center text-white text-[20px] font-bold mb-3"
-            style={{ background: "linear-gradient(135deg, #3ee6ff, #7c3aed)" }}
+            className="relative h-14 w-14 rounded-2xl flex items-center justify-center text-primary-foreground text-[20px] font-bold mb-3 glow-cyan"
+            style={{ background: "var(--gradient-arc)" }}
           >
-            J
+            <span className="relative z-10">J</span>
           </div>
           <h1 className="text-xl font-semibold">
             {mode === "signin" && "Entrar no J.A.R.V.I.S"}
@@ -125,7 +136,7 @@ function LoginPage() {
                 placeholder="Nome completo"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[#3ee6ff]"
+                className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[color:var(--accent-cyan)]"
               />
               <input
                 type="text"
@@ -133,7 +144,7 @@ function LoginPage() {
                 value={preferredName}
                 onChange={(e) => setPreferredName(e.target.value)}
                 required
-                className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[#3ee6ff]"
+                className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[color:var(--accent-cyan)]"
               />
             </>
           )}
@@ -143,7 +154,7 @@ function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[#3ee6ff]"
+            className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[color:var(--accent-cyan)]"
           />
           {mode !== "forgot" && (
             <input
@@ -153,14 +164,14 @@ function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[#3ee6ff]"
+              className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-[color:var(--accent-cyan)]"
             />
           )}
           <button
             type="submit"
             disabled={busy}
             className="w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg, #3ee6ff, #7c3aed)" }}
+            style={{ background: "var(--gradient-button)" }}
           >
             {busy
               ? "..."
@@ -175,12 +186,12 @@ function LoginPage() {
         <div className="mt-5 flex flex-col items-center gap-2 text-[12px] text-muted-foreground">
           {mode === "signin" && (
             <>
-              <button onClick={() => setMode("forgot")} className="hover:text-[#3ee6ff]">
+              <button onClick={() => setMode("forgot")} className="hover:text-[color:var(--accent-cyan)]">
                 Esqueci a senha
               </button>
               <span>
                 Não tem conta?{" "}
-                <button onClick={() => setMode("signup")} className="text-[#3ee6ff] hover:underline">
+                <button onClick={() => setMode("signup")} className="text-[color:var(--accent-cyan)] hover:underline">
                   Criar
                 </button>
               </span>
@@ -189,19 +200,19 @@ function LoginPage() {
           {mode === "signup" && (
             <span>
               Já tem conta?{" "}
-              <button onClick={() => setMode("signin")} className="text-[#3ee6ff] hover:underline">
+              <button onClick={() => setMode("signin")} className="text-[color:var(--accent-cyan)] hover:underline">
                 Entrar
               </button>
             </span>
           )}
           {mode === "forgot" && (
-            <button onClick={() => setMode("signin")} className="hover:text-[#3ee6ff]">
+            <button onClick={() => setMode("signin")} className="hover:text-[color:var(--accent-cyan)]">
               Voltar
             </button>
           )}
         </div>
         <div className="mt-4 text-center text-[11px] text-muted-foreground">
-          <Link to="/" className="hover:text-[#3ee6ff]">Início</Link>
+          <Link to="/" className="hover:text-[color:var(--accent-cyan)]">Início</Link>
         </div>
       </div>
       <Toaster theme="dark" position="bottom-right" />

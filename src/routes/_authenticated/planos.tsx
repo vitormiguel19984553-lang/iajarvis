@@ -91,17 +91,22 @@ function PlansPage() {
   const current = profile?.plan_type ?? "free";
 
   return (
-    <div className="min-h-screen bg-background text-foreground px-4 py-10">
+    <div className="relative min-h-screen text-foreground px-4 py-10 overflow-hidden">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px]"
+        style={{ background: "var(--gradient-halo)" }}
+      />
       <div className="max-w-6xl mx-auto">
         <Link
           to="/chat"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[#3ee6ff] mb-6"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[color:var(--accent-cyan)] mb-6"
         >
           <ArrowLeft className="h-4 w-4" /> Voltar ao chat
         </Link>
 
         <header className="text-center mb-10">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Escolhe o teu plano</h1>
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-glow-cyan">Escolhe o teu plano</h1>
           <p className="text-muted-foreground mt-2 text-sm">
             Ativa Pro ou Ultra com uma chave de ativação no teu perfil.
           </p>
@@ -114,11 +119,11 @@ function PlansPage() {
             return (
               <div
                 key={tier.id}
-                className="relative rounded-2xl border bg-elevated p-6 flex flex-col"
+                className="glass-panel relative rounded-2xl p-6 flex flex-col transition-transform hover:-translate-y-0.5"
                 style={{
-                  borderColor: tier.highlight ? tier.accent : "hsl(var(--border))",
+                  borderColor: tier.highlight ? tier.accent : undefined,
                   boxShadow: tier.highlight
-                    ? `0 0 0 1px ${tier.accent}33, 0 10px 40px -10px ${tier.accent}44`
+                    ? `0 0 0 1px ${tier.accent}55, 0 10px 40px -10px ${tier.accent}66, inset 0 0 24px ${tier.accent}12`
                     : undefined,
                 }}
               >
@@ -179,7 +184,7 @@ function PlansPage() {
                       background:
                         tier.id === "ultra"
                           ? "linear-gradient(135deg, #fbbf24, #f59e0b)"
-                          : "linear-gradient(135deg, #3ee6ff, #7c3aed)",
+                          : "var(--gradient-button)",
                     }}
                   >
                     {tier.cta}
