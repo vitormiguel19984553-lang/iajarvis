@@ -78,14 +78,25 @@ function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background text-foreground px-4">
-      <div className="w-full max-w-md rounded-2xl border border-border bg-elevated p-8 shadow-2xl">
+    <div className="relative min-h-screen flex items-center justify-center text-foreground px-4 overflow-hidden">
+      {/* Cinematic halo backdrop */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{ background: "var(--gradient-halo)" }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40 blur-3xl"
+        style={{ background: "var(--gradient-arc)" }}
+      />
+      <div className="glass-panel hud-border w-full max-w-md rounded-2xl p-8 shadow-[var(--shadow-elevated)]">
         <div className="flex flex-col items-center mb-6">
           <div
-            className="h-14 w-14 rounded-2xl flex items-center justify-center text-white text-[20px] font-bold mb-3"
-            style={{ background: "linear-gradient(135deg, #3ee6ff, #7c3aed)" }}
+            className="relative h-14 w-14 rounded-2xl flex items-center justify-center text-primary-foreground text-[20px] font-bold mb-3 glow-cyan"
+            style={{ background: "var(--gradient-arc)" }}
           >
-            J
+            <span className="relative z-10">J</span>
           </div>
           <h1 className="text-xl font-semibold">
             {mode === "signin" && "Entrar no J.A.R.V.I.S"}
