@@ -103,7 +103,7 @@ function PerfilPage() {
           <div className="flex items-center gap-4 mb-6">
             <div
               className="h-14 w-14 rounded-2xl flex items-center justify-center text-white text-[20px] font-bold"
-              style={{ background: "linear-gradient(135deg, #3ee6ff, #7c3aed)" }}
+              style={{ background: "var(--gradient-arc)" }}
             >
               {(profile?.preferred_name ?? "J").slice(0, 1).toUpperCase()}
             </div>
@@ -147,7 +147,7 @@ function PerfilPage() {
               type="submit"
               disabled={busy}
               className="w-full py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-50"
-              style={{ background: "linear-gradient(135deg, #3ee6ff, #7c3aed)" }}
+              style={{ background: "var(--gradient-arc)" }}
             >
               {busy ? "..." : "Guardar"}
             </button>
@@ -198,7 +198,7 @@ function PerfilPage() {
                 type="submit"
                 disabled={redeeming || !keyCode.trim()}
                 className="px-4 py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #3ee6ff, #7c3aed)" }}
+                style={{ background: "var(--gradient-arc)" }}
               >
                 {redeeming ? "..." : "Ativar"}
               </button>

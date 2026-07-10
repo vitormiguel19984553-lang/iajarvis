@@ -171,7 +171,7 @@ function LoginPage() {
             type="submit"
             disabled={busy}
             className="w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg, #3ee6ff, #7c3aed)" }}
+            style={{ background: "var(--gradient-arc)" }}
           >
             {busy
               ? "..."
