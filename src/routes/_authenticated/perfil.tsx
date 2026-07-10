@@ -147,7 +147,7 @@ function PerfilPage() {
               type="submit"
               disabled={busy}
               className="w-full py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-50"
-              style={{ background: "var(--gradient-arc)" }}
+              style={{ background: "var(--gradient-button)" }}
             >
               {busy ? "..." : "Guardar"}
             </button>
@@ -198,7 +198,7 @@ function PerfilPage() {
                 type="submit"
                 disabled={redeeming || !keyCode.trim()}
                 className="px-4 py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-50"
-                style={{ background: "var(--gradient-arc)" }}
+                style={{ background: "var(--gradient-button)" }}
               >
                 {redeeming ? "..." : "Ativar"}
               </button>
