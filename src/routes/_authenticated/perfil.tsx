@@ -89,6 +89,11 @@ function PerfilPage() {
 
   return (
     <div className="relative min-h-screen text-foreground px-4 py-10 overflow-hidden">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[380px]"
+        style={{ background: "var(--gradient-halo)" }}
+      />
       <div className="max-w-xl mx-auto">
         <Link to="/chat" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[color:var(--accent-cyan)] mb-6">
           <ArrowLeft className="h-4 w-4" /> Voltar ao chat
