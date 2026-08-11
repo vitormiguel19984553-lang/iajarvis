@@ -14,9 +14,14 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiLearnRouteImport } from './routes/api/learn'
+import { Route as ApiCreateTtsRouteImport } from './routes/api/create-tts'
+import { Route as ApiCreateTextRouteImport } from './routes/api/create-text'
+import { Route as ApiCreateSttRouteImport } from './routes/api/create-stt'
+import { Route as ApiCreateImageRouteImport } from './routes/api/create-image'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedPlanosRouteImport } from './routes/_authenticated/planos'
 import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
+import { Route as AuthenticatedCreateRouteImport } from './routes/_authenticated/create'
 import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated/chat'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 
@@ -44,6 +49,26 @@ const ApiLearnRoute = ApiLearnRouteImport.update({
   path: '/api/learn',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCreateTtsRoute = ApiCreateTtsRouteImport.update({
+  id: '/api/create-tts',
+  path: '/api/create-tts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCreateTextRoute = ApiCreateTextRouteImport.update({
+  id: '/api/create-text',
+  path: '/api/create-text',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCreateSttRoute = ApiCreateSttRouteImport.update({
+  id: '/api/create-stt',
+  path: '/api/create-stt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCreateImageRoute = ApiCreateImageRouteImport.update({
+  id: '/api/create-image',
+  path: '/api/create-image',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
   path: '/api/chat',
@@ -57,6 +82,11 @@ const AuthenticatedPlanosRoute = AuthenticatedPlanosRouteImport.update({
 const AuthenticatedPerfilRoute = AuthenticatedPerfilRouteImport.update({
   id: '/perfil',
   path: '/perfil',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedCreateRoute = AuthenticatedCreateRouteImport.update({
+  id: '/create',
+  path: '/create',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedChatRoute = AuthenticatedChatRouteImport.update({
@@ -76,9 +106,14 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/chat': typeof AuthenticatedChatRoute
+  '/create': typeof AuthenticatedCreateRoute
   '/perfil': typeof AuthenticatedPerfilRoute
   '/planos': typeof AuthenticatedPlanosRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/create-image': typeof ApiCreateImageRoute
+  '/api/create-stt': typeof ApiCreateSttRoute
+  '/api/create-text': typeof ApiCreateTextRoute
+  '/api/create-tts': typeof ApiCreateTtsRoute
   '/api/learn': typeof ApiLearnRoute
 }
 export interface FileRoutesByTo {
@@ -87,9 +122,14 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/chat': typeof AuthenticatedChatRoute
+  '/create': typeof AuthenticatedCreateRoute
   '/perfil': typeof AuthenticatedPerfilRoute
   '/planos': typeof AuthenticatedPlanosRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/create-image': typeof ApiCreateImageRoute
+  '/api/create-stt': typeof ApiCreateSttRoute
+  '/api/create-text': typeof ApiCreateTextRoute
+  '/api/create-tts': typeof ApiCreateTtsRoute
   '/api/learn': typeof ApiLearnRoute
 }
 export interface FileRoutesById {
@@ -100,9 +140,14 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/chat': typeof AuthenticatedChatRoute
+  '/_authenticated/create': typeof AuthenticatedCreateRoute
   '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
   '/_authenticated/planos': typeof AuthenticatedPlanosRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/create-image': typeof ApiCreateImageRoute
+  '/api/create-stt': typeof ApiCreateSttRoute
+  '/api/create-text': typeof ApiCreateTextRoute
+  '/api/create-tts': typeof ApiCreateTtsRoute
   '/api/learn': typeof ApiLearnRoute
 }
 export interface FileRouteTypes {
@@ -113,9 +158,14 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/admin'
     | '/chat'
+    | '/create'
     | '/perfil'
     | '/planos'
     | '/api/chat'
+    | '/api/create-image'
+    | '/api/create-stt'
+    | '/api/create-text'
+    | '/api/create-tts'
     | '/api/learn'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -124,9 +174,14 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/admin'
     | '/chat'
+    | '/create'
     | '/perfil'
     | '/planos'
     | '/api/chat'
+    | '/api/create-image'
+    | '/api/create-stt'
+    | '/api/create-text'
+    | '/api/create-tts'
     | '/api/learn'
   id:
     | '__root__'
@@ -136,9 +191,14 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/_authenticated/admin'
     | '/_authenticated/chat'
+    | '/_authenticated/create'
     | '/_authenticated/perfil'
     | '/_authenticated/planos'
     | '/api/chat'
+    | '/api/create-image'
+    | '/api/create-stt'
+    | '/api/create-text'
+    | '/api/create-tts'
     | '/api/learn'
   fileRoutesById: FileRoutesById
 }
@@ -148,6 +208,10 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ApiChatRoute: typeof ApiChatRoute
+  ApiCreateImageRoute: typeof ApiCreateImageRoute
+  ApiCreateSttRoute: typeof ApiCreateSttRoute
+  ApiCreateTextRoute: typeof ApiCreateTextRoute
+  ApiCreateTtsRoute: typeof ApiCreateTtsRoute
   ApiLearnRoute: typeof ApiLearnRoute
 }
 
@@ -188,6 +252,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiLearnRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/create-tts': {
+      id: '/api/create-tts'
+      path: '/api/create-tts'
+      fullPath: '/api/create-tts'
+      preLoaderRoute: typeof ApiCreateTtsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/create-text': {
+      id: '/api/create-text'
+      path: '/api/create-text'
+      fullPath: '/api/create-text'
+      preLoaderRoute: typeof ApiCreateTextRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/create-stt': {
+      id: '/api/create-stt'
+      path: '/api/create-stt'
+      fullPath: '/api/create-stt'
+      preLoaderRoute: typeof ApiCreateSttRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/create-image': {
+      id: '/api/create-image'
+      path: '/api/create-image'
+      fullPath: '/api/create-image'
+      preLoaderRoute: typeof ApiCreateImageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/chat': {
       id: '/api/chat'
       path: '/api/chat'
@@ -207,6 +299,13 @@ declare module '@tanstack/react-router' {
       path: '/perfil'
       fullPath: '/perfil'
       preLoaderRoute: typeof AuthenticatedPerfilRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/create': {
+      id: '/_authenticated/create'
+      path: '/create'
+      fullPath: '/create'
+      preLoaderRoute: typeof AuthenticatedCreateRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/chat': {
@@ -229,6 +328,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedChatRoute: typeof AuthenticatedChatRoute
+  AuthenticatedCreateRoute: typeof AuthenticatedCreateRoute
   AuthenticatedPerfilRoute: typeof AuthenticatedPerfilRoute
   AuthenticatedPlanosRoute: typeof AuthenticatedPlanosRoute
 }
@@ -236,6 +336,7 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedChatRoute: AuthenticatedChatRoute,
+  AuthenticatedCreateRoute: AuthenticatedCreateRoute,
   AuthenticatedPerfilRoute: AuthenticatedPerfilRoute,
   AuthenticatedPlanosRoute: AuthenticatedPlanosRoute,
 }
@@ -250,18 +351,12 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ApiChatRoute: ApiChatRoute,
+  ApiCreateImageRoute: ApiCreateImageRoute,
+  ApiCreateSttRoute: ApiCreateSttRoute,
+  ApiCreateTextRoute: ApiCreateTextRoute,
+  ApiCreateTtsRoute: ApiCreateTtsRoute,
   ApiLearnRoute: ApiLearnRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

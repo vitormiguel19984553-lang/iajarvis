@@ -1,4 +1,4 @@
-import { MessageSquare, FolderOpen, BarChart3, Settings, Plus, History, User, Shield, LogOut, Sparkles } from "lucide-react";
+import { MessageSquare, FolderOpen, BarChart3, Settings, Plus, History, User, Shield, LogOut, Sparkles, Wand2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -14,6 +14,7 @@ interface Props {
 
 const ITEMS = [
   { key: "chat", icon: MessageSquare, label: "Chat" },
+  { key: "create", icon: Wand2, label: "Criar" },
   { key: "files", icon: FolderOpen, label: "Ficheiros" },
   { key: "stats", icon: BarChart3, label: "Stats" },
   { key: "settings", icon: Settings, label: "Definições" },

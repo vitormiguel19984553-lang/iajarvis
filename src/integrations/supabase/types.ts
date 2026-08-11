@@ -80,6 +80,42 @@ export type Database = {
         }
         Relationships: []
       }
+      creations: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          output_text: string | null
+          prompt: string | null
+          storage_path: string | null
+          tool_id: string
+          tool_label: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: string
+          output_text?: string | null
+          prompt?: string | null
+          storage_path?: string | null
+          tool_id: string
+          tool_label: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          output_text?: string | null
+          prompt?: string | null
+          storage_path?: string | null
+          tool_id?: string
+          tool_label?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
