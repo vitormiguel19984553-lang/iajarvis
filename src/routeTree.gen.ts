@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiLearnRouteImport } from './routes/api/learn'
+import { Route as ApiCreateTextRouteImport } from './routes/api/create-text'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedPlanosRouteImport } from './routes/_authenticated/planos'
 import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
@@ -42,6 +43,11 @@ const IndexRoute = IndexRouteImport.update({
 const ApiLearnRoute = ApiLearnRouteImport.update({
   id: '/api/learn',
   path: '/api/learn',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCreateTextRoute = ApiCreateTextRouteImport.update({
+  id: '/api/create-text',
+  path: '/api/create-text',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiChatRoute = ApiChatRouteImport.update({
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/perfil': typeof AuthenticatedPerfilRoute
   '/planos': typeof AuthenticatedPlanosRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/create-text': typeof ApiCreateTextRoute
   '/api/learn': typeof ApiLearnRoute
 }
 export interface FileRoutesByTo {
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   '/perfil': typeof AuthenticatedPerfilRoute
   '/planos': typeof AuthenticatedPlanosRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/create-text': typeof ApiCreateTextRoute
   '/api/learn': typeof ApiLearnRoute
 }
 export interface FileRoutesById {
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
   '/_authenticated/planos': typeof AuthenticatedPlanosRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/create-text': typeof ApiCreateTextRoute
   '/api/learn': typeof ApiLearnRoute
 }
 export interface FileRouteTypes {
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/planos'
     | '/api/chat'
+    | '/api/create-text'
     | '/api/learn'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/planos'
     | '/api/chat'
+    | '/api/create-text'
     | '/api/learn'
   id:
     | '__root__'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/_authenticated/perfil'
     | '/_authenticated/planos'
     | '/api/chat'
+    | '/api/create-text'
     | '/api/learn'
   fileRoutesById: FileRoutesById
 }
@@ -148,6 +160,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ApiChatRoute: typeof ApiChatRoute
+  ApiCreateTextRoute: typeof ApiCreateTextRoute
   ApiLearnRoute: typeof ApiLearnRoute
 }
 
@@ -186,6 +199,13 @@ declare module '@tanstack/react-router' {
       path: '/api/learn'
       fullPath: '/api/learn'
       preLoaderRoute: typeof ApiLearnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/create-text': {
+      id: '/api/create-text'
+      path: '/api/create-text'
+      fullPath: '/api/create-text'
+      preLoaderRoute: typeof ApiCreateTextRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/chat': {
@@ -250,18 +270,9 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ApiChatRoute: ApiChatRoute,
+  ApiCreateTextRoute: ApiCreateTextRoute,
   ApiLearnRoute: ApiLearnRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
