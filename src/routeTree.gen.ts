@@ -21,6 +21,7 @@ import { Route as ApiCreateImageRouteImport } from './routes/api/create-image'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedPlanosRouteImport } from './routes/_authenticated/planos'
 import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
+import { Route as AuthenticatedCreateRouteImport } from './routes/_authenticated/create'
 import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated/chat'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 
@@ -83,6 +84,11 @@ const AuthenticatedPerfilRoute = AuthenticatedPerfilRouteImport.update({
   path: '/perfil',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedCreateRoute = AuthenticatedCreateRouteImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedChatRoute = AuthenticatedChatRouteImport.update({
   id: '/chat',
   path: '/chat',
@@ -100,6 +106,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/chat': typeof AuthenticatedChatRoute
+  '/create': typeof AuthenticatedCreateRoute
   '/perfil': typeof AuthenticatedPerfilRoute
   '/planos': typeof AuthenticatedPlanosRoute
   '/api/chat': typeof ApiChatRoute
@@ -115,6 +122,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/chat': typeof AuthenticatedChatRoute
+  '/create': typeof AuthenticatedCreateRoute
   '/perfil': typeof AuthenticatedPerfilRoute
   '/planos': typeof AuthenticatedPlanosRoute
   '/api/chat': typeof ApiChatRoute
@@ -132,6 +140,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/chat': typeof AuthenticatedChatRoute
+  '/_authenticated/create': typeof AuthenticatedCreateRoute
   '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
   '/_authenticated/planos': typeof AuthenticatedPlanosRoute
   '/api/chat': typeof ApiChatRoute
@@ -149,6 +158,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/admin'
     | '/chat'
+    | '/create'
     | '/perfil'
     | '/planos'
     | '/api/chat'
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/admin'
     | '/chat'
+    | '/create'
     | '/perfil'
     | '/planos'
     | '/api/chat'
@@ -180,6 +191,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/_authenticated/admin'
     | '/_authenticated/chat'
+    | '/_authenticated/create'
     | '/_authenticated/perfil'
     | '/_authenticated/planos'
     | '/api/chat'
@@ -289,6 +301,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPerfilRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/create': {
+      id: '/_authenticated/create'
+      path: '/create'
+      fullPath: '/create'
+      preLoaderRoute: typeof AuthenticatedCreateRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/chat': {
       id: '/_authenticated/chat'
       path: '/chat'
@@ -309,6 +328,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedChatRoute: typeof AuthenticatedChatRoute
+  AuthenticatedCreateRoute: typeof AuthenticatedCreateRoute
   AuthenticatedPerfilRoute: typeof AuthenticatedPerfilRoute
   AuthenticatedPlanosRoute: typeof AuthenticatedPlanosRoute
 }
@@ -316,6 +336,7 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedChatRoute: AuthenticatedChatRoute,
+  AuthenticatedCreateRoute: AuthenticatedCreateRoute,
   AuthenticatedPerfilRoute: AuthenticatedPerfilRoute,
   AuthenticatedPlanosRoute: AuthenticatedPlanosRoute,
 }
