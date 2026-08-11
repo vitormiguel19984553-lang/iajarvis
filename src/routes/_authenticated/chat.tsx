@@ -75,6 +75,7 @@ function ChatPage() {
     else if (key === "files") { setActiveTab("files"); setShowRightPanel(true); }
     else if (key === "stats") { setActiveTab("stats"); setShowRightPanel(true); }
     else if (key === "chat") { setActiveTab("all"); setShowRightPanel(true); }
+    else if (key === "create") navigate({ to: "/create" });
     else if (key === "perfil") navigate({ to: "/perfil" });
     else if (key === "planos") navigate({ to: "/planos" });
     else if (key === "admin") navigate({ to: "/admin" });
