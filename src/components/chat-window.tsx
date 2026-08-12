@@ -16,7 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useOnlineStatus } from "@/lib/use-online-status";
 import { WifiOff, Menu } from "lucide-react";
 import {
-  detectFileRequests,
+  detectImageRequests,
   generateFile,
   type GeneratedFile,
 } from "@/lib/file-generator";
@@ -150,6 +150,8 @@ ${c}${truncated}`;
   const lastLearnedIdRef = useRef<string | null>(null);
   const [generatedFiles, setGeneratedFiles] = useState<Record<string, GeneratedFile[]>>({});
   const processedFilesRef = useRef<Set<string>>(new Set());
+  const [generatedImages, setGeneratedImages] = useState<Record<string, string[]>>({});
+  const processedImagesRef = useRef<Set<string>>(new Set());
 
 
   const { messages, sendMessage, status, stop, error, regenerate, setMessages } = useChat({
