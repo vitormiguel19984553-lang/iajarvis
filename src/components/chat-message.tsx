@@ -2,7 +2,7 @@ import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { UIMessage } from "ai";
-import { Copy, RefreshCw, Pencil, Check, X } from "lucide-react";
+import { Copy, RefreshCw, Pencil, Check, X, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FileDownloadCard } from "@/components/file-download-card";
 import { stripFileTags, type GeneratedFile } from "@/lib/file-generator";
@@ -125,7 +125,8 @@ export function ChatMessage({
             <div className="prose-chat">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
             </div>
-          ) : generatedFiles && generatedFiles.length > 0 ? null : (
+          ) : (generatedFiles && generatedFiles.length > 0) ||
+            (generatedImages && generatedImages.length > 0) ? null : (
             <div>
               <span className="typing-dot" />
               <span className="typing-dot" />
@@ -139,6 +140,32 @@ export function ChatMessage({
               ))}
             </div>
           )}
+          {!isUser && generatedImages && generatedImages.length > 0 && (
+            <div className="mt-2 flex flex-col gap-2">
+              {generatedImages.map((b64, i) => {
+                const src = `data:image/png;base64,${b64}`;
+                return (
+                  <div key={i} className="flex flex-col gap-1.5">
+                    <img
+                      src={src}
+                      alt={`Imagem gerada ${i + 1}`}
+                      loading="lazy"
+                      className="rounded-xl max-w-full border"
+                      style={{ borderColor: "var(--border)" }}
+                    />
+                    <a
+                      href={src}
+                      download={`jarvis-imagem-${i + 1}.png`}
+                      className="self-start px-2 py-1 rounded-md text-[11px] bg-primary/15 text-primary border border-primary/40 hover:bg-primary/25 flex items-center gap-1"
+                    >
+                      <Download className="h-3 w-3" /> Baixar imagem
+                    </a>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
         </div>
 
         {!editing && text && (
