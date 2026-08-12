@@ -22,6 +22,12 @@ export interface FileRequest {
 }
 
 const FILE_TAG_RE = /\[GERAR_ARQUIVO:([^\]]+)\]([\s\S]*?)\[\/GERAR_ARQUIVO\]/g;
+const IMAGE_TAG_RE = /\[GERAR_IMAGEM:([\s\S]*?)\](?:([\s\S]*?)\[\/GERAR_IMAGEM\])?/g;
+
+export interface ImageRequest {
+  prompt: string;
+  raw: string;
+}
 
 export function detectFileRequests(text: string): FileRequest[] {
   const out: FileRequest[] = [];
@@ -33,9 +39,21 @@ export function detectFileRequests(text: string): FileRequest[] {
   return out;
 }
 
-export function stripFileTags(text: string): string {
-  return text.replace(FILE_TAG_RE, "").trim();
+export function detectImageRequests(text: string): ImageRequest[] {
+  const out: ImageRequest[] = [];
+  let m: RegExpExecArray | null;
+  IMAGE_TAG_RE.lastIndex = 0;
+  while ((m = IMAGE_TAG_RE.exec(text)) !== null) {
+    const prompt = `${m[1] ?? ""} ${m[2] ?? ""}`.trim();
+    if (prompt) out.push({ prompt, raw: m[0] });
+  }
+  return out;
 }
+
+export function stripFileTags(text: string): string {
+  return text.replace(FILE_TAG_RE, "").replace(IMAGE_TAG_RE, "").trim();
+}
+
 
 export async function generateFile(fileName: string, content: string): Promise<GeneratedFile> {
   const ext = (fileName.split(".").pop() || "txt").toLowerCase();

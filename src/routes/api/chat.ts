@@ -202,6 +202,17 @@ Regras:
 - NUNCA digas "não consigo gerar ficheiros" — gera sempre dentro das tags. O sistema cria o download automaticamente.
 - Antes ou depois da tag, escreve uma frase curta a explicar o que está no ficheiro.`;
 
+        const imageGenBlock = `\n\n## Geração de imagens
+Quando o utilizador pedir uma imagem, foto, desenho, ilustração, logótipo, arte, capa, banner ou qualquer visual, responde SEMPRE com:
+
+[GERAR_IMAGEM: descrição visual muito detalhada em inglês (estilo, composição, luz, cores, enquadramento)][/GERAR_IMAGEM]
+
+Regras:
+- A descrição dentro da tag tem de ser em inglês e muito detalhada.
+- NUNCA digas "não consigo gerar imagens" — usa sempre a tag; o sistema gera a imagem automaticamente.
+- Escreve uma frase curta em português antes da tag a descrever o que vais criar.
+- Uma tag por imagem pedida.`;
+
         const routedNote = `\n\n[Routed: ${displayed} → ${gatewayId}]`;
 
         const modelMessages = (await convertToModelMessages(messages as UIMessage[])) as ModelMessage[];
@@ -236,7 +247,7 @@ Regras:
         const gateway = createLovableAiGatewayProvider(key);
         const result = streamText({
           model: gateway(gatewayId),
-          system: baseSystem + skillsBlock + filesBlock + fileGenBlock + FILE_CONFIRM_RULE + routedNote,
+          system: baseSystem + skillsBlock + filesBlock + fileGenBlock + imageGenBlock + FILE_CONFIRM_RULE + routedNote,
           messages: modelMessages,
           abortSignal: request.signal,
         });

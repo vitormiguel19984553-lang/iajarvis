@@ -29,6 +29,7 @@ export function VoiceMode({ open, onClose, onUserSpeech }: Props) {
     if (!("speechSynthesis" in window)) return;
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
+    u.lang = "pt-PT";
     u.rate = 1.05;
     u.pitch = 1;
     u.onstart = () => setSpeaking(true);
