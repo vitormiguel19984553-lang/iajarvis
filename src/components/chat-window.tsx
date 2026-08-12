@@ -290,6 +290,49 @@ ${c}${truncated}`;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, messages.length]);
 
+  // Image generation: scan assistant messages for [GERAR_IMAGEM:...] tags.
+  useEffect(() => {
+    if (status !== "ready") return;
+    const last = messages[messages.length - 1];
+    if (!last || last.role !== "assistant") return;
+    if (processedImagesRef.current.has(last.id)) return;
+    const reqs = detectImageRequests(partsToText(last));
+    processedImagesRef.current.add(last.id);
+    if (reqs.length === 0) return;
+    (async () => {
+      const { data: sess } = await supabase.auth.getSession();
+      const token = sess.session?.access_token;
+      if (!token) return;
+      const made: string[] = [];
+      for (const r of reqs) {
+        try {
+          const res = await fetch("/api/create-image", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ toolId: "text-to-image", prompt: r.prompt }),
+          });
+          if (!res.ok) {
+            const err = (await res.json().catch(() => null)) as { error?: string } | null;
+            throw new Error(err?.error || `Erro ${res.status}`);
+          }
+          const data = (await res.json()) as { b64?: string };
+          if (data.b64) made.push(data.b64);
+        } catch (e) {
+          console.error("image gen failed", e);
+          toast.error("Falha a gerar imagem", { description: (e as Error).message });
+        }
+      }
+      if (made.length > 0) {
+        setGeneratedImages((prev) => ({ ...prev, [last.id]: made }));
+        toast.success(`${made.length} imagem(ns) gerada(s)`);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, messages.length]);
+
 
 
   const isBusy = status === "submitted" || status === "streaming";
