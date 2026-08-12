@@ -75,7 +75,7 @@ export function VoiceMode({ open, onClose, onUserSpeech }: Props) {
     }
     try {
       const rec = new SR();
-      rec.lang = "en-US";
+      rec.lang = "pt-PT";
       rec.interimResults = true;
       rec.continuous = false;
       rec.onresult = (e: any) => {
