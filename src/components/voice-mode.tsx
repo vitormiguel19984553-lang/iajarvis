@@ -75,7 +75,7 @@ export function VoiceMode({ open, onClose, onUserSpeech }: Props) {
     }
     try {
       const rec = new SR();
-      rec.lang = "en-US";
+      rec.lang = "pt-PT";
       rec.interimResults = true;
       rec.continuous = false;
       rec.onresult = (e: any) => {
@@ -129,6 +129,12 @@ export function VoiceMode({ open, onClose, onUserSpeech }: Props) {
       setStatusText("Paused");
     } else {
       shouldListenRef.current = true;
+      // Unlock iOS Safari speech synthesis inside the user gesture;
+      // without this, speaking after an async AI response is silently blocked.
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(new SpeechSynthesisUtterance(""));
+      }
       startListening();
     }
   }, [startListening]);
