@@ -15,6 +15,7 @@ function partsToText(m: UIMessage): string {
 interface Props {
   message: UIMessage;
   generatedFiles?: GeneratedFile[];
+  generatedImages?: string[];
   isLastAssistant?: boolean;
   onRegenerate?: () => void;
   onEdit?: (newText: string) => void;
@@ -23,6 +24,7 @@ interface Props {
 export function ChatMessage({
   message,
   generatedFiles,
+  generatedImages,
   isLastAssistant,
   onRegenerate,
   onEdit,

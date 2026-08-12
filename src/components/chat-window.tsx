@@ -615,6 +615,7 @@ ${c}${truncated}`;
                   key={m.id}
                   message={m}
                   generatedFiles={generatedFiles[m.id]}
+                  generatedImages={generatedImages[m.id]}
                   isLastAssistant={isLastAssistant}
                   onRegenerate={isLastAssistant ? handleRegenerate : undefined}
                   onEdit={
