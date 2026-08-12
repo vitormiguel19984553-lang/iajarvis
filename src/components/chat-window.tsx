@@ -16,7 +16,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useOnlineStatus } from "@/lib/use-online-status";
 import { WifiOff, Menu } from "lucide-react";
 import {
+  detectFileRequests,
   detectImageRequests,
+
   generateFile,
   type GeneratedFile,
 } from "@/lib/file-generator";
