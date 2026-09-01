@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { X, Mic, MicOff } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   open: boolean;
@@ -13,7 +14,7 @@ interface Props {
  * Live voice conversation overlay.
  * - SpeechRecognition listens continuously for user speech
  * - On final result, sends to AI via onUserSpeech callback
- * - AI reply is spoken via SpeechSynthesis
+ * - AI reply is spoken via real TTS (Lovable AI Gateway)
  * - While AI speaks, mic is muted to avoid feedback
  */
 export function VoiceMode({ open, onClose, onUserSpeech }: Props) {
@@ -24,23 +25,59 @@ export function VoiceMode({ open, onClose, onUserSpeech }: Props) {
   const [statusText, setStatusText] = useState("Tap mic to start");
   const recRef = useRef<any>(null);
   const shouldListenRef = useRef(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const startListeningRef = useRef<() => void>(() => {});
 
-  const speak = useCallback((text: string) => {
-    if (!("speechSynthesis" in window)) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = "pt-PT";
-    u.rate = 1.05;
-    u.pitch = 1;
-    u.onstart = () => setSpeaking(true);
-    u.onend = () => {
-      setSpeaking(false);
-      // resume listening after AI finishes
-      if (shouldListenRef.current) startListening();
-    };
-    u.onerror = () => setSpeaking(false);
-    window.speechSynthesis.speak(u);
+  const stopAudio = useCallback(() => {
+    try {
+      audioRef.current?.pause();
+    } catch {
+      /* noop */
+    }
+    audioRef.current = null;
   }, []);
+
+  const speak = useCallback(
+    async (text: string) => {
+      stopAudio();
+      try {
+        const { data } = await supabase.auth.getSession();
+        const token = data.session?.access_token;
+        const res = await fetch("/api/create-speech", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({ text }),
+        });
+        if (!res.ok) throw new Error(await res.text().catch(() => `Erro ${res.status}`));
+        const json = (await res.json()) as { b64?: string; mimeType?: string; error?: string };
+        if (!json.b64) throw new Error(json.error || "Sem áudio");
+
+        const audio = new Audio(`data:${json.mimeType ?? "audio/mpeg"};base64,${json.b64}`);
+        audioRef.current = audio;
+        audio.onplay = () => setSpeaking(true);
+        const finish = () => {
+          setSpeaking(false);
+          audioRef.current = null;
+          if (shouldListenRef.current) startListeningRef.current();
+        };
+        audio.onended = finish;
+        audio.onerror = finish;
+        await audio.play();
+      } catch (err) {
+        console.error(err);
+        setSpeaking(false);
+        toast.error("Falha na voz", {
+          description: (err as Error).message?.slice(0, 140),
+        });
+        setStatusText("Listening…");
+        if (shouldListenRef.current) startListeningRef.current();
+      }
+    },
+    [stopAudio],
+  );
 
   const handleFinal = useCallback(
     async (text: string) => {
