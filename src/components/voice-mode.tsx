@@ -152,6 +152,11 @@ export function VoiceMode({ open, onClose, onUserSpeech }: Props) {
     }
   }, [handleFinal, speaking]);
 
+  // Keep a stable ref so async TTS callbacks can resume listening.
+  useEffect(() => {
+    startListeningRef.current = startListening;
+  }, [startListening]);
+
   const toggle = useCallback(() => {
     if (shouldListenRef.current) {
       shouldListenRef.current = false;
@@ -160,21 +165,26 @@ export function VoiceMode({ open, onClose, onUserSpeech }: Props) {
       } catch {
         /* noop */
       }
-      window.speechSynthesis?.cancel();
+      stopAudio();
       setListening(false);
       setSpeaking(false);
       setStatusText("Paused");
     } else {
       shouldListenRef.current = true;
-      // Unlock iOS Safari speech synthesis inside the user gesture;
-      // without this, speaking after an async AI response is silently blocked.
-      if ("speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(new SpeechSynthesisUtterance(""));
+      // Unlock iOS Safari audio playback inside the user gesture; without this,
+      // playing TTS audio after an async AI response is silently blocked.
+      try {
+        const unlock = new Audio(
+          "data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQxAADB8AhSmxhIIEVCSiJrDCQBTcu3UrAIwUdkRgQbFAZC1CQEwTJ9mjRvBA4UOLD8nKVOWfh+UlK3z/177OXrfOdKl7pyn3Xf//WreyTBUoI",
+        );
+        unlock.volume = 0;
+        void unlock.play().then(() => unlock.pause()).catch(() => {});
+      } catch {
+        /* noop */
       }
       startListening();
     }
-  }, [startListening]);
+  }, [startListening, stopAudio]);
 
   useEffect(() => {
     if (!open) {
