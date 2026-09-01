@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { createServerClient } from "@supabase/ssr";
 import { rateLimit, sweep } from "@/lib/rate-limit.server";
 
-const TTS_MODEL = "gpt-4o-mini-tts";
+// Gateway requires vendor-prefixed model ids.
+const TTS_MODEL = "openai/gpt-4o-mini-tts";
 const MAX_TEXT = 3_000;
 const INSTRUCTIONS =
   "Fala num tom calmo, preciso, ligeiramente formal e confiante, como um assistente pessoal britânico de elite — como o Jarvis do Homem de Ferro. Ritmo pausado, sem pressa, claro.";

@@ -17,6 +17,7 @@ import { Route as ApiLearnRouteImport } from './routes/api/learn'
 import { Route as ApiCreateTtsRouteImport } from './routes/api/create-tts'
 import { Route as ApiCreateTextRouteImport } from './routes/api/create-text'
 import { Route as ApiCreateSttRouteImport } from './routes/api/create-stt'
+import { Route as ApiCreateSpeechRouteImport } from './routes/api/create-speech'
 import { Route as ApiCreateImageRouteImport } from './routes/api/create-image'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedPlanosRouteImport } from './routes/_authenticated/planos'
@@ -62,6 +63,11 @@ const ApiCreateTextRoute = ApiCreateTextRouteImport.update({
 const ApiCreateSttRoute = ApiCreateSttRouteImport.update({
   id: '/api/create-stt',
   path: '/api/create-stt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCreateSpeechRoute = ApiCreateSpeechRouteImport.update({
+  id: '/api/create-speech',
+  path: '/api/create-speech',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiCreateImageRoute = ApiCreateImageRouteImport.update({
@@ -111,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/planos': typeof AuthenticatedPlanosRoute
   '/api/chat': typeof ApiChatRoute
   '/api/create-image': typeof ApiCreateImageRoute
+  '/api/create-speech': typeof ApiCreateSpeechRoute
   '/api/create-stt': typeof ApiCreateSttRoute
   '/api/create-text': typeof ApiCreateTextRoute
   '/api/create-tts': typeof ApiCreateTtsRoute
@@ -127,6 +134,7 @@ export interface FileRoutesByTo {
   '/planos': typeof AuthenticatedPlanosRoute
   '/api/chat': typeof ApiChatRoute
   '/api/create-image': typeof ApiCreateImageRoute
+  '/api/create-speech': typeof ApiCreateSpeechRoute
   '/api/create-stt': typeof ApiCreateSttRoute
   '/api/create-text': typeof ApiCreateTextRoute
   '/api/create-tts': typeof ApiCreateTtsRoute
@@ -145,6 +153,7 @@ export interface FileRoutesById {
   '/_authenticated/planos': typeof AuthenticatedPlanosRoute
   '/api/chat': typeof ApiChatRoute
   '/api/create-image': typeof ApiCreateImageRoute
+  '/api/create-speech': typeof ApiCreateSpeechRoute
   '/api/create-stt': typeof ApiCreateSttRoute
   '/api/create-text': typeof ApiCreateTextRoute
   '/api/create-tts': typeof ApiCreateTtsRoute
@@ -163,6 +172,7 @@ export interface FileRouteTypes {
     | '/planos'
     | '/api/chat'
     | '/api/create-image'
+    | '/api/create-speech'
     | '/api/create-stt'
     | '/api/create-text'
     | '/api/create-tts'
@@ -179,6 +189,7 @@ export interface FileRouteTypes {
     | '/planos'
     | '/api/chat'
     | '/api/create-image'
+    | '/api/create-speech'
     | '/api/create-stt'
     | '/api/create-text'
     | '/api/create-tts'
@@ -196,6 +207,7 @@ export interface FileRouteTypes {
     | '/_authenticated/planos'
     | '/api/chat'
     | '/api/create-image'
+    | '/api/create-speech'
     | '/api/create-stt'
     | '/api/create-text'
     | '/api/create-tts'
@@ -209,6 +221,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   ApiChatRoute: typeof ApiChatRoute
   ApiCreateImageRoute: typeof ApiCreateImageRoute
+  ApiCreateSpeechRoute: typeof ApiCreateSpeechRoute
   ApiCreateSttRoute: typeof ApiCreateSttRoute
   ApiCreateTextRoute: typeof ApiCreateTextRoute
   ApiCreateTtsRoute: typeof ApiCreateTtsRoute
@@ -271,6 +284,13 @@ declare module '@tanstack/react-router' {
       path: '/api/create-stt'
       fullPath: '/api/create-stt'
       preLoaderRoute: typeof ApiCreateSttRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/create-speech': {
+      id: '/api/create-speech'
+      path: '/api/create-speech'
+      fullPath: '/api/create-speech'
+      preLoaderRoute: typeof ApiCreateSpeechRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/create-image': {
@@ -352,6 +372,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   ApiChatRoute: ApiChatRoute,
   ApiCreateImageRoute: ApiCreateImageRoute,
+  ApiCreateSpeechRoute: ApiCreateSpeechRoute,
   ApiCreateSttRoute: ApiCreateSttRoute,
   ApiCreateTextRoute: ApiCreateTextRoute,
   ApiCreateTtsRoute: ApiCreateTtsRoute,
