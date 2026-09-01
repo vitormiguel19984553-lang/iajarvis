@@ -194,13 +194,13 @@ export function VoiceMode({ open, onClose, onUserSpeech }: Props) {
       } catch {
         /* noop */
       }
-      window.speechSynthesis?.cancel();
+      stopAudio();
       setListening(false);
       setSpeaking(false);
       setTranscript("");
       setLastReply("");
     }
-  }, [open]);
+  }, [open, stopAudio]);
 
   if (!open) return null;
 
