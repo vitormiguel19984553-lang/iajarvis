@@ -9,26 +9,30 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiLearnRouteImport } from './routes/api/learn'
-import { Route as ApiCreateTtsRouteImport } from './routes/api/create-tts'
-import { Route as ApiCreateTextRouteImport } from './routes/api/create-text'
-import { Route as ApiCreateSttRouteImport } from './routes/api/create-stt'
-import { Route as ApiCreateSpeechRouteImport } from './routes/api/create-speech'
-import { Route as ApiCreateImageRouteImport } from './routes/api/create-image'
-import { Route as ApiChatRouteImport } from './routes/api/chat'
-import { Route as AuthenticatedPlanosRouteImport } from './routes/_authenticated/planos'
-import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
-import { Route as AuthenticatedCreateRouteImport } from './routes/_authenticated/create'
-import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated/chat'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated/chat'
+import { Route as AuthenticatedCreateRouteImport } from './routes/_authenticated/create'
+import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
+import { Route as AuthenticatedPlanosRouteImport } from './routes/_authenticated/planos'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as ApiCreateImageRouteImport } from './routes/api/create-image'
+import { Route as ApiCreateSpeechRouteImport } from './routes/api/create-speech'
+import { Route as ApiCreateSttRouteImport } from './routes/api/create-stt'
+import { Route as ApiCreateTextRouteImport } from './routes/api/create-text'
+import { Route as ApiCreateTtsRouteImport } from './routes/api/create-tts'
+import { Route as ApiLearnRouteImport } from './routes/api/learn'
 
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -36,63 +40,14 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRoute = AuthenticatedRouteImport.update({
-  id: '/_authenticated',
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiLearnRoute = ApiLearnRouteImport.update({
-  id: '/api/learn',
-  path: '/api/learn',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiCreateTtsRoute = ApiCreateTtsRouteImport.update({
-  id: '/api/create-tts',
-  path: '/api/create-tts',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiCreateTextRoute = ApiCreateTextRouteImport.update({
-  id: '/api/create-text',
-  path: '/api/create-text',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiCreateSttRoute = ApiCreateSttRouteImport.update({
-  id: '/api/create-stt',
-  path: '/api/create-stt',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiCreateSpeechRoute = ApiCreateSpeechRouteImport.update({
-  id: '/api/create-speech',
-  path: '/api/create-speech',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiCreateImageRoute = ApiCreateImageRouteImport.update({
-  id: '/api/create-image',
-  path: '/api/create-image',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiChatRoute = ApiChatRouteImport.update({
-  id: '/api/chat',
-  path: '/api/chat',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedPlanosRoute = AuthenticatedPlanosRouteImport.update({
-  id: '/planos',
-  path: '/planos',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedPerfilRoute = AuthenticatedPerfilRouteImport.update({
-  id: '/perfil',
-  path: '/perfil',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedCreateRoute = AuthenticatedCreateRouteImport.update({
-  id: '/create',
-  path: '/create',
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedChatRoute = AuthenticatedChatRouteImport.update({
@@ -100,10 +55,55 @@ const AuthenticatedChatRoute = AuthenticatedChatRouteImport.update({
   path: '/chat',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+const AuthenticatedCreateRoute = AuthenticatedCreateRouteImport.update({
+  id: '/create',
+  path: '/create',
   getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedPerfilRoute = AuthenticatedPerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedPlanosRoute = AuthenticatedPlanosRouteImport.update({
+  id: '/planos',
+  path: '/planos',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCreateImageRoute = ApiCreateImageRouteImport.update({
+  id: '/api/create-image',
+  path: '/api/create-image',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCreateSpeechRoute = ApiCreateSpeechRouteImport.update({
+  id: '/api/create-speech',
+  path: '/api/create-speech',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCreateSttRoute = ApiCreateSttRouteImport.update({
+  id: '/api/create-stt',
+  path: '/api/create-stt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCreateTextRoute = ApiCreateTextRouteImport.update({
+  id: '/api/create-text',
+  path: '/api/create-text',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCreateTtsRoute = ApiCreateTtsRouteImport.update({
+  id: '/api/create-tts',
+  path: '/api/create-tts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiLearnRoute = ApiLearnRouteImport.update({
+  id: '/api/learn',
+  path: '/api/learn',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -230,18 +230,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -251,81 +244,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/learn': {
-      id: '/api/learn'
-      path: '/api/learn'
-      fullPath: '/api/learn'
-      preLoaderRoute: typeof ApiLearnRouteImport
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/create-tts': {
-      id: '/api/create-tts'
-      path: '/api/create-tts'
-      fullPath: '/api/create-tts'
-      preLoaderRoute: typeof ApiCreateTtsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/create-text': {
-      id: '/api/create-text'
-      path: '/api/create-text'
-      fullPath: '/api/create-text'
-      preLoaderRoute: typeof ApiCreateTextRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/create-stt': {
-      id: '/api/create-stt'
-      path: '/api/create-stt'
-      fullPath: '/api/create-stt'
-      preLoaderRoute: typeof ApiCreateSttRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/create-speech': {
-      id: '/api/create-speech'
-      path: '/api/create-speech'
-      fullPath: '/api/create-speech'
-      preLoaderRoute: typeof ApiCreateSpeechRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/create-image': {
-      id: '/api/create-image'
-      path: '/api/create-image'
-      fullPath: '/api/create-image'
-      preLoaderRoute: typeof ApiCreateImageRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/chat': {
-      id: '/api/chat'
-      path: '/api/chat'
-      fullPath: '/api/chat'
-      preLoaderRoute: typeof ApiChatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/planos': {
-      id: '/_authenticated/planos'
-      path: '/planos'
-      fullPath: '/planos'
-      preLoaderRoute: typeof AuthenticatedPlanosRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/perfil': {
-      id: '/_authenticated/perfil'
-      path: '/perfil'
-      fullPath: '/perfil'
-      preLoaderRoute: typeof AuthenticatedPerfilRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/create': {
-      id: '/_authenticated/create'
-      path: '/create'
-      fullPath: '/create'
-      preLoaderRoute: typeof AuthenticatedCreateRouteImport
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/chat': {
@@ -335,12 +272,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedChatRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/admin': {
-      id: '/_authenticated/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+    '/_authenticated/create': {
+      id: '/_authenticated/create'
+      path: '/create'
+      fullPath: '/create'
+      preLoaderRoute: typeof AuthenticatedCreateRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/perfil': {
+      id: '/_authenticated/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof AuthenticatedPerfilRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/planos': {
+      id: '/_authenticated/planos'
+      path: '/planos'
+      fullPath: '/planos'
+      preLoaderRoute: typeof AuthenticatedPlanosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/create-image': {
+      id: '/api/create-image'
+      path: '/api/create-image'
+      fullPath: '/api/create-image'
+      preLoaderRoute: typeof ApiCreateImageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/create-speech': {
+      id: '/api/create-speech'
+      path: '/api/create-speech'
+      fullPath: '/api/create-speech'
+      preLoaderRoute: typeof ApiCreateSpeechRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/create-stt': {
+      id: '/api/create-stt'
+      path: '/api/create-stt'
+      fullPath: '/api/create-stt'
+      preLoaderRoute: typeof ApiCreateSttRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/create-text': {
+      id: '/api/create-text'
+      path: '/api/create-text'
+      fullPath: '/api/create-text'
+      preLoaderRoute: typeof ApiCreateTextRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/create-tts': {
+      id: '/api/create-tts'
+      path: '/api/create-tts'
+      fullPath: '/api/create-tts'
+      preLoaderRoute: typeof ApiCreateTtsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/learn': {
+      id: '/api/learn'
+      path: '/api/learn'
+      fullPath: '/api/learn'
+      preLoaderRoute: typeof ApiLearnRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
