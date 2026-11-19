@@ -1,3 +1,4 @@
+import { requestImage } from "@/lib/image-request";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -196,14 +197,8 @@ function CreatePage() {
         const image = inputFile
           ? { mimeType: inputFile.type, base64: await fileToBase64(inputFile) }
           : undefined;
-        const res = await fetch("/api/create-image", {
-          method: "POST",
-          headers: { ...headers, "Content-Type": "application/json" },
-          body: JSON.stringify({ toolId: tool.id, prompt, fields, image }),
-        });
-        const json = await res.json();
-        if (!res.ok) throw new Error(json.error ?? `Erro ${res.status}`);
-        const blob = base64ToBlob(json.b64, "image/png");
+        const b64 = await requestImage(headers as Record<string, string>, { toolId: tool.id, prompt, fields, image });
+        const blob = base64ToBlob(b64, "image/png");
         setResult({ kind: "image", url: URL.createObjectURL(blob), blob });
         await saveCreation({
           userId: user.id,

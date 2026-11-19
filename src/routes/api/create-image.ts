@@ -64,7 +64,9 @@ export const Route = createFileRoute("/api/create-image")({
               model: IMAGE_MODEL,
               messages: [{ role: "user", content }],
               modalities: ["image", "text"],
+              stream: true,
             }),
+            signal: request.signal,
           });
 
           if (!upstream.ok) {
@@ -75,14 +77,15 @@ export const Route = createFileRoute("/api/create-image")({
             );
           }
 
-          const json = (await upstream.json()) as {
-            data?: Array<{ b64_json?: string }>;
-          };
-          const b64 = json.data?.[0]?.b64_json;
-          if (!b64) {
+          if (!upstream.body) {
             return Response.json({ error: "O modelo não devolveu imagem." }, { status: 502 });
           }
-          return Response.json({ b64 });
+          return new Response(upstream.body, {
+            headers: {
+              "Content-Type": "text/event-stream",
+              "Cache-Control": "no-cache, no-transform",
+            },
+          });
         } catch (e) {
           return Response.json({ error: (e as Error).message }, { status: 500 });
         }

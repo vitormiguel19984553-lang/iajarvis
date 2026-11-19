@@ -1,3 +1,4 @@
+import { requestImage } from "@/lib/image-request";
 import { useEffect, useRef, useState, useMemo, lazy, Suspense } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
@@ -306,20 +307,11 @@ ${c}${truncated}`;
       const made: string[] = [];
       for (const r of reqs) {
         try {
-          const res = await fetch("/api/create-image", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ toolId: "text-to-image", prompt: r.prompt }),
-          });
-          if (!res.ok) {
-            const err = (await res.json().catch(() => null)) as { error?: string } | null;
-            throw new Error(err?.error || `Erro ${res.status}`);
-          }
-          const data = (await res.json()) as { b64?: string };
-          if (data.b64) made.push(data.b64);
+          const b64 = await requestImage(
+            { Authorization: `Bearer ${token}` },
+            { toolId: "text-to-image", prompt: r.prompt },
+          );
+          made.push(b64);
         } catch (e) {
           console.error("image gen failed", e);
           toast.error("Falha a gerar imagem", { description: (e as Error).message });
