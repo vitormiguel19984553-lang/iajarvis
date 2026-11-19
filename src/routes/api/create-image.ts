@@ -69,6 +69,20 @@ export const Route = createFileRoute("/api/create-image")({
             signal: request.signal,
           });
 
+          if (!upstream.ok && (upstream.status === 402 || upstream.status === 403) && prompt) {
+            // Free fallback (no credits): Pollinations public image API.
+            const size = body.fields?.aspect === "Horizontal" ? "width=1344&height=768"
+              : body.fields?.aspect === "Vertical" ? "width=768&height=1344" : "width=1024&height=1024";
+            const free = await fetch(
+              `https://image.pollinations.ai/prompt/${encodeURIComponent(text.slice(0, 1500))}?${size}&nologo=true&model=flux`,
+            );
+            if (free.ok) {
+              const bytes = new Uint8Array(await free.arrayBuffer());
+              let bin = "";
+              for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+              return Response.json({ b64: btoa(bin), provider: "pollinations" });
+            }
+          }
           if (!upstream.ok) {
             const errText = await upstream.text().catch(() => "");
             return Response.json(
