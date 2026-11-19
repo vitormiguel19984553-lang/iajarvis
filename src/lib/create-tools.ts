@@ -52,6 +52,14 @@ export type CreateTool = {
   size?: "1024x1024" | "1536x1024" | "1024x1536";
 };
 
+const FREE_ENGINE: CreateField = {
+  id: "motor",
+  label: "Motor de IA",
+  type: "select",
+  options: ["Automático", "Grátis — Flux", "Grátis — GPT Image", "Grátis — Sana"],
+  optional: true,
+};
+
 const ASPECT: CreateField = {
   id: "aspect",
   label: "Formato",
@@ -92,7 +100,7 @@ export const CREATE_TOOLS: CreateTool[] = [
     engine: "image",
     minPlan: "free",
     instruction: "Cria uma imagem de altíssima qualidade, detalhada e coerente.",
-    fields: [ASPECT],
+    fields: [ASPECT, FREE_ENGINE],
   },
   {
     id: "photoreal",

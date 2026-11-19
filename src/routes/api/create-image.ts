@@ -53,6 +53,31 @@ export const Route = createFileRoute("/api/create-image")({
           });
         }
 
+        const FREE_MODELS: Record<string, string> = {
+          "Grátis — Flux": "flux",
+          "Grátis — GPT Image": "gptimage",
+          "Grátis — Sana": "sana",
+        };
+        const forcedFree = FREE_MODELS[body.fields?.motor ?? ""];
+        const freeImage = async (model: string) => {
+          const size = body.fields?.aspect === "Horizontal" ? "width=1344&height=768"
+            : body.fields?.aspect === "Vertical" ? "width=768&height=1344" : "width=1024&height=1024";
+          const seed = Math.floor(Math.random() * 1e9);
+          const free = await fetch(
+            `https://image.pollinations.ai/prompt/${encodeURIComponent(text.slice(0, 1500))}?${size}&nologo=true&model=${model}&seed=${seed}`,
+          );
+          if (!free.ok) return null;
+          const bytes = new Uint8Array(await free.arrayBuffer());
+          let bin = "";
+          for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+          return Response.json({ b64: btoa(bin), provider: `pollinations:${model}` });
+        };
+        if (forcedFree && !body.image) {
+          const r = await freeImage(forcedFree);
+          if (r) return r;
+          return Response.json({ error: "Gerador grátis indisponível, tenta outro motor." }, { status: 502 });
+        }
+
         try {
           const upstream = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
             method: "POST",
@@ -70,18 +95,8 @@ export const Route = createFileRoute("/api/create-image")({
           });
 
           if (!upstream.ok && (upstream.status === 402 || upstream.status === 403) && prompt) {
-            // Free fallback (no credits): Pollinations public image API.
-            const size = body.fields?.aspect === "Horizontal" ? "width=1344&height=768"
-              : body.fields?.aspect === "Vertical" ? "width=768&height=1344" : "width=1024&height=1024";
-            const free = await fetch(
-              `https://image.pollinations.ai/prompt/${encodeURIComponent(text.slice(0, 1500))}?${size}&nologo=true&model=flux`,
-            );
-            if (free.ok) {
-              const bytes = new Uint8Array(await free.arrayBuffer());
-              let bin = "";
-              for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
-              return Response.json({ b64: btoa(bin), provider: "pollinations" });
-            }
+            const r = await freeImage("flux");
+            if (r) return r;
           }
           if (!upstream.ok) {
             const errText = await upstream.text().catch(() => "");
