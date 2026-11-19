@@ -270,6 +270,15 @@ Regras:
 
         return result.toUIMessageStreamResponse({
           originalMessages: messages as UIMessage[],
+          onError: (err) => {
+            const e = err as { statusCode?: number; message?: string; responseBody?: string };
+            const body = `${e?.responseBody ?? ""} ${e?.message ?? ""}`.toLowerCase();
+            if (e?.statusCode === 402 || body.includes("not enough credits") || body.includes("payment_required"))
+              return "credits: Créditos de IA esgotados no workspace. Adiciona créditos para continuar.";
+            if (e?.statusCode === 429) return "429: Demasiados pedidos. Aguarda uns segundos.";
+            if (e?.statusCode === 403) return "403: Acesso ao modelo bloqueado.";
+            return e?.message ? e.message.slice(0, 200) : "Erro na resposta do modelo.";
+          },
           headers: {
             "X-Resolved-Model": gatewayId,
             "X-Displayed-Model": displayed,

@@ -633,7 +633,10 @@ ${c}${truncated}`;
 
       {error && (
         <div className="px-5 py-2 text-[12px] text-destructive border-t border-border">
-          Connection lost. Please try again.
+          {(() => {
+            const p = parseAPIError(error);
+            return p.description ? `${p.title} — ${p.description}` : p.title;
+          })()}
         </div>
       )}
 
